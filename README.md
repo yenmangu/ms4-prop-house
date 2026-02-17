@@ -217,20 +217,214 @@ The interface prioritises clarity, professional presentation, and usability. Vis
 
 ## Overview
 
-The database uses a relational schema designed to support product hire, transactional integrity, and subscription logic.
+PropHouse uses a relational database schema designed to support:
 
-Stock quantity is authoritative at the Product model level. Basket operations do not decrement database stock; stock is only decremented during successful paid checkout using atomic transactions and row-level locking.
+- A product catalogue with categories and stock tracking.
+- A basket-to-checkout flow where orders are created only after successful payment.
+- Membership subscriptions that apply percentage-based discounts to eligible products.
+- Customer account features such as saved addresses (and optional wishlists).
 
-## Core Models
+### Stock Integrity Policy
 
-- User
-- Product
-- Category
-- Order
-- OrderItem
-- Address
-- Membership
-- Subscription
+- `Product.stock_quantity` is the authoritative stock value.
+- Basket actions do **not** decrement database stock.
+- Stock is decremented **only** during successful paid checkout.
+- Checkout uses an atomic transaction and row-level locking (`select_for_update`) to prevent overselling.
+
+This approach ensures stock remains consistent under concurrent checkouts.
+
+---
+
+## Entity Relationship Diagram
+
+(ERD image / PlantUML diagram link)
+
+---
+
+## Schema Summary
+
+### Relationship Overview
+
+- **Category → Product**: One-to-many
+- **User → Address**: One-to-many
+- **User → Order**: One-to-many
+- **Order → OrderItem**: One-to-many
+- **Product → OrderItem**: One-to-many
+- **User → Membership**: One-to-one (optional)
+- **Membership → Subscription**: One-to-one (Stripe subscription record)
+- **User ↔ Product (Wishlist)**: Many-to-many (optional)
+
+---
+
+## Models
+
+### Product
+
+Represents a hireable prop or equipment item.
+
+Key fields:
+
+- `name` (string)
+- `slug` (unique string)
+- `description` (text)
+- `category` (FK → Category)
+- `price` (decimal)
+- `is_discount_eligible` (boolean)
+- `stock_quantity` (integer)
+- `featured_image` (image / Cloud storage reference)
+- `is_active` (boolean)
+- `created_on`, `updated_on` (datetimes)
+
+Important constraints:
+
+- `stock_quantity >= 0`
+- `slug` unique
+
+---
+
+### Category
+
+Groups products into browsable sections.
+
+Key fields:
+
+- `name` (string)
+- `slug` (unique string)
+- `description` (optional text)
+- `is_active` (boolean)
+
+---
+
+### Order
+
+Represents a completed hire transaction created after successful payment.
+
+Key fields:
+
+- `user` (FK → User)
+- `order_number` (unique string)
+- `status` (choice, e.g. `pending`, `paid`, `cancelled`, `refunded`)
+- `stripe_payment_intent_id` (string)
+- `stripe_checkout_session_id` (string)
+- `full_name` (string)
+- `email` (email)
+- `phone_number` (optional string)
+- `address_line_1`, `address_line_2`, `town_or_city`, `postcode`, `county`, `country` (strings)
+- `original_basket` (text / JSON snapshot)
+- `subtotal` (decimal)
+- `discount_total` (decimal)
+- `grand_total` (decimal)
+- `created_on` (datetime)
+
+Behaviour notes:
+
+- An order is only marked `paid` after Stripe confirmation (often via webhook).
+- The order stores a pricing snapshot to ensure totals remain auditable even if product prices change later.
+
+---
+
+### OrderItem
+
+Represents an individual line item in an order.
+
+Key fields:
+
+- `order` (FK → Order)
+- `product` (FK → Product)
+- `quantity` (integer)
+- `unit_price` (decimal)
+- `line_total` (decimal)
+- `discount_applied` (decimal)
+
+Important constraints:
+
+- `quantity >= 1`
+- `line_total` calculated from `quantity * unit_price` minus discounts
+
+---
+
+### Address
+
+A saved address record for a user (supports repeat checkout without re-entry).
+
+Key fields:
+
+- `user` (FK → User)
+- `label` (string, e.g. “Studio”, “Office”)
+- `full_name` (string)
+- `phone_number` (optional string)
+- `address_line_1`, `address_line_2`, `town_or_city`, `postcode`, `county`, `country` (strings)
+- `is_default` (boolean)
+- `created_on` (datetime)
+
+Suggested constraints:
+
+- Only one default address per user (enforced via application logic or conditional unique constraint).
+
+---
+
+### Membership
+
+Represents a user’s membership status and discount entitlement.
+
+Key fields:
+
+- `user` (OneToOne → User)
+- `is_active` (boolean)
+- `discount_percent` (integer or decimal)
+- `started_on` (datetime)
+- `ended_on` (optional datetime)
+- `stripe_customer_id` (string)
+
+Behaviour notes:
+
+- Membership modifies pricing (discount pricing) rather than access permissions.
+- Discount is applied only to products flagged as discount-eligible.
+
+---
+
+### Subscription
+
+Stores the Stripe subscription record mapped to a membership.
+
+Key fields:
+
+- `membership` (OneToOne → Membership)
+- `stripe_subscription_id` (string)
+- `stripe_price_id` (string)
+- `status` (choice, e.g. `active`, `past_due`, `cancelled`)
+- `current_period_end` (datetime)
+- `cancel_at_period_end` (boolean)
+
+---
+
+### Wishlist (Optional)
+
+Allows users to save products for later.
+
+Implementation options:
+
+- **Simple approach**: `User` ↔ `Product` M2M through a `WishlistItem` model.
+- This supports metadata like timestamps and avoids a single shared wishlist per user.
+
+Suggested fields (WishlistItem):
+
+- `user` (FK → User)
+- `product` (FK → Product)
+- `created_on` (datetime)
+
+---
+
+## Data Operations Summary
+
+The schema supports full CRUD across the core domain:
+
+- Products: Create / Read / Update / Delete (admin managed).
+- Categories: Create / Read / Update / Delete (admin managed).
+- Addresses: Create / Read / Update / Delete (user managed).
+- Basket: Session-based read/update operations (not persisted as orders).
+- Orders: Created on successful checkout; viewable by the owning user; managed by staff.
+- Membership/Subscription: Created and updated via Stripe events and user actions.
 
 ---
 
