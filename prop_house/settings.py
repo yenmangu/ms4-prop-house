@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Build path for template directory
 TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
+ALLAUTH_TEMPLATES_DIR = os.path.join(BASE_DIR, "templates", "allauth")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -60,6 +61,11 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "core",
+    "accounts",
+    "catalogue",
+    "commerce",
+    "profiles",
 ]
 
 MIDDLEWARE = [
@@ -78,7 +84,10 @@ ROOT_URLCONF = "prop_house.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [TEMPLATE_DIR],
+        "DIRS": [
+            TEMPLATE_DIR,
+            ALLAUTH_TEMPLATES_DIR,
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
