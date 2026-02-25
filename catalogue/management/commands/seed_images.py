@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from catalogue.models import Product
 import cloudinary.uploader
+import urllib.parse
 
 # Phase 1 - Tools - identify the tools needed
 # BaseCommand - parent class to handle terminal stuff
@@ -18,7 +19,20 @@ import cloudinary.uploader
 class Command(BaseCommand):
     help = "A short description for the --help flag"
 
+    def add_arguments(self, parser):
+        # Add store_true action
+
+        parser.add_argument(
+            "--auto-find",
+            action="store_true",
+            help="Automatically find and upload images from Unsplash based on product name",
+        )
+        return super().add_arguments(parser)
+
     def handle(self, *args, **options):
+
+        # Detect if flag present
+        auto_find = options["auto-find"]
 
         # Fetch all products from DB
         products = Product.objects.all()
@@ -27,47 +41,57 @@ class Command(BaseCommand):
         # The loop
         for product in products:
 
-            # Check if 'cloudinary' in url
-            if "cloudinary.com" in str(product.image):
-                self.stdout.write(
-                    self.style.NOTICE(
-                        f"Skipping {product.name}: Already on Cloudinary."
+            # If auto-find
+            if auto_find:
+
+                # Mode A - 'Lazy' automated search
+                search_term = urllib.parse.quote(product.name)
+                source = f"https//source.unsplash.com/feature/?{search_term}"
+                self.stdout.write(f"Searching web for: {product.name}...")
+            else:
+                # Mode B - 'Upload from local'
+                # Check if 'cloudinary' in url
+                if "cloudinary.com" in str(product.image):
+                    self.stdout.write(
+                        self.style.NOTICE(
+                            f"Skipping {product.name}: Already on Cloudinary."
+                        )
                     )
-                )
 
-                continue
+                    continue
 
-            # Check product actually has image
-            if not product.image:
-                self.stdout.write(
-                    self.style.WARNING(f"Skipping {product.name}: No image found")
-                )
-                continue
+                # Check product actually has image
+                if not product.image:
+                    self.stdout.write(
+                        self.style.WARNING(f"Skipping {product.name}: No image found")
+                    )
+                    continue
+                source = product.image.path
 
-            try:
-                # 1. Upload
-                upload_data = cloudinary.uploader.upload(
-                    product.image.path,
-                    folder="catalogue_seeds",
-                )
+                try:
+                    # 1. Upload
+                    upload_data = cloudinary.uploader.upload(
+                        product.image.path,
+                        folder="catalogue_seeds",
+                    )
 
-                # 2. Capture
-                cloudinary_url = upload_data.get("secure_url")
+                    # 2. Capture
+                    cloudinary_url = upload_data.get("secure_url")
 
-                # 3. Update
-                # Change product image field to new url and save
+                    # 3. Update
+                    # Change product image field to new url and save
 
-                product.image = cloudinary_url
-                product.save()
+                    product.image = cloudinary_url
+                    product.save()
 
-                self.stdout.write(
-                    self.style.SUCCESS(f"Successfully uploaded {product.name}")
-                )
-            except Exception as e:
-                self.stdout.write(
-                    self.style.ERROR(f"Failed to upload {product.name}: {e}")
-                )
+                    self.stdout.write(
+                        self.style.SUCCESS(f"Successfully uploaded {product.name}")
+                    )
+                except Exception as e:
+                    self.stdout.write(
+                        self.style.ERROR(f"Failed to upload {product.name}: {e}")
+                    )
 
-            self.stdout.write(f"Currently processing:  {product.name}")
+                self.stdout.write(f"Currently processing:  {product.name}")
 
         self.stdout.write(self.style.SUCCESS("Seeding complete!"))
