@@ -27,12 +27,11 @@ class Command(BaseCommand):
             action="store_true",
             help="Automatically find and upload images from Unsplash based on product name",
         )
-        return super().add_arguments(parser)
 
     def handle(self, *args, **options):
 
         # Detect if flag present
-        auto_find = options["auto-find"]
+        auto_find = options["auto_find"]
 
         # Fetch all products from DB
         products = Product.objects.all()
