@@ -26,8 +26,18 @@ class Command(BaseCommand):
 
         # The loop
         for product in products:
-            # Check product actually has image
 
+            # Check if 'cloudinary' in url
+            if "cloudinary.com" in str(product.image):
+                self.stdout.write(
+                    self.style.NOTICE(
+                        f"Skipping {product.name}: Already on Cloudinary."
+                    )
+                )
+
+                continue
+
+            # Check product actually has image
             if not product.image:
                 self.stdout.write(
                     self.style.WARNING(f"Skipping {product.name}: No image found")
