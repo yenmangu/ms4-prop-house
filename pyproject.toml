@@ -1,0 +1,16 @@
+[tool.djlint]
+ignore = "H020,H023,H006,H021,H031"
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+exclude = '''
+/(
+		\.vscode
+  | \.venv
+  | migrations
+  | staticfiles
+  | media
+  | manage\.py
+)/
+'''
