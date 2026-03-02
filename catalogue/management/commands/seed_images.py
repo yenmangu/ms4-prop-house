@@ -207,8 +207,6 @@ class Command(BaseCommand):
                             )
                         )
 
-                        continue
-
                 else:
                     # Mode B - 'Upload from local'
                     if (
