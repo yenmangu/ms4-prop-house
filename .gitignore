@@ -16,8 +16,9 @@ cloudinary_python.txt
 **/._*
 ./._*
 ._*
-resources/fixtures
-AGENTS.md
+fixtures
+products/fixtures
 .rubric
 rubric.*
 .DS_*
+*_context.md
