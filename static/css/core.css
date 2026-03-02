@@ -1,0 +1,32 @@
+/* core.css */
+
+.border-bottom-industrial {
+	border-bottom: 2px solid var(--border-hard) !important;
+	background-color: var(--bg-main) !important;
+}
+
+.navbar-brand {
+	font-weight: 900;
+	text-transform: uppercase;
+	color: var(--txt-primary) !important;
+}
+
+.nav-link {
+	font-family: monospace;
+	font-size: 0.85rem;
+	letter-spacing: 1px;
+	color: var(--txt-muted) !important;
+	transition: color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+	color: var(--clr-accent) !important;
+}
+
+.footer-industrial {
+	border-top: 1px solid var(--border-hard);
+	padding: 2rem 0;
+	font-family: monospace;
+	font-size: 0.7rem;
+}

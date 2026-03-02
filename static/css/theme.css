@@ -1,0 +1,81 @@
+:root {
+	--bg: #121212;
+	--card-bg: #1e1e1e;
+	--accent: #ff6b00; /* Safety Orange */
+	--text: #ffffff;
+	--border: #333333;
+}
+
+:root {
+	/* --- RAW RGB VALUES --- */
+	/* Deep Slate (The 'Asphalt' base) */
+	--base-dark-values: 18, 18, 18;
+
+	/* Industrial Grey (The 'Concrete' secondary) */
+	--surface-values: 30, 30, 30;
+
+	/* Safety Orange (The 'Hazard' accent) */
+	--accent-orange-values: 255, 107, 0;
+
+	/* Stark White (The 'Manifest' text) */
+	--stark-white-values: 242, 242, 242;
+
+	/* Warning Red (For errors/failures) */
+	--error-red-values: 220, 53, 69;
+
+	/* --- DERIVED COLOURS --- */
+
+	/* Backgrounds */
+	--bg-main: rgba(var(--base-dark-values), 1);
+	--bg-surface: rgba(var(--surface-values), 1);
+	--bg-surface-translucent: rgba(var(--surface-values), 0.7);
+
+	/* Accents */
+	--clr-accent: rgba(var(--accent-orange-values), 1);
+	--clr-accent-glow: rgba(var(--accent-orange-values), 0.15);
+
+	/* Text */
+	--txt-primary: rgba(var(--stark-white-values), 1);
+	--txt-muted: rgba(var(--stark-white-values), 0.6);
+
+	/* Borders */
+	--border-hard: rgba(var(--stark-white-values), 0.1);
+	--border-glow: rgba(var(--accent-orange-values), 0.4);
+
+	/* --- EXTRA RAW VALUES --- */
+	--accent-blue-values: 0, 191, 255; /* Electric Blue */
+	--success-green-values: 40, 167, 69; /* 'System OK' Green */
+
+	/* --- EXTENDED DERIVED --- */
+	--clr-secondary: rgba(var(--accent-blue-values), 1);
+	--clr-success: rgba(var(--success-green-values), 1);
+
+	/* --- FAST OVERLAYS (The 'Grit') --- */
+	/* For darkening images or creating gradients over photos */
+	--overlay-dark: rgba(0, 0, 0, 0.6);
+	--overlay-gradient: linear-gradient(
+		180deg,
+		transparent 0%,
+		rgba(var(--base-dark-values), 0.9) 100%
+	);
+
+	/* --- BOX DECORATION --- */
+	--radius-sharp: 0px; /* Brutalist default */
+	--radius-sm: 2px; /* Subtle for buttons */
+	--glow-spread: 15px; /* Standard glow distance */
+
+	/* --- UI LAYERING (Z-Index manifest) --- */
+	--z-base: 1;
+	--z-sidebar: 100;
+	--z-header: 200;
+	--z-modal: 500;
+
+	/* --- Optional 'scanline' variable --- */
+
+	--texture-scanline: repeating-linear-gradient(
+		0deg,
+		transparent,
+		transparent 1px,
+		rgba(255, 255, 255, 0.03) 2px
+	);
+}

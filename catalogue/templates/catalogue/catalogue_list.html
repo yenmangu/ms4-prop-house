@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/catalogue.css' %}">
+{% endblock extra_css %}
+{% block content %}
+  <div class="manifest-wrapper">
+    <aside class="manifest-sidebar">
+      <div class="sidebar-header">
+        <span class="status-dot"></span>
+        <h2 class="label-mono">FILTER_UNIT</h2>
+      </div>
+      <form method="get" class="manifest-form">
+        <div class="input-group">
+          <label for="id_name">PROP_SEARCH</label>
+          {{ filter.form.name }}
+        </div>
+        <div class="input-group">
+          <label for="id_categories">CATEGORY_TAGS</label>
+          <div class="custom-checkbox-list">{{ filter.form.categories }}</div>
+        </div>
+        <div class="action-zone">
+          <button type="submit" class="btn-manifest-primary">EXECUTE_SEARCH</button>
+          <a href="{% url 'catalogue:product_list' %}" class="btn-manifest-ghost">RESET_SYSTEM</a>
+        </div>
+      </form>
+    </aside>
+    <main class="manifest-main">
+      <header class="manifest-header">
+        <h1 class="glitch-text">AVAILABLE_PROPS</h1>
+        <div class="stats-bar">
+          <span class="stat-item">TOTAL_UNITS: {{ paginator.count }}</span>
+          <span class="stat-item">LOCATION: LONDON_HQ</span>
+        </div>
+      </header>
+      <section class="prop-grid">
+        {% for product in object_list %}
+          <article class="prop-crate">
+            <div class="crate-visual">
+              <img src="{{ product.featured_image }}"
+                   alt="{{ product.name }}"
+                   loading="lazy" />
+              <div class="crate-overlay">
+                <span class="crate-status">READY_FOR_USE</span>
+              </div>
+            </div>
+            <div class="crate-data">
+              <div class="data-header">
+                <span class="id-tag">#{{ product.id|stringformat:"04d" }}</span>
+                <span class="price-tag">£{{ product.price }} / DAY</span>
+              </div>
+              <h3 class="product-name">
+                {% comment %} <a href="{% url 'product_detail' product.slug %}">{{ product.name|upper }}</a> {% endcomment %}
+              </h3>
+              <div class="category-pills">
+                {% for cat in product.categories.all %}<span class="pill">{{ cat.name }}</span>{% endfor %}
+              </div>
+            </div>
+          </article>
+        {% empty %}
+          <div class="null-state">
+            <p>ERROR: NO_ASSETS_FOUND_IN_CRATE</p>
+          </div>
+        {% endfor %}
+      </section>
+      {% if is_paginated %}
+        <nav class="manifest-pagination">
+          {% if page_obj.has_previous %}
+            <a href="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}"
+               class="nav-btn">PREV</a>
+          {% endif %}
+          <span class="page-count">INDEX {{ page_obj.number }} // {{ paginator.num_pages }}</span>
+          {% if page_obj.has_next %}
+            <a href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}"
+               class="nav-btn">NEXT</a>
+          {% endif %}
+        </nav>
+      {% endif %}
+    </main>
+  </div>
+{% endblock content %}

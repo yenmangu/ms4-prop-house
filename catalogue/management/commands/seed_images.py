@@ -150,17 +150,12 @@ class Command(BaseCommand):
         auto_find = options["auto_find"]
 
         # Fetch all products from DB
+        # Not using iterator() because dataset is only 80 products.
         products = Product.objects.all()
 
         pbar = tqdm(products, desc="Seeding products", unit="product")
 
         self.stdout.write(f"Found {products.count()} items to process.")
-
-        # for product in products:
-        #     clean_name = self.clean_search_term(product.name)
-        #     attempts = self.optimise_search_term(clean_name=clean_name)
-
-        # self.stdout.write(f"PROD: {product.name} -> ATTEMPTS: {attempts}")
 
         # The loop
         for product in pbar:
