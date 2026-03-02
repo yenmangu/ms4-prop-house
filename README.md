@@ -533,6 +533,13 @@ PropHouse follows WCAG 2.1 AA guidelines, including:
 | Stripe Integration | Stripe Documentation | Test mode implementation |
 | Authentication     | Django Auth          | Standard auth system     |
 
+## Development Credits
+
+| Development Feature         | Source                                                                                            | Notes |
+| --------------------------- | ------------------------------------------------------------------------------------------------- | ----- |
+| Custom Management Commmands | [Django Docs](https://docs.djangoproject.com/en/6.0/howto/custom-management-commands/)            |       |
+| Cloudinary SDK              | [Python Image & Video Upload](https://cloudinary.com/documentation/django_image_and_video_upload) |       |
+
 ## Acknowledgements
 
 - Code Institute Level 5 Full Stack Development programme.
