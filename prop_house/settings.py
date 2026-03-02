@@ -46,7 +46,11 @@ TINY_MCE_KEY = os.environ.get("TINY_MCE_KEY")
 DEBUG = not IS_HEROKU_APP
 
 
-ALLOWED_HOSTS = [".herokuapp.com", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    ".herokuapp.com",
+    "127.0.0.1",
+    "localhost",
+]
 
 
 # Application definition
@@ -61,6 +65,9 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "cloudinary",
+    "view_breadcrumbs",
+    "django_filters",
     "core",
     "accounts",
     "catalogue",
@@ -149,6 +156,16 @@ LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
 ACCOUNT_SIGNUP_FIELDS = ["username", "email*", "email2*", "password1*", "password2*"]
 
+# Cloudinary settings
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": "df6l9qsox",
+    "API_KEY": os.environ.get("CLOUDINARY_API"),
+    "API_SECRET": os.environ.get("CLOUDINARY_SECRET"),
+}
+
+# This ensures uploaded files go to Cloudinary
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
