@@ -1,27 +1,74 @@
-/* core.css */
+/* @import 'theme.css'; */
+
+body {
+	background-color: var(--bg-main);
+	color: var(--txt-primary);
+	margin: 0;
+}
+
+body.bg-main-dark {
+	background-color: var(--bg-main);
+}
+
+h1,
+h2,
+h3,
+.label-mono {
+	text-transform: uppercase;
+	font-family: 'Courier New', Courier, monospace;
+	letter-spacing: -1px;
+	font-weight: 900;
+}
+
+h1 {
+	font-size: 3rem;
+	border-bottom: 4px solid var(--clr-accent);
+}
+
+.count {
+	font-size: 1rem;
+	color: var(--clr-accent);
+	vertical-align: middle;
+	margin-left: 10px;
+}
 
 .border-bottom-industrial {
-	border-bottom: 2px solid var(--border-hard) !important;
-	background-color: var(--bg-main) !important;
+	border-bottom: 2px solid var(--border-hard);
+	background-color: var(--bg-main);
+}
+
+.navbar.navbar-dark.border-bottom-industrial {
+	background-color: var(--bg-main);
+	border-bottom: 2px solid var(--border-hard);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+	color: var(--clr-accent);
 }
 
 .navbar-brand {
 	font-weight: 900;
 	text-transform: uppercase;
-	color: var(--txt-primary) !important;
+	color: var(--txt-primary);
 }
 
 .nav-link {
 	font-family: monospace;
 	font-size: 0.85rem;
 	letter-spacing: 1px;
-	color: var(--txt-muted) !important;
+	color: var(--txt-muted);
 	transition: color 0.2s;
 }
 
 .nav-link:hover,
 .nav-link.active {
-	color: var(--clr-accent) !important;
+	color: var(--clr-accent);
+}
+
+.breadcrumb-wrapper .breadcrumb-item a {
+	color: var(--txt-muted);
+	text-decoration: none;
 }
 
 .footer-industrial {

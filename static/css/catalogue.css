@@ -1,23 +1,155 @@
-/* catalogue.css */
-
 .manifest-wrapper {
 	display: grid;
 	grid-template-columns: 300px 1fr; /* Fixed sidebar, fluid grid */
 	min-height: calc(100vh - 70px); /* Subtract nav height */
 }
 
-/* 1. Sidebar Control Panel */
+/* Sidebar Control Panel */
+
 .manifest-sidebar {
-	background-color: var(--bg-surface);
-	border-right: 1px solid var(--border-hard);
+	/* background-color: var(--bg-surface); */
+	/* border-right: 1px solid var(--border-hard); */
+	border-style: 1px solid var(--border-hard);
 	padding: 2rem;
+	/* height: 100%; */
 	height: 100%;
+	min-height: 160px;
+	background-color: #000;
+	outline: none;
+	appearance: none;
+	-webkit-appearance: none;
 }
 
+.manifest-sidebar .manifest-form label {
+	display: block;
+	color: var(--clr-accent);
+	font-family: monospace;
+	font-size: 0.8rem;
+	margin-top: 1.5rem;
+}
+
+.manifest-sidebar .manifest-form input[type='text'],
+.manifest-sidebar select {
+	background: #000;
+	border: 1px solid var(--border-hard);
+	color: var(--txt-primary);
+	width: 100%;
+	padding: 10px;
+	border-radius: 0;
+}
+
+.custom-checkbox-list {
+	width: 100%;
+}
+
+.manifest-sidebar .manifest-form select[multiple] {
+	height: 150px;
+	min-height: 120px;
+	color: var(--txt-primary);
+}
+.manifest-sidebar .manifest-form select option {
+	padding: 8px 12px;
+	background-color: #000;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 0.85rem;
+	cursor: pointer;
+	color: var(--txt-primary);
+}
+
+/* .mainfest-sidebar .manifest-form select option:checked, */
+.manifest-sidebar .manifest-form select option:active {
+	background: linear-gradient(var(--clr-accent), var(--clr-accent));
+	color: #000;
+	background-color: var(--clr-accent) !important;
+}
+
+.manifest-sidebar .manifest-form select option:checked {
+	background-image: var(--clr-accent) !important;
+	background-color: var(--clr-accent) !important;
+	background: linear-gradient(var(--clr-accent), var(--clr-accent)) !important;
+}
+
+.manifest-sidebar select[multiple]:focus {
+	outline-color: var(--clr-accent);
+	outline-style: none;
+}
+
+button[type='submit'].btn-manifest-primary {
+	width: 100%;
+}
+
+button[type='submit'].btn-manifest-primary:active {
+	background-color: var(--clr-accent);
+	color: #000;
+	transform: translateY(1px);
+}
+
+/* Manifest select scroll bar */
+/* Chrome, Edge, Safari (webkit) */
+.manifest-sidebar select[multiple]::-webkit-scrollbar {
+	width: 6px;
+}
+
+.manifest-wrapper select[multiple]::-webkit-scrollbar-track {
+	background: #000;
+	border-left: 1px solid var(--border-hard);
+}
+
+.manifest-sidebar select[multiple]::-webkit-scrollbar-thumb {
+	background: var(--clr-accent);
+	border: 2px solid #000;
+	border-radius: 0;
+}
+
+.manifest-sidebar select[multiple]::-webkit-scrollbar-thumb:hover {
+	background: #fff;
+}
+
+/* Firefox (standard) */
+/* scrollbar-color: {thumb-colour} {track-colour} */
+.manifest-sidebar select[multiple] {
+	scrollbar-width: thin;
+	scrollbar-color: var(--clr-accent) #000;
+}
+
+/* Critical for preventing grid blowout */
 .manifest-main {
 	flex-grow: 1;
-	min-width: 0; /* Critical for preventing grid blowout */
+	min-width: 0;
 	background-color: var(--bg-main);
+	padding: 0 2rem 2rem 2rem;
+}
+
+.manifest-header {
+	padding-top: 2rem;
+	margin-bottom: 2rem;
+}
+
+.manifest-header h1 {
+	font-size: 2.5rem;
+	margin: 0;
+	line-height: 1;
+
+	border-bottom: 4px solid var(--clr-accent);
+	display: inline-block;
+}
+
+.manifest-header .stats-bar {
+	margin-top: 0.5rem;
+	color: var(--txt-muted);
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 0.8rem;
+	text-transform: uppercase;
+}
+
+.manifest-main .menifest-header h1 {
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: 900;
+	text-transform: uppercase;
+	border-bottom: 4px solid var(--clr-accent);
+	margin: 0 0 1rem 0;
+	padding-bottom: 5px;
 }
 
 .filter-label {
@@ -30,8 +162,10 @@
 	letter-spacing: 2px;
 }
 
-/* 2. The Prop Grid */
+/* The Prop Grid */
 .prop-grid {
+	border-top: 1px solid var(--border-hard);
+	margin-top: 2rem;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 	gap: 2rem;
@@ -39,7 +173,7 @@
 	/* align-content: start; */
 }
 
-/* 3. The "Crate" Card */
+/* The "Crate" Card */
 .prop-crate {
 	background: var(--bg-surface);
 	border: 1px solid var(--border-hard);
@@ -73,14 +207,20 @@
 	filter: grayscale(0%);
 }
 
-/* 4. Pricing & ID Badges */
+.crate-data {
+	padding: 1rem;
+	background: rgba(var(--surface-values), 0.8);
+}
+
+/* Pricing & ID Badges */
 .crate-meta {
 	display: flex;
 	justify-content: space-between;
 	padding: 1rem 1.5rem 0.5rem;
 	font-family: monospace;
-	font-size: 0.8rem;
-	color: var(--txt-muted);
+	font-size: 0.75rem;
+	color: var(--clr-accent);
+	margin-bottom: 5px;
 }
 
 .crate-title {
@@ -100,7 +240,7 @@
 	color: var(--clr-accent);
 }
 
-/* 5. Utility: The "Scanline" Overlay on Images */
+/* Utility: The "Scanline" Overlay on Images */
 .crate-visual::after {
 	content: '';
 	position: absolute;
@@ -120,4 +260,16 @@
 		100% 2px,
 		3px 100%;
 	pointer-events: none;
+}
+
+.product-name a {
+	color: var(--txt-primary);
+	text-decoration: none;
+	font-size: 1.1rem;
+	transition: 0.2s;
+}
+
+.product-name a:hover {
+	color: #fff;
+	text-shadow: 0 0 10px rgba(var(--accent-orange-values), 0.5);
 }

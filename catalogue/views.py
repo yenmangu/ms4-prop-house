@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import generic
-from view_breadcrumbs import ListBreadcrumbMixin
+from view_breadcrumbs import ListBreadcrumbMixin, DetailBreadcrumbMixin
 from .models import Product
 from .filters import ProductFilter
 
@@ -37,3 +37,7 @@ class ProductListView(
         # 4. Add filterset to context
         context["filter"] = self.filterset
         return context
+
+
+class ProductDetailView(DetailBreadcrumbMixin, generic.DetailView):
+    model = Product
