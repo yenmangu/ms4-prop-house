@@ -50,7 +50,7 @@
                 <span class="price-tag">£{{ product.price }} / DAY</span>
               </div>
               <h3 class="product-name">
-                <a href="{% url 'catalogue:product_detail' product.slug %}">{{ product.name|upper }}</a>
+                <a href="{% url 'catalogue:product_detail' slug=product.slug %}">{{ product.name|upper }}</a>
                 {% comment %} <a href="{% url 'product_detail' product.slug %}">{{ product.name|upper }}</a> {% endcomment %}
               </h3>
               <div class="category-pills">
