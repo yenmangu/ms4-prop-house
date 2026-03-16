@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "django_filters",
     "core",
     "accounts",
+    "basket",
     "catalogue",
     "commerce",
     "profiles",
