@@ -19,9 +19,10 @@
           <label for="id_categories">CATEGORY_TAGS</label>
           <div class="custom-checkbox-list">{{ filter.form.categories }}</div>
         </div>
-        <div class="action-zone">
-          <button type="submit" class="btn-manifest-primary">EXECUTE_SEARCH</button>
-          <a href="{% url 'catalogue:product_list' %}" class="btn-manifest-ghost">RESET_SYSTEM</a>
+        <div class="manifest-form__action-zone">
+          <button type="submit" class="btn btn--industrial btn--sidebar">EXECUTE_SEARCH</button>
+          <a href="{% url 'catalogue:product_list' %}"
+             class="btn btn--ghost btn--sidebar">RESET_SYSTEM</a>
         </div>
       </form>
     </aside>

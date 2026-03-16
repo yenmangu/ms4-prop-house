@@ -113,6 +113,13 @@ button[type='submit'].btn-manifest-primary:active {
 	scrollbar-color: var(--clr-accent) #000;
 }
 
+.manifest-form__action-zone {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	margin-top: 1rem;
+}
+
 /* Critical for preventing grid blowout */
 .manifest-main {
 	flex-grow: 1;

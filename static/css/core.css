@@ -104,9 +104,78 @@ footer {
 	font-size: 0.7rem;
 }
 
-/* Core Industrial Button */
+/* ---------- Core Industrial Button ---------- */
 
-.btn-industrial {
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: 900;
+	text-transform: uppercase;
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.1s ease;
+	border: 2px solid transparent;
+	border-radius: 0;
+	letter-spacing: 2px;
+}
+
+/* ----------------- Modifiers ---------------- */
+
+.btn--industrial {
+	background-color: #fff;
+	color: #000;
+	border-color: #fff;
+	box-shadow: 4px 4px 0px var(--clr-accent);
+}
+
+.btn--industrial:hover {
+	background-color: var(--clr-accent);
+	border-color: var(--clr-accent);
+	box-shadow: 0px 0px 0px transparent;
+	transform: translate(2px, 2px);
+}
+
+.btn--industrial:active {
+	background-color: #fff;
+	transform: translate(4px, 4px);
+}
+
+/* 'Ghost' Button */
+
+.btn--ghost {
+	background: transparent;
+	color: var(--txt-muted);
+	border: 1px solid var(--border-hard);
+}
+
+.btn--ghost:hover {
+	color: #fff;
+	border-color: #fff;
+}
+
+/* -------- Modifiers: Sizes / Contexts ------- */
+
+/* Standard size */
+.btn--large {
+	padding: 0.8rem 2rem;
+	font-size: 1rem;
+}
+
+/* Sidebar size */
+.btn--sidebar {
+	width: 100%;
+	padding: 0.5rem;
+	font-size: 0.8rem;
+	box-shadow: 2px 2px 0px var(--clr-accent);
+}
+
+.btn--sidebar:hover {
+	transform: translate(1px, 1px);
+}
+
+.btn--industrial {
 	/* Layout */
 	display: inline-flex;
 	align-items: center;
@@ -132,7 +201,7 @@ footer {
 	box-shadow: 4px 4px 0px var(--clr-accent); /* Safety Orange offset */
 }
 
-.btn-industrial:hover {
+.btn--industrial:hover {
 	background-color: var(--clr-accent);
 	border-color: var(--clr-accent);
 	color: #000;
@@ -140,7 +209,31 @@ footer {
 	transform: translate(2px, 2px); /* 'Pressed' feel */
 }
 
-.btn-industrial:active {
+.btn--industrial:active {
 	background-color: #fff;
 	transform: translate(4px, 4px);
+}
+
+.btn--industrial-ghost {
+	background: transparent;
+	color: var(--txt-muted);
+	border: 1px solid var(--border-hard);
+	padding: 0.5rem 1rem;
+	font-family: 'Courier New', monospace;
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	text-decoration: none;
+	transition: all 0.2s;
+}
+
+.btn--industrial-ghost:hover {
+	color: #fff;
+	border-color: #fff;
+}
+
+/* Modifier: Sidebar specific tweaks */
+.btn--sidebar {
+	width: 100%;
+	padding: 0.5rem;
+	font-size: 0.8rem;
 }
