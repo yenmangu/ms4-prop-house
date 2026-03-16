@@ -103,3 +103,44 @@ footer {
 	font-family: monospace;
 	font-size: 0.7rem;
 }
+
+/* Core Industrial Button */
+
+.btn-industrial {
+	/* Layout */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.8rem 2rem;
+
+	/* Typography */
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: 900;
+	font-size: 1rem;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	text-decoration: none;
+
+	/* Appearance */
+	background-color: #fff; /* High-contrast white */
+	color: #000;
+	border: 2px solid #fff;
+	cursor: pointer;
+	transition: all 0.1s ease;
+
+	/* Industrial 'Raised' Effect */
+	box-shadow: 4px 4px 0px var(--clr-accent); /* Safety Orange offset */
+}
+
+.btn-industrial:hover {
+	background-color: var(--clr-accent);
+	border-color: var(--clr-accent);
+	color: #000;
+	box-shadow: 0px 0px 0px transparent;
+	transform: translate(2px, 2px); /* 'Pressed' feel */
+}
+
+.btn-industrial:active {
+	background-color: #fff;
+	transform: translate(4px, 4px);
+}
