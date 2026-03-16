@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+{% endblock extra_css %}
+{% block content %}
+  <div class="detail-manifest-wrapper">
+    <nav class="breadcrumb-industrial">
+      <a href="{% url 'catalogue:product_list' %}">← BACK_TO_MANIFEST</a>
+    </nav>
+    <div class="prop-spec-container">
+      <section class="spec-visual-unit">
+        <div class="crate-visual detail-view">
+          <img src="{{ product.featured_image }}" alt="{{ product.name }}">
+          <div class="scanline-overlay"></div>
+        </div>
+      </section>
+      <section class="spec-data-unit">
+        <header class="spec-header">
+          <span class="id-tag">UNIT_ID: #{{ product.id|stringformat:"04d" }}</span>
+          <h1>{{ product.name|upper }}</h1>
+        </header>
+        <dl class="spec-ledger">
+          <div class="ledger-row">
+            <dt>CLASSIFICATION</dt>
+            <dd>
+              {{ product.categories.first.name|upper }}
+            </dd>
+          </div>
+          <div class="ledger-row">
+            <dt>RENTAL_RATE</dt>
+            <dd>
+              <span class="spec-value">£{{ product.price }}</span>
+              <span class="spec-unit">PER_24HR_CYCLE</span>
+            </dd>
+          </div>
+          <div class="ledger-row">
+            <dt>STOCK_STATUS</dt>
+            <dd>
+              <span class="spec-value stock-highlight">{{ product.stock_quantity }}</span>
+              <span class="spec-unit">UNITS_IN_STOCK</span>
+            </dd>
+          </div>
+          <div class="ledger-row">
+            <dt>TECHNICAL_NOTES</dt>
+            <dd class="description-text">
+              {{ product.description }}
+            </dd>
+          </div>
+        </dl>
+        {% comment %} <div class="spec-ledger">
+          <div class="ledger-row">
+            <span class="label">CLASSIFICATION</span>
+            <span class="value">
+              {% for cat in product.categories.all %}
+                {{ cat.name|upper }}
+                {% if not forloop.last %}//{% endif %}
+              {% endfor %}
+            </span>
+          </div>
+          <div class="ledger-row">
+            <span class="label">RENTAL_RATE</span>
+            <span class="value">£{{ product.price }} <small>PER_24HR_CYCLE</small></span>
+          </div>
+          <div class="ledger-row">
+            <span class="label">STOCK_STATUS</span>
+            <span class="value {% if product.stock_quantity > 0 %}text-success{% else %}text-danger{% endif %}">
+              {{ product.stock_quantity }} UNITS_IN_STOCK
+            </span>
+          </div>
+          <div class="ledger-row bio">
+            <span class="label">TECHNICAL_NOTES</span>
+            <p>{{ product.description }}</p>
+          </div>
+        </div> {% endcomment %}
+      </div>
+      <div class="action-zone">
+        <button class="btn-manifest-primary">INITIATE_BOOKING</button>
+      </div>
+    </section>
+  </div>
+{% endblock content %}

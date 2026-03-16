@@ -41,3 +41,14 @@ class ProductListView(
 
 class ProductDetailView(DetailBreadcrumbMixin, generic.DetailView):
     model = Product
+    template_name = "catalogue/catalogue_detail.html"
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+    context_object_name = "product"
+    breadcrumb_use_pk = False
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if not context:
+            print("context not found")
+        return context

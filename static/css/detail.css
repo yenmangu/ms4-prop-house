@@ -1,0 +1,93 @@
+.prop-spec-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 2rem;
+	margin-top: 1rem;
+	align-items: start;
+}
+
+.spec-ledger {
+	border-top: 1px solid var(--border-hard);
+	margin-top: 1rem;
+}
+
+.ledger-row {
+	border-bottom: 1px solid var(--border-hard);
+}
+
+.ledger-row .label {
+	display: block;
+	color: var(--clr-accent);
+	font-family: monospace;
+	font-size: 0.75rem;
+}
+
+.ledger-row .value {
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: bold;
+}
+
+/* Make the image big and industrial in detail view */
+.crate-visual.detail-view img {
+	width: 100%;
+	border: 1px solid var(--border-hard);
+	filter: grayscale(20%);
+}
+
+.spec-ledger {
+	margin-top: 2rem;
+	border-top: 1px solid var(--border-hard);
+}
+
+/* Ensure the ledger row acts as the primary container */
+.ledger-row {
+	display: grid;
+	grid-template-columns: 250px 1fr;
+	padding: 1.2rem 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+	align-items: baseline;
+}
+
+.ledger-row dt {
+	color: var(--clr-accent);
+	font-weight: 900;
+	font-size: 0.8rem;
+	flex-shrink: 0;
+	text-transform: uppercase;
+}
+
+/* The secondary grid within the dd for value/unit alignment */
+.ledger-row dd {
+	margin: 0;
+	display: grid;
+	grid-template-columns: 120px 1fr;
+	align-items: baseline;
+	gap: 8px; /* Space between value and unit */
+}
+
+.spec-value {
+	font-size: 1.5rem;
+	font-weight: 900;
+	color: var(--txt-primary);
+	font-family: 'Courier New', Courier, monospace;
+	line-height: 1;
+}
+
+.spec-unit {
+	font-size: 0.8rem;
+	color: var(--txt-muted);
+	font-weight: 400;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+/* Matching the green from your UI */
+.stock-highlight {
+	color: #4caf50;
+}
+
+.unit-text {
+	font-size: 0.75rem;
+	opacity: 0.8;
+	margin-left: 5px;
+}
