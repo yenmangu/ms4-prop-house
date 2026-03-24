@@ -14,4 +14,9 @@ urlpatterns = [
         ProductDetailView.as_view(),
         name=ProductDetailView.detail_view_name,
     ),
+    path(
+        "",
+        ProductListView.as_view(),
+        name=ProductListView.list_view_name,
+    ),
 ]
