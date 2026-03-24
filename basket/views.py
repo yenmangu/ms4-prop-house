@@ -14,6 +14,16 @@ class BasketSummaryView(BasketMixin, View):
     Handles displaying a summary of the current basket
     """
 
+    def get(self, request, *args, **kwargs):
+        basket = self.get_basket()
+        return render(
+            request,
+            "basket/basket_summary.html",
+            {
+                "basket": basket,
+            },
+        )
+
 
 class BasketAddView(BasketMixin, View):
     """
