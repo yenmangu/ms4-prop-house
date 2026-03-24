@@ -1,5 +1,5 @@
 [tool.djlint]
-ignore = "H020,H023,H006,H021,H031"
+ignore = "H020,H023,H006,H021,H031,D018"
 
 [tool.black]
 line-length = 88
