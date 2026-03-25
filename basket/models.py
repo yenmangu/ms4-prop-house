@@ -45,12 +45,9 @@ class Line(models.Model):
     Stores a single product and its quantity within a specific Basket.
     """
 
-    basket = models.ForeignKey(
-        Basket,
-        on_delete=models.CASCADE,
-    )
+    basket = models.ForeignKey(Basket, on_delete=models.CASCADE, related_name="lines")
     product = models.ForeignKey(
-        "catalogue.Product", on_delete=models.CASCADE, related_name="lines"
+        "catalogue.Product", on_delete=models.CASCADE, related_name="basket_lines"
     )
     quantity = models.PositiveIntegerField(default=1)
     price_at_addition = models.DecimalField(
@@ -68,7 +65,7 @@ class Line(models.Model):
         return f"{self.quantity} x {self.product.title}"
 
     @property
-    def line_references(self):
+    def line_reference(self):
         """
         Calculates the total price for this specific line item.
         """

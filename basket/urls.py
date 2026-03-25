@@ -11,7 +11,7 @@ urlpatterns = [
         name="summary",
     ),
     path(
-        "add/<int:pk>/",
+        "add/",
         views.BasketAddView.as_view(),
         name="add",
     ),

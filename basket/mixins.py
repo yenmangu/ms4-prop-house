@@ -1,4 +1,5 @@
 from .models import Basket
+from django.http import HttpRequest
 
 
 class BasketMixin:
@@ -13,9 +14,12 @@ class BasketMixin:
             try:
                 return Basket.objects.get(id=basket_id, status=Basket.Status.OPEN)
             except Basket.DoesNotExist:
-                return self.get_basket()
+                pass
+        return self._create_basket()
 
     def _create_basket(self):
         basket = Basket.objects.create()
-        self.request.session["basket_id"] = str(basket.id)
+        request: HttpRequest = self.request
+        request.session["basket_id"] = str(basket.id)
+        request.session.modified = True
         return basket
