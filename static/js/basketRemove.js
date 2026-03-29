@@ -11,27 +11,37 @@ const REMOVE_ROUTE = '/basket/remove/';
  * @param {string} productId
  */
 const handler = async (button, productId) => {
+	// Define row once
 	// Directly manipulate target button reference passed from loop
+
+	const row = /** @type {HTMLTableRowElement | null } */ (button.closest('tr'));
 
 	button.disabled = true;
 	button.classList.add('busy');
 
+	// Start animation object
+	/** @type {Promise<boolean|null|void>} */
+	let animationPromise = Promise.resolve(null);
+
 	try {
+		// Dynamically update product table
+		if (row) {
+			animationPromise = handleAnimation(row);
+		}
+
 		const data = await removeBasketLine(productId);
+
+		await animationPromise;
+
 		if (data.total_price === undefined || data.total_price === null) {
 			throw new Error(`BASKET_DATA_ERROR: missing total_price`);
 		}
 
 		updateTotalDisplay(data.total_price);
-
-		// Dynamically update product table
-
-		// find and remove row from DOM
-		const row = button.closest('tr');
-		if (row) {
-			await handleAnimation(row);
-		}
 	} catch (error) {
+		if (row) {
+			row.classList.remove('fade-out');
+		}
 		button.disabled = false;
 		button.classList.remove('busy');
 		const err = /** @type {Error} */ (error);
