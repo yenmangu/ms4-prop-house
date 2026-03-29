@@ -57,24 +57,25 @@ const handler = async (button, productId) => {
 const handleAnimation = async row => {
 	return new Promise((resolve, reject) => {
 		row.classList.add('fade-out');
-		row.addEventListener(
-			'transitionend',
-			() => {
-				row.remove();
-				const remainingRows = document.querySelectorAll(
-					'table.basket-table tbody tr'
-				);
-				if (remainingRows.length === 0) {
-					window.location.reload();
-				}
-				resolve(true);
-			},
-			{ once: true }
-		);
+
+		const cleanUp = () => {
+			row.remove();
+			const remainingRows = document.querySelectorAll('.basket-remove');
+			if (remainingRows.length === 0) {
+				window.location.reload();
+			}
+			resolve(true);
+		};
+		row.addEventListener('transitionend', cleanUp, { once: true });
 
 		// Safety timeout
 		// If css fails to load - prevent promise from hanging forever
-		setTimeout(() => resolve(false), 1000);
+		setTimeout(() => {
+			row.removeEventListener('transitionend', cleanUp);
+			if (document.body.contains(row)) {
+				cleanUp();
+			}
+		}, 1000);
 	});
 };
 
