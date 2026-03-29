@@ -61,3 +61,5 @@ const displayUserNotification = (errorString, context) => {
 
 	feedbackEl.dataset.timeoutId = timeoutId.toString();
 };
+
+export { phReportError };

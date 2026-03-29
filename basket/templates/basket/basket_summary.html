@@ -1,9 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
   <div class="container">
     <h1>Your Basket</h1>
     <hr>
-    {% if Basket %}
+    {% if basket and basket.lines.all %}
       <table class="table">
         <thead>
           <tr>
@@ -12,25 +13,42 @@
             <th>Actions</th>
           </tr>
         </thead>
-        {% for item in basket %}
+        {% for line in basket.lines.all %}
           <tbody>
             <tr>
-              <td>{{ item.product.title }}</td>
-              <td>{{ item.qty }}</td>
+              <td>{{ line.product.name }}</td>
+              <td>{{ line.quantity }}</td>
               <td>
-                <button class="btn--industrial btn--sidebar btn-ghost">Remove</button>
+                <button class="btn--industrial btn--sidebar btn-ghost basket-remove"
+                        data-product-id="{{ line.product.id }}">Remove</button>
               </td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
-      <div class="text-end">
-        <h3>Total: {{ basket.get_total_price }}</h3>
-        <a href="{% url 'checkout' %}" class="btn--industrial btn--sidebar"></a>
+      <div class="container basket-actions px-0">
+        <div class="row">
+          <div class="col-6 pe-auto">
+            <button class="btn--industrial btn--sidebar btn--ghost" id="basket_clear">Clear All</button>
+          </div>
+          <div class="col-6">
+            <div class="text-end">
+              <h3>
+                Total: <span class="basket-total-value">{{ basket.total_price }}</span>
+            </h3>
+          </div>
+        </div>
+        <div class="col my-4">
+          <a href="/" class="btn--industrial btn--sidebar">Checkout</a>
+        </div>
       </div>
-    {% else %}
-      <p>Your basket is currently empty</p>
-      <a href="{% url 'catalogue:product_list' %}">Find some props</a>
-    {% endif %}
-  </div>
+    </div>
+  {% else %}
+    <p>Your basket is currently empty</p>
+    <a href="{% url 'catalogue:product_list' %}">Find some props</a>
+  {% endif %}
+</div>
 {% endblock content %}
+{% block script %}
+  <script type="module" src="{% static 'js/basketRemove.js' %}"></script>
+{% endblock script %}

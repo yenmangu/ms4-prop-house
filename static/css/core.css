@@ -142,19 +142,6 @@ footer {
 	transform: translate(4px, 4px);
 }
 
-/* 'Ghost' Button */
-
-.btn--ghost {
-	background: transparent;
-	color: var(--txt-muted);
-	border: 1px solid var(--border-hard);
-}
-
-.btn--ghost:hover {
-	color: #fff;
-	border-color: #fff;
-}
-
 /* -------- Modifiers: Sizes / Contexts ------- */
 
 /* Standard size */
@@ -242,4 +229,62 @@ footer {
 	width: 100%;
 	padding: 0.2rem;
 	margin-top: 0.4rem;
+}
+
+/* 'Ghost' Button */
+
+.btn--ghost {
+	background: transparent;
+	color: var(--txt-muted);
+	border: 1px solid var(--border-hard);
+}
+
+.btn--ghost:hover {
+	color: #fff;
+	border-color: #fff;
+}
+
+/* ------------------- Toast ------------------ */
+
+.industrial-toast {
+	/* Position & Layering */
+	position: fixed;
+	bottom: 2rem;
+	right: 2rem;
+	z-index: var(--z-modal); /* Using your manifest z-index */
+
+	/* Colors from Theme */
+	background-color: var(--bg-surface);
+	color: var(--txt-primary);
+	border: 1px solid var(--error-red-values); /* The 'Warning' border */
+	border-left: 4px solid rgba(var(--error-red-values), 1); /* Thick hazard stripe */
+
+	/* Box Decoration */
+	padding: 1rem 1.5rem;
+	font-family: 'Courier New', monospace;
+	border-radius: var(--radius-sm);
+	box-shadow: 0 4px var(--glow-spread) rgba(0, 0, 0, 0.5);
+
+	/* Animation State (Hidden) */
+	opacity: 0;
+	pointer-events: none;
+	transform: translateX(100%);
+	transition:
+		opacity 0.3s ease,
+		transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+	/* The 'Grit' Texture */
+	background-image: var(--texture-scanline);
+}
+
+.industrial-toast.visible {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translateX(0);
+}
+
+/* Optional: Add a subtle glow for 'System Critical' errors */
+.industrial-toast[data-context='NETWORK'],
+.industrial-toast[data-context='SYSTEM'] {
+	box-shadow: 0 0 var(--glow-spread) rgba(var(--error-red-values), 0.2);
 }

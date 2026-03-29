@@ -1,4 +1,5 @@
 import { getCookie } from './getCookie.js';
+import { phReportError } from './reportError.js';
 
 const removeButtons = document.querySelectorAll('button.basket-remove');
 
@@ -31,8 +32,10 @@ const handler = async (button, productId) => {
 			await handleAnimation(row);
 		}
 	} catch (error) {
+		button.disabled = false;
+		button.classList.remove('busy');
 		const err = /** @type {Error} */ (error);
-		throw new Error(`SYSTEM_CRITICAL: ${err.message}`);
+		phReportError(err, 'NETWORK');
 	}
 };
 
