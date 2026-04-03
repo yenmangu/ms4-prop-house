@@ -39,6 +39,13 @@ class Basket(models.Model):
         """
         return sum(line.line_reference for line in self.lines.all())
 
+    @property
+    def total_items(self):
+        """
+        Return total quantity of all items in the basket
+        """
+        return sum(line.quantity for line in self.lines.all())
+
 
 class Line(models.Model):
     """
