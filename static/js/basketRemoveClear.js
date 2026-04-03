@@ -350,7 +350,13 @@ const _removeHandler = async (button, productId) => {
 		const dataPromise = _removeBasketLine(productId);
 
 		// Wait for data first (ensure server succeeds)
-		const data = await dataPromise;
+		const response = await dataPromise;
+
+		// Defensively destructure with defaults
+		const { total_items = 0, total_price = '0.00' } = response;
+
+		// Update global nav with destructured variables
+		_updateGlobalNav(total_items, total_price);
 
 		// Wait for animation to finish so row is ready to be removed
 		await animationPromise;
@@ -366,8 +372,8 @@ const _removeHandler = async (button, productId) => {
 		}
 
 		// Update total price display
-		if (data.total_price !== undefined && data.total_price !== null) {
-			_updateTotalDisplay(data.total_price);
+		if (total_price !== undefined && total_price !== null) {
+			_updateTotalDisplay(total_price);
 		}
 	} catch (error) {
 		if (row) {
@@ -423,6 +429,29 @@ const _removeBasketLine = async productId => {
 		throw new Error(errorBody.error || `BASKET_HTTP_ERROR: ${response.status}`);
 	}
 	return await response.json();
+};
+
+/**
+ * Synchronise the global navigation elements with new basket price
+ * @param {number} totalItems
+ * @param {string} totalPrice
+ */
+const _updateGlobalNav = (totalItems, totalPrice) => {
+	const countBadge = /** @type {HTMLElement} */ (
+		document.querySelector('#nav-basket-count')
+	);
+	const totalDisplay = /** @type {HTMLElement} */ (
+		document.querySelector('#nav-basket-total')
+	);
+
+	if (countBadge) {
+		countBadge.innerText = totalItems.toString();
+		countBadge.classList.toggle('hidden', totalItems === 0);
+	}
+
+	if (totalDisplay && totalPrice) {
+		totalDisplay.innerText = `£${totalPrice}`;
+	}
 };
 
 /**
