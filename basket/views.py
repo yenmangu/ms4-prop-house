@@ -88,3 +88,49 @@ class BasketAddView(BasketMixin, View):
                 },
                 status=400,
             )
+
+
+class BasketRemoveView(BasketMixin, View):
+
+    def post(self, request: HttpRequest, *args, **kwargs):
+        basket = self.get_basket()
+        data = json.loads(request.body)
+        product_id = data.get("product_id")
+
+        if product_id:
+            # We filter by both basket and productn to ensure
+            # users can only delete from THEIR own basket
+            line = get_object_or_404(Line, basket=basket, product_id=product_id)
+
+            line.delete()
+
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "message": "Unit de-registered from manifest",
+                    "total_price": basket.total_price,
+                }
+            )
+
+        return JsonResponse(
+            {
+                "error": "No unit ID provided",
+            },
+            status=400,
+        )
+
+
+class BasketClearView(BasketMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        basket = self.get_basket()
+
+        # High effeciency - delete all related lines
+        basket.lines.all().delete()
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "Basket purges. Manifest empty.",
+            },
+        )
