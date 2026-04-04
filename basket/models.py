@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
+from djmoney.models.fields import MoneyField
+from djmoney.money import Money
 import uuid
 from django.contrib.auth.models import User
 
@@ -36,8 +38,16 @@ class Basket(models.Model):
     def total_price(self):
         """
         Calculates the total price of all lines within the basket.
+        Returns a Money object for precise arithmetic.
         """
-        return sum(line.line_reference for line in self.lines.all())
+        # Start with zero money in correct currency
+        total = Money(0, "GBP")
+        for line in self.lines.all():
+            total += line.line_total
+        return total
+
+        # Deprecated in favour of above
+        # return sum(line.line_reference for line in self.lines.all())
 
     @property
     def total_items(self):
@@ -57,10 +67,17 @@ class Line(models.Model):
         "catalogue.Product", on_delete=models.CASCADE, related_name="basket_lines"
     )
     quantity = models.PositiveIntegerField(default=1)
-    price_at_addition = models.DecimalField(
-        max_digits=12,
-        decimal_places=2,
+
+    # New 'django-money' field
+    price_at_addition = MoneyField(
+        max_digits=12, decimal_places=2, default_currency="GBP"
     )
+
+    # Deprecated in favour of above
+    # price_at_addition = models.DecimalField(
+    #     max_digits=12,
+    #     decimal_places=2,
+    # )
 
     class Meta:
         unique_together = ("basket", "product")
@@ -74,6 +91,7 @@ class Line(models.Model):
     @property
     def line_reference(self):
         """
-        Calculates the total price for this specific line item.
+        Renamed from line_reference for clarity.
+        Calculates the price * quantity of this specific line item.
         """
         return self.price_at_addition * self.quantity

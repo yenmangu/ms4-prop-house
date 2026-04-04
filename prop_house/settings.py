@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "cloudinary",
     "view_breadcrumbs",
     "django_filters",
+    "djmoney",
     "core",
     "accounts",
     "basket",
