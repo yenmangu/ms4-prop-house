@@ -1,5 +1,6 @@
 import { getCookie } from './getCookie.js';
-import { phReportError } from './reportError.js';
+import { updateGlobalNav } from './globalUI.js';
+import { phNotify, phReportError } from './reportError.js';
 
 const SELECTORS = {
 	BASKET_TABLE: '.basket-table',
@@ -18,7 +19,10 @@ const HEADERS = {
 	'X-Requested-With': 'XMLHttpRequest'
 };
 
-const REMOVE_ROUTE = '/basket/remove/';
+const ROUTES = {
+	REMOVE: '/basket/remove/',
+	CLEAR: '/basket/clear/'
+};
 
 document.addEventListener('DOMContentLoaded', () => {
 	const basketTableRef = document.querySelector(SELECTORS.BASKET_TABLE);
@@ -353,10 +357,16 @@ const _removeHandler = async (button, productId) => {
 		const response = await dataPromise;
 
 		// Defensively destructure with defaults
-		const { total_items = 0, total_price = '0.00' } = response;
+		const {
+			total_items = 0,
+			total_price = '0.00',
+			message: serverMessage = 'Action Complete'
+		} = response;
 
 		// Update global nav with destructured variables
-		_updateGlobalNav(total_items, total_price);
+		updateGlobalNav(total_price, total_items);
+
+		phNotify(serverMessage || 'Item removed from basket', 'success');
 
 		// Wait for animation to finish so row is ready to be removed
 		await animationPromise;
@@ -413,12 +423,12 @@ const _removeBasketLine = async productId => {
 		throw new Error('BASKET_SECURITY_FAILURE: CSRF_TOKEN_NOT_FOUND');
 	}
 
-	const response = await fetch(REMOVE_ROUTE, {
+	const response = await fetch(ROUTES.REMOVE, {
 		method: 'POST',
 		headers: {
 			'Content-Type': HEADERS['Content-Type'],
-			'X-CSRFToken': csrfToken,
-			'X-Requested-With': HEADERS['X-Requested-With']
+			'X-CSRFToken': csrfToken
+			// 'X-Requested-With': HEADERS['X-Requested-With']
 		},
 		body: JSON.stringify({ product_id: productId })
 	});
@@ -429,29 +439,6 @@ const _removeBasketLine = async productId => {
 		throw new Error(errorBody.error || `BASKET_HTTP_ERROR: ${response.status}`);
 	}
 	return await response.json();
-};
-
-/**
- * Synchronise the global navigation elements with new basket price
- * @param {number} totalItems
- * @param {string} totalPrice
- */
-const _updateGlobalNav = (totalItems, totalPrice) => {
-	const countBadge = /** @type {HTMLElement} */ (
-		document.querySelector('#nav-basket-count')
-	);
-	const totalDisplay = /** @type {HTMLElement} */ (
-		document.querySelector('#nav-basket-total')
-	);
-
-	if (countBadge) {
-		countBadge.innerText = totalItems.toString();
-		countBadge.classList.toggle('hidden', totalItems === 0);
-	}
-
-	if (totalDisplay && totalPrice) {
-		totalDisplay.innerText = `£${totalPrice}`;
-	}
 };
 
 /**

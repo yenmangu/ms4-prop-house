@@ -62,4 +62,38 @@ const displayUserNotification = (errorString, context) => {
 	feedbackEl.dataset.timeoutId = timeoutId.toString();
 };
 
-export { phReportError };
+/** @type {number|undefined} */
+let toastTimeout;
+
+/**
+ *
+ * @param {string} message
+ * @param {'success'|'error'|'info'} type
+ */
+const phNotify = (message, type = 'success') => {
+	let feedbackEl = document.querySelector('#system-feedback');
+
+	if (!feedbackEl) {
+		feedbackEl = document.createElement('div');
+		feedbackEl.id = 'system-feedback';
+		document.body.appendChild(feedbackEl);
+	}
+
+	const feedbackHTMLElement = /** @type {HTMLElement} */ (feedbackEl);
+
+	feedbackHTMLElement.className = `industrual-toast toast-${type}`;
+	feedbackHTMLElement.innerText = message.toUpperCase();
+
+	feedbackHTMLElement.classList.add('visible');
+
+	if (toastTimeout) {
+		clearTimeout(toastTimeout);
+	}
+
+	// Using `window` to explicitly set return type of number
+	toastTimeout = window.setTimeout(() => {
+		feedbackHTMLElement.classList.remove('visible');
+	}, 4000);
+};
+
+export { phReportError, phNotify };
