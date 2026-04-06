@@ -66,6 +66,10 @@ h1 {
 	color: var(--txt-primary);
 }
 
+.navbar-collapse {
+	gap: 1rem;
+}
+
 .nav-link {
 	font-family: monospace;
 	font-size: 0.85rem;
@@ -77,6 +81,10 @@ h1 {
 .nav-link:hover,
 .nav-link.active {
 	color: var(--clr-accent);
+}
+
+.nav-basket-wrapper .basket-link {
+	color: var(--txt-muted);
 }
 
 .breadcrumb-wrapper.ph-breadcrumbs .breadcrumb-item a {
