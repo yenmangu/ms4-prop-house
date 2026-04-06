@@ -3,7 +3,7 @@
  * @param {number} totalItems
  * @param {string} totalPrice
  */
-const updateGlobalNav = (totalPrice, totalItems) => {
+const updateGlobalNav = (totalItems, totalPrice) => {
 	const countBadge = /** @type {HTMLElement} */ (
 		document.querySelector('#nav-basket-count')
 	);

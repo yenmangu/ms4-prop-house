@@ -1,5 +1,5 @@
 import { getCookie } from './getCookie.js';
-import { updateGlobalNav } from './globalUI.js';
+import { updateGlobalNav } from './globalNav.js';
 import { phNotify, phReportError } from './reportError.js';
 
 const SELECTORS = {
@@ -364,7 +364,7 @@ const _removeHandler = async (button, productId) => {
 		} = response;
 
 		// Update global nav with destructured variables
-		updateGlobalNav(total_price, total_items);
+		updateGlobalNav(total_items, total_price);
 
 		phNotify(serverMessage || 'Item removed from basket', 'success');
 

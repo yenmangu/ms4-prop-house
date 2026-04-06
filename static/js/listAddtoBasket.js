@@ -1,5 +1,6 @@
 import { getCookie } from './getCookie.js';
-import { updateGlobalNav } from './globalUI.js';
+import { updateGlobalNav } from './globalNav.js';
+import { phNotify, phReportError } from './reportError.js';
 
 const addButtons = document.querySelectorAll('button.add-to-basket');
 
@@ -21,7 +22,7 @@ const handler = async () => {
 					throw new Error('Product Id data attribute not present');
 				}
 
-				await addToBasket(productId);
+				await _addToBasket(productId);
 			});
 		}
 	}
@@ -31,7 +32,7 @@ const handler = async () => {
  * Sends the POST requests to the Django backend
  * @param {string} productId
  */
-const addToBasket = async productId => {
+const _addToBasket = async productId => {
 	const csrfToken = getCookie('csrftoken');
 
 	if (!csrfToken) {
@@ -46,20 +47,31 @@ const addToBasket = async productId => {
 			},
 			body: JSON.stringify({ product_id: productId })
 		});
-		console.log(response);
+
 		if (!response.ok) {
+			const errorBody = await response.json().catch(() => {});
 			throw new Error(
-				`Failed to add product ${productId} to basket. Status: ${response.status}`
+				errorBody?.error ||
+					`Failed to add product ${productId} to basket. Status: ${response.status}`
 			);
 		}
-		const data = await response.json();
-		console.log('DATA: ', data);
 
 		// Temp console confirmation
-		console.log(`Product: ${productId} added to basket!`);
+		// console.log(`Product: ${productId} added to basket!`);
+
+		const {
+			total_items = 0,
+			total_price = '0.00',
+			message: serverMessage = 'Item added to basket'
+		} = await response.json();
+
 		// Update UI logic
-		// Parse response
+		updateGlobalNav(total_items, total_price);
+		phNotify(serverMessage, 'success');
 	} catch (err) {
+		if (err instanceof Error) {
+			phReportError(err, 'NETWORK');
+		}
 		throw err;
 	}
 };
