@@ -443,7 +443,71 @@ The schema supports full CRUD across the core domain:
 - accounts (authentication, dashboard)
 - profiles (addresses, wishlist if implemented)
 - catalogue (products, categories)
-- commerce (basket, checkout, orders, subscription logic)
+- commerce (checkout, orders, subscription logic)
+- basket (basket and lines)
+
+### `core`
+
+### `accounts`
+
+### `profiles`
+
+### `catalogue`
+
+### `commerce`
+
+### `basket`
+
+#### Overview
+
+The `basket` app manages the temporary storage of products a user intends to purchase. It handles both authenticated users and anonymous guest sessions, acting as a bridge between the Catalogue and Commerce domains.
+
+#### Key Implementation Details
+
+- Identification: Uses `UUIDField` as primary key for `Basket` models to ensure session security and prevent ID enumeration.
+- State Management: Implements a `Status` TextChoices class to track the lifecycle of a basket (`OPEN`, `MERGED`, `SAVED`, `SUBMITTED`).
+- Data Persistence: The `Line` model captures the `price_at_addition`. This ensures that if a product's price changes in the Catalogue after being added, the customer's expected price is preserved until checkout.
+- Relationships:
+  - `Basket` belongs to a User (Optional).
+  - `Line` links a `Basket` to a `Product` from the `Catalogue` app.
+  - `unique_together` constraints on `Line` prevent duplicate entries for the same product in a single basket.
+
+#### Logic, Mixins & Properties
+
+To maintain modularity and avoid repetitive session lookups, the app utilizes a BasketMixin for all Class-Based Views (CBVs) that interact with user selections.
+
+- `BasketMixin.get_basket()`:
+  - Checks the `request.session` for an existing `basket_id`.
+  - Validates that the basket is still in an `OPEN` state.
+  - If no valid basket is found (e.g., a new guest or an expired session), it invokes `_create_basket()`.
+- `BasketMixin._create_basket()`:
+  - Instantiates a new `Basket` model.
+  - Securely stores the `UUID` as a string in the session to persist the guest's state.
+- User Merging Logic: (Planned) Handles the transition of an anonymous guest basket to a `User` account upon login, ensuring no items are lost during authentication.
+
+- `Line.line_reference`: A calculated property returning the subtotal for that specific line (Price $\times$ Quantity).
+- `Basket.total_price`: A calculated property that aggregates all `line_reference` totals for a grand total.
+
+---
+
+## API Specification
+
+### Basket Update Contract
+
+> [!NOTE]
+> `total_price` is returned as a **formatted string** (e.g., `"£145.00"`) rather than a raw number. This ensures that the **Server** remains the single source of truth for currency symbols, locale-specific formatting, and decimal precision. This strategy prevents client-side floating-point errors (which JavaScript is famously poor at handling) and ensures a consistent, region-agnostic UI experience regardless of the user's browser settings.
+
+### Scheme Definition
+
+| Field       | Type    | Description                                                                |
+| ----------- | ------- | -------------------------------------------------------------------------- |
+| status      | string  | The result of the operation: `success` or `error`.                         |
+| message     | string  | Human-readable feedback intended for UI Toast/Alert notifications.         |
+| total_items | number  | The total count of items (or lines) currently in the basket.               |
+| total_price | string  | The formatted total price, including currency symbol and 2 decimal places. |
+| is_empty    | boolean | A helper flag to trigger "Empty Basket" UI states or redirects.            |
+
+---
 
 ## Security & Best Practice
 
