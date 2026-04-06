@@ -89,7 +89,7 @@ class Line(models.Model):
         return f"{self.quantity} x {self.product.title}"
 
     @property
-    def line_reference(self):
+    def line_total(self):
         """
         Renamed from line_reference for clarity.
         Calculates the price * quantity of this specific line item.

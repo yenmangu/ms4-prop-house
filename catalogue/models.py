@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from djmoney.models.fields import MoneyField
 
 # Create your models here.
 
@@ -71,7 +72,11 @@ class Product(models.Model):
         related_name="products",
         through=CategoryProductJoin,
     )
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = MoneyField(
+        max_digits=12,
+        decimal_places=2,
+        default_currency="GBP",
+    )
     discount_eligible = models.BooleanField(default=False)
     stock_quantity = models.PositiveIntegerField(default=0)
     featured_image = models.URLField(blank=True, null=True)

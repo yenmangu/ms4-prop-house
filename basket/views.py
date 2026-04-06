@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.views import View
+from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpRequest, JsonResponse
 import json
 from catalogue.models import Product
 from .mixins import BasketMixin
 from .models import Line
+from .utils import get_basket_state
 
 
 # Create your views here.
@@ -38,8 +40,7 @@ class BasketAddView(BasketMixin, View):
 
         if not basket.id:
             basket.save()
-
-            request.session["basket_id"] = basket.id
+            request.session["basket_id"] = str(basket.id)
 
         try:
 
@@ -63,6 +64,7 @@ class BasketAddView(BasketMixin, View):
                 pk=product_id,
             )
 
+            # Debug message
             print(f"Linking Product {product.id} to Basket {basket.id}")
 
             line, created = Line.objects.get_or_create(
@@ -75,11 +77,22 @@ class BasketAddView(BasketMixin, View):
                 line.quantity += 1
                 line.save()
 
-            return JsonResponse(
-                {"status": "success", "message": f"Unit {product_id} secured in basket"}
-            )
+            message = f"Unit '{product.title}' secured in basket."
 
-            return redirect("basket:summary")
+            return JsonResponse(get_basket_state(basket, message))
+
+        # Deprecated in favour of above
+        # return JsonResponse(
+        #     {
+        #         "status": "success",
+        #         "message": f"Unit {product_id} secured in basket",
+        #         "total_items": basket.total_items,
+        #         "total_price": str(basket.total_price()),
+        #     }
+        # )
+
+        # Deprecated in favour of above
+        # return redirect("basket:summary")
 
         except json.JSONDecodeError:
             return JsonResponse(
@@ -87,6 +100,14 @@ class BasketAddView(BasketMixin, View):
                     "error": "Invalid JSON",
                 },
                 status=400,
+            )
+        except Exception as e:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Internal server error",
+                },
+                status=500,
             )
 
 
@@ -104,13 +125,7 @@ class BasketRemoveView(BasketMixin, View):
 
             line.delete()
 
-            return JsonResponse(
-                {
-                    "status": "success",
-                    "message": "Unit de-registered from manifest",
-                    "total_price": basket.total_price,
-                }
-            )
+            return JsonResponse(get_basket_state(basket, "Unit de-registered"))
 
         return JsonResponse(
             {
@@ -128,9 +143,4 @@ class BasketClearView(BasketMixin, View):
         # High effeciency - delete all related lines
         basket.lines.all().delete()
 
-        return JsonResponse(
-            {
-                "status": "success",
-                "message": "Basket purges. Manifest empty.",
-            },
-        )
+        return JsonResponse(get_basket_state(basket, "Basket cleared"))

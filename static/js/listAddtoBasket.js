@@ -5,6 +5,30 @@ const addButtons = document.querySelectorAll('button.add-to-basket');
 const postEndpoint = '/basket/add/';
 
 /**
+ * Synchronise global ui basket element with new basket data
+ * @param {number} totalItems
+ * @param {string} totalPrice
+ */
+const _updateGlobalNav = (totalPrice, totalItems) => {
+	const countBadge = /** @type {HTMLElement} */ (
+		document.querySelector('#nav-basket-count')
+	);
+
+	const totalDisplay = /** @type {HTMLElement} */ (
+		document.querySelector('#nav-basket-total')
+	);
+
+	if (countBadge) {
+		countBadge.innerText = totalItems.toString();
+		countBadge.classList.toggle('hidden', totalItems === 0);
+	}
+
+	if (totalDisplay && totalPrice) {
+		totalDisplay.innerText = `${totalPrice}`;
+	}
+};
+
+/**
  * Handles the attachment of click events to all 'Add' buttons
  */
 const handler = async () => {
@@ -51,6 +75,8 @@ const addToBasket = async productId => {
 			);
 		}
 		const data = await response.json();
+		console.log('DATA: ', data);
+
 		// Temp console confirmation
 		console.log(`Product: ${productId} added to basket!`);
 		// Update UI logic

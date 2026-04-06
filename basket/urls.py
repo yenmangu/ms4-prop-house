@@ -15,4 +15,14 @@ urlpatterns = [
         views.BasketAddView.as_view(),
         name="add",
     ),
+    path(
+        "remove/",
+        views.BasketRemoveView.as_view(),
+        name="remove",
+    ),
+    path(
+        "clear/",
+        views.BasketClearView.as_view(),
+        name="clear",
+    ),
 ]
