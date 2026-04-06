@@ -17,22 +17,23 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
     path(
-        "",
-        include(
-            "catalogue.urls",
-            namespace="catalogue",
-        ),
-    ),
-    path(
         "basket/",
         include(
             "basket.urls",
             namespace="basket",
+        ),
+    ),
+    path(
+        "",
+        include(
+            "catalogue.urls",
+            namespace="catalogue",
         ),
     ),
 ]
