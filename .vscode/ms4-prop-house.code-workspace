@@ -1,0 +1,48 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"postman.settings.dotenv-detection-notification-visibility": false,
+		"files.associations": {
+			"**/templates/**/*.html": "django-html"
+		},
+		"python-envs.pythonProjects": [
+			{
+				"envManager": "ms-python.python:venv",
+				"packageManager": "ms-python.python:pip",
+				"path": ""
+			}
+		],
+		"python.envFile": "${workspaceFolder}/.env",
+		"python.REPL.sendToNativeREPL": true,
+		"python.terminal.useEnvFile": true,
+
+		"python.testing.autoTestDiscoverOnSaveEnabled": true,
+		"python.testing.autoTestDiscoverOnSavePattern": "**/*.py",
+		"python.testing.cwd": "${workspaceFolder}",
+		"python.testing.pytestArgs": ["."],
+		"python.testing.pytestEnabled": false,
+		"python.testing.unittestEnabled": true,
+		"python.testing.unittestArgs": [
+			"-v",
+			"-s",
+			".",
+			"t",
+			".",
+			"-p",
+			"*test*.py"
+		],
+		"terminal.integrated.env.osx": {
+			"DJANGO_SETTINGS_MODULE": "prop_house.settings"
+		},
+		"terminal.integrated.env.linux": {
+			"DJANGO_SETTINGS_MODULE": "prop_house.settings"
+		},
+		"terminal.integrated.env.windows": {
+			"DJANGO_SETTINGS_MODULE": "prop_house.settings"
+		}
+	}
+}
