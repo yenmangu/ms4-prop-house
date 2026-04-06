@@ -23,10 +23,16 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path(
         "",
-        include("catalogue.urls"),
+        include(
+            "catalogue.urls",
+            namespace="catalogue",
+        ),
     ),
     path(
         "basket/",
-        include("basket.urls"),
+        include(
+            "basket.urls",
+            namespace="basket",
+        ),
     ),
 ]
