@@ -48,7 +48,7 @@
             <div class="crate-data">
               <div class="data-header">
                 <span class="id-tag">#{{ product.id|stringformat:"04d" }}</span>
-                <span class="price-tag">£{{ product.price }} / DAY</span>
+                <span class="price-tag">{{ product.price }} / DAY</span>
               </div>
               <h3 class="product-name">
                 <a href="{% url 'catalogue:product_detail' slug=product.slug %}">{{ product.name|upper }}</a>
