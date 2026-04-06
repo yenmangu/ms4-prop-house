@@ -50,6 +50,7 @@ ALLOWED_HOSTS = [
     ".herokuapp.com",
     "127.0.0.1",
     "localhost",
+    "testserver",
 ]
 
 
@@ -128,6 +129,16 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.codeinstitute-ide.net/",
     "https://*.herokuapp.com",
 ]
+
+# Session
+
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_SERIALIZER = "django.contrib.sessions.serializers.JSONSerializer"
+
+
+# Ensure the cookie is accessible to your local dev environment
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_HTTPONLY = True
 
 
 # Password validation

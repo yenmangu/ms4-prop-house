@@ -22,7 +22,7 @@ def format_price(amount: Any) -> str:
         # Using `or 0` to ensure `None` is not accidentally passed to the Money constructor.
         amount = Money(amount=amount or 0, currency="GBP")
 
-    return format_money(amount, locale="en-GB")
+    return format_money(amount, locale="en_GB")
 
 
 def get_basket_state(

@@ -33,6 +33,12 @@ class Basket(models.Model):
     )
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+    session_key = models.CharField(
+        max_length=40,
+        null=True,
+        blank=True,
+        db_index=True,
+    )
 
     @property
     def total_price(self):
