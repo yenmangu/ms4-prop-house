@@ -1,4 +1,5 @@
 asgiref==3.11.1
+babel==2.18.0
 black==26.1.0
 certifi==2026.1.4
 charset-normalizer==3.4.4
@@ -10,7 +11,9 @@ dj-database-url==3.1.1
 Django==6.0.2
 django-allauth==65.14.3
 django-cloudinary-storage==0.3.0
+django-extensions==4.1
 django-filter==25.2
+django-money==3.6.0
 django-view-breadcrumbs==2.5.1
 djlint==1.36.4
 EditorConfig==0.17.1
@@ -24,6 +27,7 @@ packaging==26.0
 pathspec==1.0.4
 platformdirs==4.9.2
 psycopg2==2.9.11
+py-moneyed==3.0
 pycodestyle==2.14.0
 pyflakes==3.4.0
 pytokens==0.4.1
@@ -33,4 +37,5 @@ requests==2.32.5
 six==1.17.0
 sqlparse==0.5.5
 tqdm==4.67.3
+typing_extensions==4.15.0
 urllib3==2.6.3
