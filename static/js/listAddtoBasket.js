@@ -59,6 +59,7 @@ const _addToBasket = async productId => {
 		// Temp console confirmation
 		// console.log(`Product: ${productId} added to basket!`);
 
+		/** @type {BasketState} */
 		const {
 			total_items = 0,
 			total_price = '0.00',
@@ -77,3 +78,5 @@ const _addToBasket = async productId => {
 };
 
 window.addEventListener('DOMContentLoaded', handler);
+
+export { _addToBasket };

@@ -354,6 +354,7 @@ const _removeHandler = async (button, productId) => {
 		const dataPromise = _removeBasketLine(productId);
 
 		// Wait for data first (ensure server succeeds)
+
 		const response = await dataPromise;
 
 		// Defensively destructure with defaults
@@ -414,7 +415,7 @@ const _updateTotalDisplay = totalPrice => {
  * Communicates with the Django backend to de-register a unit from the basket
  *
  * @param {string} productId
- * @returns {Promise<Record<string, any>>} JSON response containing new total
+ * @returns {Promise<BasketState>} JSON response containing new total
  */
 const _removeBasketLine = async productId => {
 	const csrfToken = getCookie('csrftoken');
