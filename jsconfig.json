@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"module": "esnext",
+		"target": "esnext",
+		"checkJs": true,
+		"allowJs": true,
+		// Needed for baseUrl
+		"ignoreDeprecations": "6.0",
+		"baseUrl": "./",
+		"paths": {
+			"*": ["static/js/*"]
+		}
+	},
+	"exclude": ["node_modules", "venv", ".venv", "static/admin"]
+}
