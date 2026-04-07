@@ -1,3 +1,4 @@
+import { basketUpdateReport } from './basketUpdate.js';
 import { getCookie } from './getCookie.js';
 import { updateGlobalNav } from './globalNav.js';
 import { phNotify, phReportError } from './reportError.js';
@@ -418,28 +419,38 @@ const _updateTotalDisplay = totalPrice => {
  * @returns {Promise<BasketState>} JSON response containing new total
  */
 const _removeBasketLine = async productId => {
-	const csrfToken = getCookie('csrftoken');
+	// TODO: Remove deprecated
+	// const csrfToken = getCookie('csrftoken');
 
-	if (!csrfToken) {
-		throw new Error('BASKET_SECURITY_FAILURE: CSRF_TOKEN_NOT_FOUND');
-	}
+	// if (!csrfToken) {
+	// 	throw new Error('BASKET_SECURITY_FAILURE: CSRF_TOKEN_NOT_FOUND');
+	// }
 
-	const response = await fetch(ROUTES.REMOVE, {
-		method: 'POST',
-		headers: {
-			'Content-Type': HEADERS['Content-Type'],
-			'X-CSRFToken': csrfToken
-			// 'X-Requested-With': HEADERS['X-Requested-With']
-		},
-		body: JSON.stringify({ product_id: productId })
+	// const response = await fetch(ROUTES.REMOVE, {
+	// 	method: 'POST',
+	// 	headers: {
+	// 		'Content-Type': HEADERS['Content-Type'],
+	// 		'X-CSRFToken': csrfToken
+	// 		// 'X-Requested-With': HEADERS['X-Requested-With']
+	// 	},
+	// 	body: JSON.stringify({ product_id: productId })
+	// });
+
+	// if (!response.ok) {
+	// 	// Attempt to parse server error message
+	// 	const errorBody = await response.json().catch(() => {});
+	// 	throw new Error(errorBody.error || `BASKET_HTTP_ERROR: ${response.status}`);
+	// }
+	// return await response.json();
+
+	// New consuming basketUpdateReport utility.
+	// Pass intent directly to basketUpdateReport.
+	// Automatically re wraps into Promise<BasketState>.
+
+	return await basketUpdateReport({
+		product_id: productId,
+		action: 'remove'
 	});
-
-	if (!response.ok) {
-		// Attempt to parse server error message
-		const errorBody = await response.json().catch(() => {});
-		throw new Error(errorBody.error || `BASKET_HTTP_ERROR: ${response.status}`);
-	}
-	return await response.json();
 };
 
 /**
