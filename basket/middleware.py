@@ -67,7 +67,7 @@ class BasketMiddleware:
         return Basket(session_key=request.session.session_key)
 
     # Deprecated in favour of above
-
+    # TODO: Remove deprecated
     # def get_basket(self, request: HttpRequest) -> Basket:
     #     basket_id = request.session.get("basket_id")
 
