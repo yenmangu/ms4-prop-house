@@ -28,30 +28,70 @@ class BasketMiddleware:
 
         return response
 
-    def get_basket(self, request: HttpRequest) -> Basket:
+    # New get_basket logic
+    def get_basket(self, request: HttpRequest):
+        """
+        Logic to retrieve or associate a basket.
+        Note: New method will avoid `create()` to keep it 'lazy'
+        """
+
+        if request.user.is_authenticated:
+            basket, created = Basket.objects.get_or_create(
+                user=request.user, status=Basket.Status.OPEN
+            )
+            return basket
+
         basket_id = request.session.get("basket_id")
-
         if basket_id:
-            try:
-                return Basket.objects.get(
-                    id=basket_id,
-                    status=Basket.Status.OPEN,
-                )
-            except (Basket.DoesNotExist, ValueError):
-                pass
+            basket = Basket.objects.filter(
+                id=basket_id, status=Basket.Status.OPEN
+            ).first()
 
-        orphan_basket = Basket.objects.filter(
-            session_key=request.session.session_key,
-            status=Basket.Status.OPEN,
-        ).last()
+            if basket:
+                return basket
 
-        if orphan_basket:
-            request.session["basket_id"] = str(orphan_basket.id)
-            return orphan_basket
+        # user__isnull - check for isnull property on `user` field
+        if request.session.session_key:
+            orphan = Basket.objects.filter(
+                session_key=request.session.session_key,
+                status=Basket.Status.OPEN,
+                user__isnull=True,
+            ).first()
+            if orphan:
+                request.session["basket_id"] = str(orphan.id)
+                return orphan
 
-        basket = Basket.objects.create(
-            session_key=request.session.session_key,
-        )
-        request.session["basket_id"] = str(basket.id)
+        # Return unsaved instance (ghost basket)
+        # Allows templates to call total_items without errors
+        # Does not save row to DB until item is added
+        return Basket(session_key=request.session.session_key)
 
-        return basket
+    # Deprecated in favour of above
+
+    # def get_basket(self, request: HttpRequest) -> Basket:
+    #     basket_id = request.session.get("basket_id")
+
+    #     if basket_id:
+    #         try:
+    #             return Basket.objects.get(
+    #                 id=basket_id,
+    #                 status=Basket.Status.OPEN,
+    #             )
+    #         except (Basket.DoesNotExist, ValueError):
+    #             pass
+
+    #     orphan_basket = Basket.objects.filter(
+    #         session_key=request.session.session_key,
+    #         status=Basket.Status.OPEN,
+    #     ).last()
+
+    #     if orphan_basket:
+    #         request.session["basket_id"] = str(orphan_basket.id)
+    #         return orphan_basket
+
+    #     basket = Basket.objects.create(
+    #         session_key=request.session.session_key,
+    #     )
+    #     request.session["basket_id"] = str(basket.id)
+
+    #     return basket
