@@ -1,0 +1,26 @@
+{
+  "name": "ms4-prop-house",
+  "version": "1.0.0",
+  "description": "- **Live site:** (To be added upon deployment) - **Repository:** (GitHub repository link) - **Documentation:** (GitHub README / Pages link if applicable)",
+  "main": "index.js",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yenmangu/ms4-prop-house.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/yenmangu/ms4-prop-house/issues"
+  },
+  "homepage": "https://github.com/yenmangu/ms4-prop-house#readme"
+}
