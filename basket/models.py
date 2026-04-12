@@ -4,6 +4,12 @@ from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 import uuid
 from django.contrib.auth.models import User
+from catalogue.models import Product
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from django.db.models.manager import RelatedManager
 
 
 # Create your models here.
@@ -17,6 +23,11 @@ class Basket(models.Model):
         MERGED = "me", "Merged"
         SAVED = "sa", "Saved"
         SUBMITTED = "su", "Submitted"
+
+    class Action(models.TextChoices):
+        ADD = "add"
+        REMOVE = "remove"
+        CLEAR = "clear"
 
     id = models.UUIDField(
         primary_key=True,
@@ -39,6 +50,87 @@ class Basket(models.Model):
         blank=True,
         db_index=True,
     )
+
+    # Add class level type checking for IDE auto completion
+    if TYPE_CHECKING:
+        lines: RelatedManager["Line"]
+
+    def update(self, product_id, action_type=Action.ADD, quantity=1):
+        """
+        Public API for modifying basket. Uses private _add, _remove, _clear
+        methods for lower level DB function.
+        """
+
+        if action_type == self.Action.ADD:
+            return self._add(product_id=product_id, quantity=quantity)
+        elif action_type == self.Action.REMOVE:
+            return self._remove(product_id=product_id)
+        elif action_type == self.Action.CLEAR:
+            return self._clear()
+        else:
+            raise ValueError(f"Invalid update action: {action_type}")
+
+    def _add(self, product_id, quantity=1):
+        """
+        Internal handler to add a product to the basket or increment quantity.
+
+        Args:
+            product_id (uuid/int): The primary key of the Product to add.
+            quantity (int): The amount to add. Defaults to 1.
+
+        Returns:
+            Line: The created or updated Line instance, or None if quantity < 1.
+
+        Side Effects:
+            - Performs a DB update_or_create on the Line model.
+            - Updates price_at_addition based on current Product price.
+            - Saves the Basket instance to update the updated_on timestamp.
+        """
+        if int(quantity) < 1:
+            return None
+
+        product = Product.objects.get(id=product_id)
+
+        line, created = self.lines.update_or_create(
+            product=product,
+            defaults={"price_at_addition": product.price},
+        )
+        line.quantity = (
+            (line.quantity + int(quantity)) if not created else int(quantity)
+        )
+
+        line.save()
+        self.save()
+        return line
+
+    def _remove(self, product_id):
+        """
+        Internal handler to completely remove a product line from the basket.
+
+        Args:
+            product_id (uuid/int): The primary key of the Product to remove.
+
+        Returns:
+            tuple: (int, dict) The number of items deleted and a dictionary
+                   with the number of deletions per object type.
+
+        Side Effects:
+            - Saves the Basket instance to update the updated_on timestamp.
+        """
+        result = self.lines.filter(product_id=product_id).delete()
+        self.save()
+        return result
+
+    def _clear(self):
+        """
+        Internal handler to remove all lines from the basket.
+
+        Side Effects:
+            - Deletes all related Line objects.
+            - Saves the Basket instance to update the updated_on timestamp.
+        """
+        self.lines.all().delete()
+        self.save()
 
     @property
     def total_price(self):

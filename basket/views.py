@@ -157,3 +157,38 @@ class BasketClearView(BasketMixin, View):
         basket.lines.all().delete()
 
         return JsonResponse(get_basket_state(basket, "Basket cleared"))
+
+
+class BasketUpdateView(BasketMixin, View):
+
+    def post(self, request: HttpRequest, *args, **kwargs):
+        message = "Basket updated successfullty"
+        status = "success"
+
+        try:
+            data = json.loads(request.body)
+            product_id = data.get("product_id")
+            action = data.get("action")
+            quantity = data.get("quantity", 1)
+
+            basket = self.get_basket()
+
+            # Call the update
+            basket.update(product_id=product_id, action_type=action, quantity=quantity)
+
+            return JsonResponse(
+                get_basket_state(
+                    basket,
+                    message=message,
+                    status=status,
+                )
+            )
+        except Exception as e:
+            return JsonResponse(
+                get_basket_state(
+                    self.get_basket(),
+                    str(e),
+                    "error",
+                ),
+                status=400,
+            )

@@ -25,4 +25,7 @@ urlpatterns = [
         views.BasketClearView.as_view(),
         name="clear",
     ),
+    path(
+        "update/",
+    ),
 ]
