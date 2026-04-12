@@ -27,5 +27,7 @@ urlpatterns = [
     ),
     path(
         "update/",
+        views.BasketUpdateView.as_view(),
+        name="update",
     ),
 ]
