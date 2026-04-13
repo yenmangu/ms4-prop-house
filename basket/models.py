@@ -159,16 +159,12 @@ class Basket(models.Model):
             # Use F here to remove any race condition
             # i.e.: user adds to basket twice rapidly
             line.quantity = models.F("quantity") + int(quantity)
-        line.quantity = (
-            (line.quantity + int(quantity)) if not created else int(quantity)
-        )
 
         line.save()
 
         # Because `F() `is used, Line object doesnt have new value yet. # Must manually call `refresh_from_db()`:
         line.refresh_from_db()
         self.save()
-
         return line
 
     def _remove(self, product_id):
