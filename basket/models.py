@@ -1,9 +1,10 @@
-from django.db import models
+from django.db import models, transaction
 from django.utils.text import slugify
+from django.contrib.auth.models import User
+from django.http import HttpRequest
+import uuid
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
-import uuid
-from django.contrib.auth.models import User
 from catalogue.models import Product
 
 from typing import TYPE_CHECKING
@@ -54,6 +55,62 @@ class Basket(models.Model):
     # Add class level type checking for IDE auto completion
     if TYPE_CHECKING:
         lines: RelatedManager["Line"]
+
+    # Allows access of method if Basket not instantiated in DB yet
+    @classmethod
+    def handle_login_merge(cls, request: HttpRequest, user):
+        """
+        Refactored logic to find/merge baskets on login OR email confirmation.
+        """
+
+        guest_basket_id = request.session.get("basket_id")
+        if not guest_basket_id:
+            return
+        try:
+
+            guest_basket = cls.objects.get(
+                id=guest_basket_id,
+                user__isnull=True,
+            )
+
+            user_basket = (
+                cls.objects.filter(
+                    user=user,
+                    status=cls.Status.OPEN,
+                )
+                .exclude(id=guest_basket_id)
+                .first()
+            )
+
+            if user_basket:
+                guest_basket.merge_into(user_basket)
+                active_basket = user_basket
+            else:
+                guest_basket.user = user
+                guest_basket.save()
+                active_basket = guest_basket
+
+            request.session["basket_id"] = str(active_basket.id)
+
+        except cls.DoesNotExist:
+            pass
+
+    def merge_into(self, target_basket: Basket):
+        """
+        Merge all lines from current basket to target basket.
+        Each 'basket' instance is a reference to the Basket object.
+        """
+
+        if self.id == target_basket.id or self.is_empty:
+            return target_basket
+
+        # If one line fails, all fail
+        with transaction.atomic():
+            for line in self.lines.all():
+                target_basket.update(product_id=line.product.id, quantity=line.quantity)
+            self.status = self.Status.MERGED
+            self.save()
+        return target_basket
 
     def update(self, product_id, action_type=Action.ADD, quantity=1):
         """
@@ -164,6 +221,10 @@ class Basket(models.Model):
         Return total quantity of all items in the basket
         """
         return sum(line.quantity for line in self.lines.all())
+
+    @property
+    def is_empty(self):
+        return not self.lines.exists()
 
 
 class Line(models.Model):
