@@ -4,7 +4,8 @@
   <link rel="stylesheet" href="{% static 'css/catalogue.css' %}">
 {% endblock extra_css %}
 {% block content %}
-  <div class="manifest-wrapper">
+  <div class="manifest-wrapper"
+       data-basket-update-url="{% url 'basket:update' %}">
     <aside class="manifest-sidebar">
       <div class="sidebar-header">
         <span class="status-dot"></span>

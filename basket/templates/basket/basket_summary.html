@@ -4,7 +4,8 @@
   <link rel="stylesheet" href="{% static 'css/basket.css' %}">
 {% endblock extra_css %}
 {% block content %}
-  <div class="container">
+  <div class="container manifest-wrapper"
+       data-basket-update-url="{% url 'basket:update' %}">
     <h1>Your Basket</h1>
     <hr>
     {% if basket and basket.lines.all %}
@@ -33,7 +34,9 @@
       <div class="container basket-actions px-0">
         <div class="row">
           <div class="col-6 pe-auto">
-            <button class="btn--industrial btn--sidebar btn--ghost" id="basket_clear">Clear All</button>
+            <button class="btn--industrial btn--sidebar btn--ghost"
+                    id="basket_clear"
+                    data-endpoint="clear">Clear All</button>
           </div>
           <div class="col-6">
             <div class="text-end">
