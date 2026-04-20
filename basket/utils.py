@@ -1,6 +1,6 @@
 from django.conf import settings
 from decimal import Decimal
-from typing import Any, Dict, TYPE_CHECKING
+from typing import Any, Dict, Optional, TYPE_CHECKING
 from moneyed import Money
 from moneyed.l10n import format_money
 from django.db.models import Model
@@ -26,7 +26,9 @@ def format_price(amount: Any) -> str:
 
 
 def get_basket_state(
-    basket: "Basket", message: str, status: str = "success"
+    basket: Optional["Basket"],
+    message: str,
+    status: str = "success",
 ) -> Dict[str, Any]:
     """
     Single source of truth for the API contract.
@@ -35,14 +37,20 @@ def get_basket_state(
     - Even though `TYPE_CHECKING` enabled, keep `"Basket"` as a string literal to avoid a `NameError` at runtime.
     """
 
-    # Ensure we have a valid total (handle empty basket case)
-    total = basket.total_price if basket else Money(0, currency="GBP")
-    items = basket.total_items if basket else 0
+    if basket:
+        items = basket.total_items
+        total = basket.total_price
+        is_empty = -basket.is_empty
+
+    else:
+        items = 0
+        total = Money(0, currency="GBP")
+        is_empty = True
 
     return {
         "status": status,
         "message": message,
         "total_items": int(items),
         "total_price": format_price(total),
-        "is_empty": bool(items == 0),
+        "is_empty": is_empty,
     }
