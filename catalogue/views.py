@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views import generic
 from view_breadcrumbs import ListBreadcrumbMixin, DetailBreadcrumbMixin
 from .models import Product
@@ -6,6 +8,7 @@ from .filters import ProductFilter
 
 
 # Create your views here.
+@method_decorator(ensure_csrf_cookie, name="dispatch")
 class ProductListView(
     ListBreadcrumbMixin,
     generic.ListView,
