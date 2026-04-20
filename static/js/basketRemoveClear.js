@@ -1,4 +1,5 @@
 import { basketUpdateReport } from './basketUpdate.js';
+import { createBasketUpdatePayload } from './apiConfig.js';
 import { getCookie } from './getCookie.js';
 import { updateGlobalNav } from './globalNav.js';
 import { phNotify, phReportError } from './reportError.js';
@@ -13,17 +14,6 @@ const SELECTORS = {
 const NODE_BUTTON_ERROR = 'Node is not an HTMLButtonElement or is null';
 
 const MISSING_ID_ERROR = 'Missing data-product-id attribute';
-
-const HEADERS = {
-	'Content-Type': 'application/json',
-	'X-CSRFToken': getCookie('csrftoken'),
-	'X-Requested-With': 'XMLHttpRequest'
-};
-
-const ROUTES = {
-	REMOVE: '/basket/remove/',
-	CLEAR: '/basket/clear/'
-};
 
 document.addEventListener('DOMContentLoaded', () => {
 	const basketTableRef = document.querySelector(SELECTORS.BASKET_TABLE);
@@ -259,78 +249,34 @@ const _performAnimationTransition = (element, className = 'fade-out') => {
  * @param {Event} event
  */
 const _clearAllHandler = async event => {
-	//
 	const button = /** @type {HTMLButtonElement} */ (event.currentTarget);
-	const endpoint = button.dataset.endpoint;
-	const tbody = /** @type {HTMLElement} */ (
-		document.querySelector('.basket-table tbody')
-	);
 
-	if (!endpoint) {
-		phReportError(
-			new Error(
-				'[DOM_ERROR]: data-endpoint attribute not set on clear all button'
-			),
-			'SYSTEM'
-		);
+	console.log('CLEAR ALL CLICKED');
+
+	const tbody = document.querySelector('.basket-table tbody');
+
+	if (!(tbody instanceof HTMLElement)) {
+		phReportError(new Error('[DOM_ERROR]: tbody not found'), 'SYSTEM');
 		return;
 	}
 
-	if (!tbody || tbody == null) {
-		phReportError(
-			new Error('[DOM_ERROR]: tbody not found in DOM. Reporting error.'),
-			'SYSTEM'
-		);
-		return;
-	}
+	button.disabled = true;
+	button.classList.add('busy');
 
 	try {
-		const animation = _performAnimationTransition(tbody, 'manifest-purge');
+		const animationPromise = _performAnimationTransition(tbody, 'basket-clear');
 
-		const success = await _clearAllBasket(endpoint);
+		const payload = createBasketUpdatePayload('clear');
+		const data = await basketUpdateReport(payload);
 
-		if (success) {
-			await animation;
-		}
+		await animationPromise;
 
+		updateGlobalNav(data.total_items, data.total_price);
+		phNotify(data.message || 'BASKET_CLEARED', 'success');
+
+		// Hard refresh since whole table is now gone
 		window.location.reload();
-	} catch (error) {
-		tbody.classList.remove('basket-purge');
-		button.disabled = false;
-		button.classList.remove('busy');
-		const err = /** @type {Error} */ (error);
-		phReportError(err, 'NETWORK');
-	}
-};
-
-/**
- *
- * @param {string} endpoint
- * @returns {Promise<boolean>}
- */
-const _clearAllBasket = async endpoint => {
-	const csrfToken = getCookie('csrftoken');
-	if (!csrfToken) {
-		phReportError(
-			new Error('BASKET_SECURITY_FAILURE: CSRF_TOKEN_NOT_FOUND'),
-			'NETWORK'
-		);
-		return false;
-	}
-
-	const response = await fetch(endpoint, {
-		method: 'POST',
-		headers: {
-			'X-CSRFToken': csrfToken,
-			'Content-Type': HEADERS['Content-Type']
-		}
-	});
-
-	if (!response.ok) {
-		throw new Error('CLEAR_FAILED: Server rejected basket clear request');
-	}
-
-	return true;
+	} catch (err) {}
 };
 
 /**
@@ -419,40 +365,9 @@ const _updateTotalDisplay = totalPrice => {
  * @returns {Promise<BasketState>} JSON response containing new total
  */
 const _removeBasketLine = async productId => {
-	// TODO: Remove deprecated
-	// const csrfToken = getCookie('csrftoken');
-
-	// if (!csrfToken) {
-	// 	throw new Error('BASKET_SECURITY_FAILURE: CSRF_TOKEN_NOT_FOUND');
-	// }
-
-	// const response = await fetch(ROUTES.REMOVE, {
-	// 	method: 'POST',
-	// 	headers: {
-	// 		'Content-Type': HEADERS['Content-Type'],
-	// 		'X-CSRFToken': csrfToken
-	// 		// 'X-Requested-With': HEADERS['X-Requested-With']
-	// 	},
-	// 	body: JSON.stringify({ product_id: productId })
-	// });
-
-	// if (!response.ok) {
-	// 	// Attempt to parse server error message
-	// 	const errorBody = await response.json().catch(() => {});
-	// 	throw new Error(errorBody.error || `BASKET_HTTP_ERROR: ${response.status}`);
-	// }
-	// return await response.json();
-
-	// New consuming basketUpdateReport utility.
-	// Pass intent directly to basketUpdateReport.
-	// Automatically re wraps into Promise<BasketState>.
-
-	return await basketUpdateReport({
-		product_id: productId,
-		action: 'remove'
-	});
+	const payload = createBasketUpdatePayload('remove');
+	return await basketUpdateReport(payload);
 };
-
 /**
  *
  * @param {Record<string,any>[]} validationErrors

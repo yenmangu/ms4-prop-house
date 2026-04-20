@@ -13,8 +13,13 @@
 
 /**
  * @typedef {Object} BasketUpdateReport
+ * @property {AllowedAction} action
+ * @property {string} endpoint
  * @property {string} [product_id] - Optional for 'clear' action
- * @property {'add'|'remove'|'clear'} action
  * @property {number} [quantity=1]
- * @property {string} [endpoint]
+ */
+
+/**
+ * @typedef {'add'|'remove'|'clear'} AllowedAction
+ *
  */

@@ -7,7 +7,7 @@ from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 from catalogue.models import Product
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from django.db.models.manager import RelatedManager
@@ -58,22 +58,28 @@ class Basket(models.Model):
 
     # Allows access of method if Basket not instantiated in DB yet
     @classmethod
-    def handle_login_merge(cls, request: HttpRequest, user):
+    def handle_login_merge(cls, request: HttpRequest, user: User) -> None:
         """
         Refactored logic to find/merge baskets on login OR email confirmation.
         """
 
-        guest_basket_id = request.session.get("basket_id")
+        guest_basket_id: Optional[str] = request.session.get("basket_id")
+
+        print(f"DEBUG: Signal received. Session Basket ID: {guest_basket_id}")
+
         if not guest_basket_id:
+            print("DEBUG: No basket ID found in session. Merging aborted.")
             return
         try:
 
-            guest_basket = cls.objects.get(
+            guest_basket: Basket = cls.objects.get(
                 id=guest_basket_id,
                 user__isnull=True,
             )
 
-            user_basket = (
+            print(f"DEBUG: Found Guest Basket {guest_basket.id} in DB.")
+
+            user_basket: Optional[Basket] = (
                 cls.objects.filter(
                     user=user,
                     status=cls.Status.OPEN,
@@ -81,6 +87,8 @@ class Basket(models.Model):
                 .exclude(id=guest_basket_id)
                 .first()
             )
+
+            active_basket: Basket
 
             if user_basket:
                 guest_basket.merge_into(user_basket)
@@ -90,9 +98,18 @@ class Basket(models.Model):
                 guest_basket.save()
                 active_basket = guest_basket
 
+            # Ensure UUID is cast to string for session compatibility
+
             request.session["basket_id"] = str(active_basket.id)
 
+            print(
+                f"DEBUG: Merge successful. Active Basket: {request.session['basket_id']}"
+            )
+
         except cls.DoesNotExist:
+            # If the guest basket ID in session doesn't exist in DB,
+            # do nothing and let the next request create a fresh one.
+            print(f"DEBUG: Basket {guest_basket_id} exists in session but NOT in DB.")
             pass
 
     def merge_into(self, target_basket: Basket):
