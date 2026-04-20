@@ -173,6 +173,9 @@ class BasketUpdateView(BasketMixin, View):
 
             basket = self.get_basket()
 
+            request.session["basket_id"] = str(basket.id)
+            request.session.modified = True
+
             # Call the update
             basket.update(product_id=product_id, action_type=action, quantity=quantity)
 
@@ -186,9 +189,9 @@ class BasketUpdateView(BasketMixin, View):
         except Exception as e:
             return JsonResponse(
                 get_basket_state(
-                    self.get_basket(),
-                    str(e),
-                    "error",
+                    basket=None,
+                    message=f"Update failed: {str(e)}",
+                    status="error",
                 ),
                 status=400,
             )
