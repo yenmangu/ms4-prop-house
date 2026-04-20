@@ -22,3 +22,6 @@ products/fixtures
 rubric.*
 .DS_*
 *_context.md
+/static/js/tests/*.js
+*.log
+basketAction.js
