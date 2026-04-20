@@ -18,10 +18,10 @@
       </svg>
       <span id="nav-basket-count"
             class="basket badge {% if not global_basket.total_items %}hidden{% endif %}">
-        {{ global_basket.total_items|default:0 }}
+        {{ basket.total_items|default:0 }}
       </span>
     </div>
-    <span id="nav-basket-total" class="nav-basket-total">£{{ global_basket.total_price|default:"0.00" }}</span>
+    <span id="nav-basket-total" class="nav-basket-total">{{ basket.total_price|default:"0.00" }}</span>
     {% comment %}  {% endcomment %}
     {% comment %} <i class="icon-basket"></i>
     <span id="nav-basket-count" class="badge {% if not global_basket.total_items %}hidden{% endif %}">
