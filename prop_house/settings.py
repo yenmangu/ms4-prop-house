@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -81,6 +82,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "prop_house.middleware.HeaderDebugMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -130,9 +132,13 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.herokuapp.com",
 ]
 
+CSRF_COOKIE_HTTPONLY = False
+CSRF_USE_SESSIONS = False
+
 # Session
 
 SESSION_SAVE_EVERY_REQUEST = True
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_SERIALIZER = "django.contrib.sessions.serializers.JSONSerializer"
 
 
@@ -159,16 +165,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
 SITE_ID = 1
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+# ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_MIN_LENGTH = 4
 LOGIN_URL = "/accounts/login"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-ACCOUNT_LOGIN_METHODS = {"username", "email"}
-ACCOUNT_SIGNUP_FIELDS = ["username", "email*", "email2*", "password1*", "password2*"]
+ACCOUNT_LOGIN_METHODS = {
+    "username",
+    "email",
+}
+ACCOUNT_SIGNUP_FIELDS = [
+    "username",
+    "email*",
+    "email2*",
+    "password1*",
+    "password2*",
+]
 
 # Cloudinary settings
 
