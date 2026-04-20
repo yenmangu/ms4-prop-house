@@ -25,3 +25,4 @@ rubric.*
 /static/js/tests/*.js
 *.log
 basketAction.js
+*_backup.json
