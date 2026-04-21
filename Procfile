@@ -1,1 +1,1 @@
-web: gunicorn prop_house.wsgi
+web: gunicorn prop_house.wsgi --log-file -
