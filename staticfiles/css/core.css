@@ -1,0 +1,298 @@
+html,
+body {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	background-color: var(--bg-main);
+	color: var(--txt-primary);
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+body.bg-main-dark {
+	background-color: var(--bg-main);
+}
+
+main {
+	flex: 1 0 auto;
+	padding-left: 5%;
+	padding-right: 5%;
+}
+
+h1,
+h2,
+h3,
+.label-mono {
+	text-transform: uppercase;
+	font-family: 'Courier New', Courier, monospace;
+	letter-spacing: -1px;
+	font-weight: 900;
+}
+
+h1 {
+	font-size: 3rem;
+	border-bottom: 4px solid var(--clr-accent);
+}
+
+.count {
+	font-size: 1rem;
+	color: var(--clr-accent);
+	vertical-align: middle;
+	margin-left: 10px;
+}
+
+.border-bottom-industrial {
+	border-bottom: 2px solid var(--border-hard);
+	background-color: var(--bg-main);
+}
+
+.navbar.navbar-dark.border-bottom-industrial {
+	background-color: var(--bg-main);
+	border-bottom: 2px solid var(--border-hard);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+	color: var(--clr-accent);
+}
+
+.navbar-brand {
+	font-weight: 900;
+	text-transform: uppercase;
+	color: var(--txt-primary);
+}
+
+.navbar-collapse {
+	gap: 1rem;
+}
+
+.nav-link {
+	font-family: monospace;
+	font-size: 0.85rem;
+	letter-spacing: 1px;
+	color: var(--txt-muted);
+	transition: color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+	color: var(--clr-accent);
+}
+
+.nav-basket-wrapper .basket-link {
+	color: var(--txt-muted);
+}
+
+.breadcrumb-wrapper.ph-breadcrumbs .breadcrumb-item a {
+	color: var(--txt-muted);
+	text-decoration: none;
+}
+
+.breadcrumb-wrapper.breadcrumb-wrapper.ph-breadcrumbs
+	li.breadcrumb-item::before {
+	color: var(--txt-muted);
+}
+
+.breadcrumb-item.active {
+	color: var(--clr-accent);
+}
+
+footer {
+	flex-shrink: 0;
+}
+
+.footer-industrial {
+	border-top: 1px solid var(--border-hard);
+	padding: 2rem 0;
+	font-family: monospace;
+	font-size: 0.7rem;
+}
+
+/* ---------- Core Industrial Button ---------- */
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: 900;
+	text-transform: uppercase;
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.1s ease;
+	border: 2px solid transparent;
+	border-radius: 0;
+	letter-spacing: 2px;
+}
+
+/* ----------------- Modifiers ---------------- */
+
+.btn--industrial {
+	background-color: #fff;
+	color: #000;
+	border-color: #fff;
+	box-shadow: 4px 4px 0px var(--clr-accent);
+}
+
+.btn--industrial:hover {
+	background-color: var(--clr-accent);
+	border-color: var(--clr-accent);
+	box-shadow: 0px 0px 0px transparent;
+	transform: translate(2px, 2px);
+}
+
+.btn--industrial:active {
+	background-color: #fff;
+	transform: translate(4px, 4px);
+}
+
+/* -------- Modifiers: Sizes / Contexts ------- */
+
+/* Standard size */
+.btn--large {
+	padding: 0.8rem 2rem;
+	font-size: 1rem;
+}
+
+/* Sidebar size */
+.btn--sidebar {
+	width: 100%;
+	padding: 0.5rem;
+	font-size: 0.8rem;
+	box-shadow: 2px 2px 0px var(--clr-accent);
+}
+
+.btn--sidebar:hover {
+	transform: translate(1px, 1px);
+}
+
+.btn--industrial {
+	/* Layout */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.8rem 2rem;
+
+	/* Typography */
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: 900;
+	font-size: 1rem;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	text-decoration: none;
+
+	/* Appearance */
+	background-color: #fff; /* High-contrast white */
+	color: #000;
+	border: 2px solid #fff;
+	cursor: pointer;
+	transition: all 0.1s ease;
+
+	/* Industrial 'Raised' Effect */
+	box-shadow: 4px 4px 0px var(--clr-accent); /* Safety Orange offset */
+}
+
+.btn--industrial:hover {
+	background-color: var(--clr-accent);
+	border-color: var(--clr-accent);
+	color: #000;
+	box-shadow: 0px 0px 0px transparent;
+	transform: translate(2px, 2px); /* 'Pressed' feel */
+}
+
+.btn--industrial:active {
+	background-color: #fff;
+	transform: translate(4px, 4px);
+}
+
+.btn--industrial-ghost {
+	background: transparent;
+	color: var(--txt-muted);
+	border: 1px solid var(--border-hard);
+	padding: 0.5rem 1rem;
+	font-family: 'Courier New', monospace;
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	text-decoration: none;
+	transition: all 0.2s;
+}
+
+.btn--industrial-ghost:hover {
+	color: #fff;
+	border-color: #fff;
+}
+
+/* Modifier: Sidebar specific tweaks */
+.btn--sidebar {
+	width: 100%;
+	padding: 0.5rem;
+	font-size: 0.8rem;
+}
+
+.btn--product-list {
+	width: 100%;
+	padding: 0.2rem;
+	margin-top: 0.4rem;
+}
+
+/* 'Ghost' Button */
+
+.btn--ghost {
+	background: transparent;
+	color: var(--txt-muted);
+	border: 1px solid var(--border-hard);
+}
+
+.btn--ghost:hover {
+	color: #fff;
+	border-color: #fff;
+}
+
+/* ------------------- Toast ------------------ */
+
+.industrial-toast {
+	/* Position & Layering */
+	position: fixed;
+	bottom: 2rem;
+	right: 2rem;
+	z-index: var(--z-modal); /* Using your manifest z-index */
+
+	/* Colors from Theme */
+	background-color: var(--bg-surface);
+	color: var(--txt-primary);
+	border: 1px solid var(--error-red-values); /* The 'Warning' border */
+	border-left: 4px solid rgba(var(--error-red-values), 1); /* Thick hazard stripe */
+
+	/* Box Decoration */
+	padding: 1rem 1.5rem;
+	font-family: 'Courier New', monospace;
+	border-radius: var(--radius-sm);
+	box-shadow: 0 4px var(--glow-spread) rgba(0, 0, 0, 0.5);
+
+	/* Animation State (Hidden) */
+	opacity: 0;
+	pointer-events: none;
+	transform: translateX(100%);
+	transition:
+		opacity 0.3s ease,
+		transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+	/* The 'Grit' Texture */
+	background-image: var(--texture-scanline);
+}
+
+.industrial-toast.visible {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translateX(0);
+}
+
+/* Optional: Add a subtle glow for 'System Critical' errors */
+.industrial-toast[data-context='NETWORK'],
+.industrial-toast[data-context='SYSTEM'] {
+	box-shadow: 0 0 var(--glow-spread) rgba(var(--error-red-values), 0.2);
+}
