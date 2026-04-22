@@ -4,6 +4,7 @@
   "description": "- **Live site:** (To be added upon deployment) - **Repository:** (GitHub repository link) - **Documentation:** (GitHub README / Pages link if applicable)",
   "main": "index.js",
   "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
     "@types/jest": "^30.0.0",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0"
