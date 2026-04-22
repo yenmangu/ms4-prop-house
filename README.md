@@ -509,6 +509,45 @@ To maintain modularity and avoid repetitive session lookups, the app utilizes a 
 
 ---
 
+## Event Driven Architecture
+
+The system utilizes a declarative, event-driven pattern to manage UI state and feedback, replacing manual JavaScript orchestration with a hybrid approach using **HTMX** and **Bootstrap**.
+
+---
+
+### 1. Request Lifecycle (The Payload)
+
+All basket interactions—including adding, removing, and clearing items—are initiated via HTMX attributes defined directly on HTML elements.
+
+- **Transport**: HTMX interceptors handle the `POST` request and automatically inject the `X-CSRFToken` into the headers.
+- **Payload**: Data is transmitted as a JSON object using the `json-enc` extension to align with the requirements of the backend `BasketUpdateView`.
+- **Session Management**: Each request explicitly refreshes the `basket_id` in the session, ensuring the browser and server stay synchronized and preventing session mismatches [cite: 2026-04-06].
+
+### 2. Signal Emission (The Backend)
+
+The `BasketUpdateView` executes the business logic (updating the `Basket` and `Line` models) and communicates necessary UI changes back to the client via the `HX-Trigger` header [cite: 2026-04-07, 2026-04-12].
+
+- **Status Codes**: Successful updates return an `HTTP 204 No Content` to signal HTMX that no DOM swap is required [cite: 2026-04-12].
+- **Custom Headers**: The `HX-Trigger` header contains a JSON-encoded payload (e.g., `showToast`) containing a message and a status level (e.g., `success`, `danger`) [cite: 2026-04-12].
+
+### 3. Notification Bridge (The Frontend)
+
+A centralized listener in the JavaScript layer bridges the gap between server-side signals and client-side UI components [cite: 2026-04-12].
+
+- **Type Safety**: Custom events are handled via `JSDoc @typedef` definitions to ensure the integrity of the data payload passed from HTMX to the UI [cite: 2026-04-12].
+- **Consolidated UI**: All notifications, including those from the global error handler (`phReportError`) and manual scripts, are routed through a unified notification bridge to a Bootstrap `Toast` instance.
+
+### 4. Implementation Matrix
+
+| Action           | Trigger Mechanism  | Backend Logic     | UI Feedback Route                        |
+| :--------------- | :----------------- | :---------------- | :--------------------------------------- |
+| **Add Product**  | `hx-post` (ADD)    | `Basket.update()` | `showToast` (Success) [cite: 2026-04-12] |
+| **Remove Item**  | `hx-post` (REMOVE) | `Line.delete()`   | `showToast` (Info) [cite: 2026-04-12]    |
+| **Clear Basket** | `hx-post` (CLEAR)  | `Basket.clear()`  | `showToast` (Warning) [cite: 2026-04-07] |
+| **System Error** | `phReportError()`  | Console Log       | `phNotify` (Danger) [cite: 2026-04-12]   |
+
+---
+
 ## Security & Best Practice
 
 - Environment variables for secrets.
