@@ -1,3 +1,5 @@
+import { showToast } from './toast.js';
+
 const IS_DEV = true;
 
 /**
@@ -9,8 +11,14 @@ const phReportError = (error, context = 'SYSTEM') => {
 	const message = error instanceof Error ? error.message : error;
 	if (IS_DEV) {
 		reportToConsole(error, context);
+		phNotify(`[DEV_ERROR] [${context}]: ${message}`, 'danger');
 	} else {
-		displayUserNotification(`ACTION_FAILED: ${message}`, context);
+		const userFriendlyMessage =
+			context === 'NETWORK'
+				? 'Connection lost. Please check your internet.'
+				: `An unexpected error occurred (${context})`;
+
+		phNotify(userFriendlyMessage, 'danger');
 	}
 };
 
@@ -27,73 +35,48 @@ const reportToConsole = (error, context) => {
 	console.groupEnd();
 };
 
-/**
- * Displays non technical error message to end user
- * @param {string} errorString
- * @param {string} context
- */
+// TODO: Remove belo during cleanup
 
-const displayUserNotification = (errorString, context) => {
-	//
-	let feedbackEl = document.querySelector('#system-feedback');
-	if (!feedbackEl) {
-		feedbackEl = document.createElement('div');
-		feedbackEl.id = 'system-feedback';
-		feedbackEl.className = 'industrial-toast';
-		document.body.appendChild(feedbackEl);
-	}
-
-	if (!(feedbackEl instanceof HTMLElement)) {
-		console.error(
-			'[DOM_ERROR] - feedbackEl is not HTMLElement; cannot display errors naturally'
-		);
-		reportToConsole(new Error(errorString), context);
-		return;
-	}
-
-	feedbackEl.innerText = errorString.toUpperCase();
-	feedbackEl.classList.add('visible');
-
-	const timeoutId = setTimeout(() => {
-		feedbackEl.classList.remove('visible');
-		delete feedbackEl.dataset.timeoutId;
-	}, 5000);
-
-	feedbackEl.dataset.timeoutId = timeoutId.toString();
-};
-
-/** @type {number|undefined} */
-let toastTimeout;
+// /** @type {number|undefined} */
+// let toastTimeout;
 
 /**
  *
  * @param {string} message
- * @param {'success'|'error'|'info'} type
+ * @param {'success'|'error'|'info'|'danger'} type
  */
 const phNotify = (message, type = 'success') => {
-	let feedbackEl = document.querySelector('#system-feedback');
+	const formatted = message.toUpperCase();
 
-	if (!feedbackEl) {
-		feedbackEl = document.createElement('div');
-		feedbackEl.id = 'system-feedback';
-		document.body.appendChild(feedbackEl);
-	}
+	showToast(message, type);
 
-	const feedbackHTMLElement = /** @type {HTMLElement} */ (feedbackEl);
+	// Deprecated in favour of above
+	// Moved to centralised bootstrap toast system.
+	// TODO: Remove deporecated during cleanup
 
-	feedbackHTMLElement.className = `industrual-toast toast-${type}`;
-	feedbackHTMLElement.innerText = message.toUpperCase();
+	// let feedbackEl = document.querySelector('#system-feedback');
 
-	feedbackHTMLElement.classList.add('visible');
+	// if (!feedbackEl) {
+	// 	feedbackEl = document.createElement('div');
+	// 	feedbackEl.id = 'system-feedback';
+	// 	document.body.appendChild(feedbackEl);
+	// }
 
-	if (toastTimeout) {
-		clearTimeout(toastTimeout);
-	}
+	// const feedbackHTMLElement = /** @type {HTMLElement} */ (feedbackEl);
 
-	// Using `window` to explicitly set return type of number
-	toastTimeout = window.setTimeout(() => {
-		feedbackHTMLElement.classList.remove('visible');
-	}, 4000);
+	// feedbackHTMLElement.className = `industrual-toast toast-${type}`;
+	// feedbackHTMLElement.innerText = message.toUpperCase();
+
+	// feedbackHTMLElement.classList.add('visible');
+
+	// if (toastTimeout) {
+	// 	clearTimeout(toastTimeout);
+	// }
+
+	// // Using `window` to explicitly set return type of number
+	// toastTimeout = window.setTimeout(() => {
+	// 	feedbackHTMLElement.classList.remove('visible');
+	// }, 4000);
 };
 
 export { phReportError, phNotify };

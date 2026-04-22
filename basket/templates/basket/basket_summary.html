@@ -18,14 +18,21 @@
             <th>Actions</th>
           </tr>
         </thead>
-        {% for line in basket.lines.all %}
-          <tbody>
+        <tbody>
+          {% for line in basket.lines.all %}
             <tr>
               <td>{{ line.product.name }}</td>
               <td>{{ line.quantity }}</td>
               <td>
-                <button class="btn--industrial btn--sidebar btn-ghost basket-remove"
-                        data-product-id="{{ line.product.id }}">Remove</button>
+                <button hx-post="{% url 'basket:update' %}"
+                        hx-trigger="click"
+                        hx-ext="json-enc"
+                        hx-vals='{"product_id": "{{ line.product.id }}","action":"REMOVE"}'
+                        hx-swap="none"
+                        class="btn btn--industrial btn--product-list basket-remove">REMOVE_ITEM</button>
+                {% comment %}
+                <button class="btn--industrial btn--sidebar btn-ghost basket-remove" data-product-id="{{ line.product.id }}">Remove</button>
+                {% endcomment %}
               </td>
             </tr>
           {% endfor %}
@@ -34,9 +41,17 @@
       <div class="container basket-actions px-0">
         <div class="row">
           <div class="col-6 pe-auto">
-            <button class="btn--industrial btn--sidebar btn--ghost"
-                    id="basket_clear"
-                    data-endpoint="clear">Clear All</button>
+            <button hx-post="{% url 'basket:update' %}"
+                    hx-trigger="click"
+                    hx-ext="json-enc"
+                    hx-vals='{"action":"CLEAR"}'
+                    hx-swap="none"
+                    class="btn--industrial btn--sidebar btn--ghost"
+                    id="basket_clear">CLEAR_ALL</button>
+            {% comment %}
+            <button class="btn--industrial btn--sidebar btn--ghost" id="basket_clear" data-endpoint="clear">Clear All</button>
+
+            {% endcomment %}
           </div>
           <div class="col-6">
             <div class="text-end">
@@ -56,6 +71,3 @@
     {% endif %}
   </div>
 {% endblock content %}
-{% block script %}
-  <script type="module" src="{% static 'js/basketRemoveClear.js' %}"></script>
-{% endblock script %}

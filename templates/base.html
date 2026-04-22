@@ -21,6 +21,17 @@
     <link rel="stylesheet" href="{% static 'css/core.css' %}" />
     {% block extra_css %}
     {% endblock extra_css %}
+    {% comment %} HTMX Injection {% endcomment %}
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
+            integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
+            c
+            rossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <script>
+      document.addEventListener('htmx:configRequest', (event)=>{
+        event.detail.headers['X-CSRFToken'] = '{{csrf_token}}';
+      })
+    </script>
   </head>
   <body class="bg-main-dark">
     <nav class="navbar navbar-expand-lg navbar-dark border-bottom-industrial">
@@ -79,6 +90,23 @@
       {% block content %}
       {% endblock content %}
     </main>
+    {% comment %} Toast {% endcomment %}
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="liveToast"
+           class="toast"
+           role="alert"
+           aria-live="assertive"
+           aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto" id="toastTitle">Notification</strong>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="toast"
+                  aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastBody"></div>
+      </div>
+    </div>
     {% block script %}
     {% endblock script %}
     <footer class="footer-industrial mt-auto">

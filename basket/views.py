@@ -1,10 +1,11 @@
+from django.contrib import messages
 from django.shortcuts import render
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 import json
 from catalogue.models import Product
 from .mixins import BasketMixin
@@ -177,7 +178,36 @@ class BasketUpdateView(BasketMixin, View):
             request.session.modified = True
 
             # Call the update
-            basket.update(product_id=product_id, action_type=action, quantity=quantity)
+            basket.update(
+                product_id=product_id,
+                action_type=action,
+                quantity=quantity,
+            )
+
+            # Dynamic messaging
+
+            messages_map = {
+                "ADD": "Item added to basket",
+                "REMOVE": "Item removed from basket",
+                "CLEAR": "Basket cleared",
+            }
+
+            message = messages_map.get(action.upper())
+
+            # No content
+            response = HttpResponse(status=204)
+
+            response["HX-Trigger"] = json.dumps(
+                {
+                    "showToast": {
+                        "message": message,
+                        "status": status,
+                    },
+                    "updateBasketCount": basket.total_items,
+                }
+            )
+
+            return response
 
             return JsonResponse(
                 get_basket_state(
@@ -191,7 +221,7 @@ class BasketUpdateView(BasketMixin, View):
                 get_basket_state(
                     basket=None,
                     message=f"Update failed: {str(e)}",
-                    status="error",
+                    status="danger",
                 ),
                 status=400,
             )
