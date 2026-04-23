@@ -11,5 +11,11 @@
 			"*": ["static/js/*"]
 		}
 	},
-	"exclude": ["node_modules", "venv", ".venv", "static/admin"]
+	"exclude": [
+		"node_modules",
+		"venv",
+		".venv",
+		"static/admin",
+		"**/static/js/vendor"
+	]
 }
