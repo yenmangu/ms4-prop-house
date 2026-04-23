@@ -1,0 +1,48 @@
+/* * PROJECT: PROPHOUSE_ - v2 Rebuild
+ * MODULE: Industrial Auth Elements
+ */
+
+/* The Wrapper */
+.industrial-field {
+	display: flex;
+	flex-direction: column;
+}
+
+/* The Label */
+.industrial-label {
+	color: var(--txt-primary); /* Stark White */
+	text-transform: uppercase;
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 1px;
+	margin-bottom: 8px;
+}
+
+/* The Input */
+.industrial-input {
+	background-color: var(--txt-primary); /* Stark White */
+	color: rgb(var(--base-dark-values)); /* Deep Slate */
+	border: none;
+	padding: 12px;
+	border-radius: var(--radius-sharp); /* 0px */
+	width: 100%;
+	max-width: 350px;
+}
+
+/* Help Text (Allauth hints) */
+.industrial-help-text {
+	color: var(--txt-muted); /* Translucent White */
+	font-size: 0.75rem;
+}
+
+/* The Sign Up Button */
+.btn-industrial {
+	background-color: var(--txt-primary);
+	color: var(--bg-main);
+	padding: 15px 40px;
+	font-weight: 800;
+	text-transform: uppercase;
+	border: none;
+	box-shadow: 6px 6px 0px var(--clr-accent); /* Safety Orange */
+	cursor: pointer;
+}

@@ -1,4 +1,6 @@
+{% extends "base.html" %}
 {% load i18n %}
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,6 +12,9 @@
         </title>
         {% block extra_head %}
         {% endblock extra_head %}
+        {% block extra_css %}
+            <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+        {% endblock extra_css %}
     </head>
     <body>
         {% block body %}
