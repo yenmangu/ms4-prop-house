@@ -203,13 +203,13 @@ The interface prioritises clarity, professional presentation, and usability. Vis
 
 | Feature                 | User Story ID | MoSCoW Priority | Implemented |
 | ----------------------- | ------------- | --------------- | ----------- |
-| Product Catalogue       | 01            | Must            | ⬜          |
-| Product Detail          | 02            | Must            | ⬜          |
-| Basket                  | 03            | Must            | ⬜          |
-| Stripe Checkout         | 04            | Must            | ⬜          |
-| Authentication          | 05            | Must            | ⬜          |
-| Address Management      | 06            | Should          | ⬜          |
-| Membership Subscription | 07            | Should          | ⬜          |
+| Product Catalogue       | 01            | Must            | Y           |
+| Product Detail          | 02            | Must            | Y           |
+| Basket                  | 03            | Must            | Y           |
+| Stripe Checkout         | 04            | Must            | N           |
+| Authentication          | 05            | Must            | N           |
+| Address Management      | 06            | Should          | N           |
+| Membership Subscription | 07            | Should          | N           |
 
 ---
 
@@ -521,30 +521,73 @@ All basket interactions—including adding, removing, and clearing items—are i
 
 - **Transport**: HTMX interceptors handle the `POST` request and automatically inject the `X-CSRFToken` into the headers.
 - **Payload**: Data is transmitted as a JSON object using the `json-enc` extension to align with the requirements of the backend `BasketUpdateView`.
-- **Session Management**: Each request explicitly refreshes the `basket_id` in the session, ensuring the browser and server stay synchronized and preventing session mismatches [cite: 2026-04-06].
+- **Session Management**: Each request explicitly refreshes the `basket_id` in the session, ensuring the browser and server stay synchronized and preventing session mismatches.
 
 ### 2. Signal Emission (The Backend)
 
-The `BasketUpdateView` executes the business logic (updating the `Basket` and `Line` models) and communicates necessary UI changes back to the client via the `HX-Trigger` header [cite: 2026-04-07, 2026-04-12].
+The `BasketUpdateView` executes the business logic (updating the `Basket` and `Line` models) and communicates necessary UI changes back to the client via the `HX-Trigger` header.
 
-- **Status Codes**: Successful updates return an `HTTP 204 No Content` to signal HTMX that no DOM swap is required [cite: 2026-04-12].
-- **Custom Headers**: The `HX-Trigger` header contains a JSON-encoded payload (e.g., `showToast`) containing a message and a status level (e.g., `success`, `danger`) [cite: 2026-04-12].
+- **Status Codes**: Successful updates return an `HTTP 204 No Content` to signal HTMX that no DOM swap is required .
+- **Custom Headers**: The `HX-Trigger` header contains a JSON-encoded payload (e.g., `showToast`) containing a message and a status level (e.g., `success`, `danger`).
 
 ### 3. Notification Bridge (The Frontend)
 
-A centralized listener in the JavaScript layer bridges the gap between server-side signals and client-side UI components [cite: 2026-04-12].
+A centralized listener in the JavaScript layer bridges the gap between server-side signals and client-side UI components.
 
-- **Type Safety**: Custom events are handled via `JSDoc @typedef` definitions to ensure the integrity of the data payload passed from HTMX to the UI [cite: 2026-04-12].
+- **Type Safety**: Custom events are handled via `JSDoc @typedef` definitions to ensure the integrity of the data payload passed from HTMX to the UI.
 - **Consolidated UI**: All notifications, including those from the global error handler (`phReportError`) and manual scripts, are routed through a unified notification bridge to a Bootstrap `Toast` instance.
 
 ### 4. Implementation Matrix
 
-| Action           | Trigger Mechanism  | Backend Logic     | UI Feedback Route                        |
-| :--------------- | :----------------- | :---------------- | :--------------------------------------- |
-| **Add Product**  | `hx-post` (ADD)    | `Basket.update()` | `showToast` (Success) [cite: 2026-04-12] |
-| **Remove Item**  | `hx-post` (REMOVE) | `Line.delete()`   | `showToast` (Info) [cite: 2026-04-12]    |
-| **Clear Basket** | `hx-post` (CLEAR)  | `Basket.clear()`  | `showToast` (Warning) [cite: 2026-04-07] |
-| **System Error** | `phReportError()`  | Console Log       | `phNotify` (Danger) [cite: 2026-04-12]   |
+| Action           | Trigger Mechanism  | Backend Logic     | UI Feedback Route     |
+| :--------------- | :----------------- | :---------------- | :-------------------- |
+| **Add Product**  | `hx-post` (ADD)    | `Basket.update()` | `showToast` (Success) |
+| **Remove Item**  | `hx-post` (REMOVE) | `Line.delete()`   | `showToast` (Info)    |
+| **Clear Basket** | `hx-post` (CLEAR)  | `Basket.clear()`  | `showToast` (Warning) |
+| **System Error** | `phReportError()`  | Console Log       | `phNotify` (Danger)   |
+
+---
+
+## Authentication UI Architecture
+
+This section outlines the architectural implementation used to unify `django-allauth` with the PropHouse industrial design system.
+
+### 1. Form Strategy (`accounts/forms.py`)
+
+To avoid adding unnecessary fields while still controlling the UI output, we extend the base Allauth forms to inject specific attributes.
+
+#### Key Implementation:
+
+- **Inheritance**: `CustomSignupForm(SignupForm)` and `CustomLoginForm(LoginForm)`.
+- **Attribute Enrichment**: Widgets are updated in `__init__` to include `industrial-input` or `industrial-checkbox` classes.
+- **Type Safety**: Use of `Dict[str, forms.Field]` type hints ensures editor autocomplete for widget and field attributes.
+- **Contractual Attributes**: Explicitly setting `type` (e.g., `email`, `password`, `checkbox`) is required for the logic in the global element template.
+
+### 2. Global Element Override (`templates/allauth/elements/field.html`)
+
+The project utilizes Allauth's element system to create a single source of truth for field rendering.
+
+#### Template Logic:
+
+- **Contextual Rendering**: Uses `attrs.type` to distinguish between `textarea`, standard `input`, and `checkbox/radio`.
+- **Layout Management**:
+  - Text fields use top-aligned labels.
+  - Checkboxes/Radios use `d-flex align-items-center gap-2` for side-by-side label alignment.
+- **Variable Mapping**: Uses `{% with attrs=field.field.widget.attrs %}` to bridge the gap between Allauth's element variables and the custom industrial attribute system.
+
+### 3. Implementation Matrix
+
+| Page                   | Template Component     | Design Pattern                                           |
+| :--------------------- | :--------------------- | :------------------------------------------------------- |
+| **Signup**             | `{% element fields %}` | Vertical stack with industrial inputs.                   |
+| **Login**              | `{% element fields %}` | Combined text inputs and industrial-styled checkbox.     |
+| **Email Verification** | `industrial-container` | Informational block with standard industrial typography. |
+
+### 4. UI/UX Standards
+
+- **Interactivity**: All inputs use standard focus states defined in `core.css`.
+- **Validation**: Error messages are rendered using the `industrial-error-msg` class within the field element.
+- **Accessibility**: Semantic `<label>` tags are linked to inputs via `id_for_label` and `auto_id`.
 
 ---
 
@@ -575,6 +618,14 @@ Conventional Commits format used for clear and structured history.
 - Used for progressive enhancement only.
 - No critical dependency on JS for core flows.
 
+## HTMX
+
+- **Declarative Interactions**: UI updates are driven by HTML attributes (`hx-post`, `hx-vals`, `hx-trigger`) rather than manual event listeners.
+- **Event-Driven Feedback**: Utilizes `HX-Trigger` response headers to communicate backend state changes to the frontend notification system.
+- **State Integrity**: All state-changing actions are routed through server-side views to ensure session and database synchronization.
+- **Atomic Responses**: Preference for `204 No Content` or partial fragment swaps to maintain client-side DOM stability.
+- **JSON Integration**: Uses the `json-enc` extension for consistent data exchange with Python-based business logic.
+
 ## HTML
 
 - Semantic structure enforced.
@@ -589,18 +640,19 @@ Conventional Commits format used for clear and structured history.
 
 # Tools and Technologies
 
-| Tool / Tech | Use                                 |
-| ----------- | ----------------------------------- |
-| Python      | Backend logic                       |
-| Django      | Full-stack framework                |
-| PostgreSQL  | Relational database                 |
-| Stripe      | Payment and subscription processing |
-| HTML        | Markup                              |
-| CSS         | Styling                             |
-| JavaScript  | Progressive enhancement             |
-| Bootstrap   | Responsive layout                   |
-| Git         | Version control                     |
-| GitHub      | Repository hosting                  |
+| Tool / Tech | Use                                   |
+| ----------- | ------------------------------------- |
+| Python      | Backend logic                         |
+| Django      | Full-stack framework                  |
+| PostgreSQL  | Relational database                   |
+| Stripe      | Payment and subscription processing   |
+| HTML        | Markup                                |
+| CSS         | Styling                               |
+| JavaScript  | Progressive enhancement               |
+| HTMX        | Event-driven client-side architecture |
+| Bootstrap   | Responsive layout                     |
+| Git         | Version control                       |
+| GitHub      | Repository hosting                    |
 
 ---
 
@@ -631,10 +683,11 @@ PropHouse follows WCAG 2.1 AA guidelines, including:
 
 ## Feature Credits
 
-| Feature            | Source               | Notes                    |
-| ------------------ | -------------------- | ------------------------ |
-| Stripe Integration | Stripe Documentation | Test mode implementation |
-| Authentication     | Django Auth          | Standard auth system     |
+| Feature                   | Source                         | Notes                    |
+| ------------------------- | ------------------------------ | ------------------------ |
+| Stripe Integration        | Stripe Documentation           | Test mode implementation |
+| Authentication            | Django Auth                    | Standard auth system     |
+| Event Driven Architecture | [HTMX](https://htmx.org/docs/) |                          |
 
 ## Development Credits
 
