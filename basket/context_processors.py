@@ -8,6 +8,11 @@ def basket_context(request: HttpRequest):
     Makes basket object globally available in all templates
     """
 
+    # Check if navigating to admin
+
+    if request.path.startswith("/admin/"):
+        return {}
+
     basket: Optional[Basket] = None
 
     # Check authenticated user first (highest priority)
@@ -18,8 +23,13 @@ def basket_context(request: HttpRequest):
             user=request.user, status=Basket.Status.OPEN
         ).first()
 
-        request.session["basket_id"] = str(basket.id)
-        return {"basket": basket}
+        if basket:
+            request.session["basket_id"] = str(basket.id)
+
+            return {
+                "basket": basket,
+                "basket_count": basket.total_items if basket else 0,
+            }
 
     else:
         basket_id = request.session.get("basket_id")
@@ -29,9 +39,13 @@ def basket_context(request: HttpRequest):
             except (Basket.DoesNotExist, ValueError):
                 if "basket_id" in request.session:
                     del request.session["basket_id"]
+                    basket = None
+
+    # Sync session if guest basket found
     if basket and request.session.get("basket_id") != str(basket.id):
         request.session["basket_id"] = str(basket.id)
 
+    # TODO: Remove deprecated
     # if not basket:
     #     basket_id = request.session.get("basket_id")
     #     if basket_id:
