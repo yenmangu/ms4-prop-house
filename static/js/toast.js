@@ -1,5 +1,5 @@
 // import { Toast } from 'bootstrap';
-import bootstrap from 'bootstrap';
+import * as bootstrap from 'bootstrap';
 import { phNotify } from './reportError.js';
 
 /**
