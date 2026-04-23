@@ -166,6 +166,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Override the default allauth forms
+
+ACCOUNT_FORMS = {
+    "signup": "accounts.forms.CustomSignupForm",
+    "login": "accounts.forms.CustomLoginForm",
+}
+
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",

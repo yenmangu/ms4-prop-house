@@ -29,6 +29,14 @@
 	max-width: 350px;
 }
 
+/* The Checkbox */
+.industrial-checkbox {
+	accent-color: var(--txt-primary);
+	width: 18px;
+	height: 18px;
+	cursor: pointer;
+}
+
 /* Help Text (Allauth hints) */
 .industrial-help-text {
 	color: var(--txt-muted); /* Translucent White */

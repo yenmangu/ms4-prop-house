@@ -1,43 +1,42 @@
 {% load allauth %}
 <div class="industrial-field mb-4">
-    {% if attrs.type == "textarea" %}
-        {# --- Text Area Inputs --- #}
-        <label for="{{ attrs.id }}" class="industrial-label">{{ attrs.field.label }}</label>
-        <textarea class="industrial-input"
-                  {% if attrs.required %}required{% endif %}
-                  {% if attrs.rows %}rows="{{ attrs.rows }}"{% endif %}
-                  {% if attrs.disabled %}disabled{% endif %}
-                  {% if attrs.readonly %}readonly{% endif %}
-                  {% if attrs.checked %}checked{% endif %}
-                  {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
-                  {% if attrs.field.id_for_label %}id="{{ attrs.field.id_for_label }}"{% endif %}
-                  {% if attrs.placeholder %}placeholder="{{ attrs.placeholder }}"{% endif %}>{{ attrs.field.value|default:'' }}</textarea>
-    {% else %}
-        {# --- LABEL (Top-aligned for text fields) --- #}
-        {% if attrs.type != "checkbox" and attrs.type != "radio" %}
-            <label for="{{ attrs.field.id_for_label }}" class="industrial-label">{{ attrs.field.label }}</label>
-        {% endif %}
-        <div class="input-wrapper {% if attrs.type == 'checkbox' or attrs.type == 'radio' %}d-flex align-items-center gap-2{% endif %}">
-            {# --- THE INPUT (Conditional Styling) --- #}
-            {# --- Normal Inputs --- #}
-            <input class="{% if attrs.type != 'checkbox' and attrs.type != 'radio' %}industrial-input{% endif %}"
-                   {% if attrs.required %}required{% endif %}
-                   {% if attrs.disabled %}disabled{% endif %}
-                   {% if attrs.readonly %}readonly{% endif %}
-                   {% if attrs.checked %}checked{% endif %}
-                   {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
-                   {% if attrs.field.id_for_label %}id="{{ attrs.field.id_for_label }}"{% endif %}
-                   {% if attrs.placeholder %}placeholder="{{ attrs.placeholder }}"{% endif %}
-                   {% if attrs.autocomplete %}autocomplete="{{ attrs.autocomplete }}"{% endif %}
-                   {% if attrs.value is not None %}value="{{ attrs.field.value|default:'' }}"{% endif %}
-                   type="{{ attrs.type }}">
-            {# --- LABEL (Side-aligned for checkboxes) --- #}
-            {% if attrs.type == "checkbox" or attrs.type == "radio" %}
-                <label for="{{ attrs.field.id_for_label }}" class="industrial-label">{{ attrs.field.label }}</label>
+    {% with attrs=field.field.widget.attrs %}
+        {% if attrs.type == "textarea" %}
+            {# Text Area Inputs #}
+            <label for="{{ attrs.field.id_for_label }}" class="industrial-label">{{ field.label }}</label>
+            <textarea class="industrial-input"
+                      {% if field.field.required %}required{% endif %}
+                      {% if attrs.rows %}rows="{{ attrs.rows }}"{% endif %}
+                      {% if attrs.field.field.disabled %}disabled{% endif %}
+                      name="{{ field.html_name }}"
+                      id="{{ field.auto_id }}"
+                      {% if attrs.placeholder %}placeholder="{{ attrs.placeholder }}"{% endif %}>{{ field.value|default:'' }}</textarea>
+        {% else %}
+            {# Normal Inputs #}
+            {# LABEL (Top-aligned for text fields) #}
+            {% if attrs.type != "checkbox" and attrs.type != "radio" %}
+                <label for="{{ field.id_for_label }}" class="industrial-label">{{ field.label }}</label>
             {% endif %}
-        </div>
-    {% endif %}
-    {# HELP TEXT & ERRORS #}
-    {% if attrs.field.help_text %}<div class="industrial-help-text mt-2">{{ attrs.field.help_text|safe }}</div>{% endif %}
-    {% if attrs.errors %}<div class="industrial-error-msg mt-1">{{ attrs.errors }}</div>{% endif %}
+            <div class="input-wrapper {% if attrs.type == 'checkbox' or attrs.type == 'radio' %}d-flex align-items-center gap-2{% endif %}">
+                {# Include the attrs.class if specified in custom forms #}
+                <input class="{% if attrs.type != 'checkbox' and attrs.type != 'radio' %}industrial-input {% else %}{{ attrs.class|default:'industrial-checkbox' }} {% endif %}"
+                       {% if field.field.required %}required{% endif %}
+                       {% if field.field.disabled %}disabled{% endif %}
+                       name="{{ field.html_name }}"
+                       id="{{ field.auto_id }}"
+                       {% if attrs.placeholder %}placeholder="{{ attrs.placeholder }}"{% endif %}
+                       {% if attrs.autocomplete %}autocomplete="{{ attrs.autocomplete }}"{% endif %}
+                       value="{{ field.value|default:'' }}"
+                       type="{{ attrs.type }}"
+                       {% if field.value %}checked{% endif %}>
+                {# LABEL (Side-aligned for checkboxes) #}
+                {% if attrs.type == "checkbox" or attrs.type == "radio" %}
+                    <label for="{{ field.id_for_label }}" class="industrial-label mb-0">{{ field.label }}</label>
+                {% endif %}
+            </div>
+        {% endif %}
+        {# HELP TEXT & ERRORS #}
+        {% if field.help_text %}<div class="industrial-help-text mt-2">{{ field.help_text|safe }}</div>{% endif %}
+        {% if field.errors %}<div class="industrial-error-msg mt-1">{{ field.errors }}</div>{% endif %}
+    {% endwith %}
 </div>
