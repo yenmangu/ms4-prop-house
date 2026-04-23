@@ -62,7 +62,7 @@
                 <button hx-post="{% url 'basket:update' %}"
                         hx-trigger="click"
                         hx-ext="json-enc"
-                        hx-vals='{"product_id": "{{ product.id }}","action":"ADD"}'
+                        hx-vals='{"product_id": "{{ product.id }}","action":"add"}'
                         hx-swap="none"
                         class="btn btn--industrial btn--product-list add-to-basket"
                         data-product-id="{{ product.id }}">ADD_TO_CART</button>

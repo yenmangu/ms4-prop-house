@@ -2,7 +2,7 @@
   <a href="{% url 'basket:summary' %}"
      class="basket-link"
      aria-label="View shopping basket">
-    <div class="basket-icon-wrapper">
+    <div class="basket-icon-wrapper" id="basketIconWrapper">
       <svg xmlns="http://www.w3.org/2000/svg"
            width="24"
            height="24"
@@ -22,11 +22,5 @@
       </span>
     </div>
     <span id="nav-basket-total" class="nav-basket-total">{{ basket.total_price|default:"0.00" }}</span>
-    {% comment %}  {% endcomment %}
-    {% comment %} <i class="icon-basket"></i>
-    <span id="nav-basket-count" class="badge {% if not global_basket.total_items %}hidden{% endif %}">
-      {{ global_basket.total_items|default:0 }}
-    </span> {% endcomment %}
-    {% comment %}  {% endcomment %}
   </a>
 </div>

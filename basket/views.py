@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.template.loader import render_to_string
 import json
 from catalogue.models import Product
 from .mixins import BasketMixin
@@ -168,6 +169,7 @@ class BasketUpdateView(BasketMixin, View):
 
         try:
             data = json.loads(request.body)
+            print(f"DATA: \n {data}")
             product_id = data.get("product_id")
             action = data.get("action")
             quantity = data.get("quantity", 1)
@@ -194,21 +196,37 @@ class BasketUpdateView(BasketMixin, View):
 
             message = messages_map.get(action.upper())
 
-            # No content
-            response = HttpResponse(status=204)
-
-            response["HX-Trigger"] = json.dumps(
-                {
-                    "showToast": {
-                        "message": message,
-                        "status": status,
+            # Added HTMX logic
+            if request.headers.get("HX-Request"):
+                html = render_to_string(
+                    "basket/partials/_basket_update_response.html",
+                    {
+                        "basket": basket,
                     },
-                    "updateBasketCount": basket.total_items,
-                }
-            )
+                    request=request,
+                )
 
-            return response
+                # Status 200 by default, but included for brevity
+                response = HttpResponse(
+                    html,
+                    status=200,
+                )
 
+                response["HX-Trigger"] = json.dumps(
+                    {
+                        "showToast": {
+                            "message": message,
+                            "status": status,
+                        },
+                    }
+                )
+
+                return response
+
+            # Fallback for non-HTMX
+            return redirect("basket:summary")
+
+            # Deprecated in favour of new HTMX method above
             return JsonResponse(
                 get_basket_state(
                     basket,

@@ -7,7 +7,8 @@
 	"settings": {
 		"postman.settings.dotenv-detection-notification-visibility": false,
 		"files.associations": {
-			"**/templates/**/*.html": "django-html"
+			"**/templates/**/*.html": "django-html",
+			"**/static/vendor/htmx.min.js": "plaintext"
 		},
 		"python-envs.pythonProjects": [
 			{
@@ -43,6 +44,20 @@
 		},
 		"terminal.integrated.env.windows": {
 			"DJANGO_SETTINGS_MODULE": "prop_house.settings"
+		},
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true
+			// "**/static/vendor/*": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/bower_components": true,
+			"**/*.code-search": true,
+			"**/static/vendor/*": true
 		}
 	}
 }

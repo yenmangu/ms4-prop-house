@@ -19,6 +19,7 @@ document.addEventListener(
 	evt => {
 		const toastEvt = /** @type {ToastEvent} */ (evt);
 		const { message, status } = toastEvt.detail;
+		console.log('SHOW TOAST');
 
 		showToast(message, status);
 	}

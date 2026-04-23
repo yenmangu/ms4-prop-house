@@ -21,13 +21,21 @@
     <link rel="stylesheet" href="{% static 'css/core.css' %}" />
     {% block extra_css %}
     {% endblock extra_css %}
+    <script type="importmap">
+      {
+        "imports": {
+          "bootstrap": "https://esm.sh/bootstrap@5.3.3"
+        }
+      }
+
+    </script>
     {% comment %} HTMX Injection {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
             integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
-            c
-            rossorigin="anonymous"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+            crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx-ext-json-enc@2.0.1/json-enc.js"></script>
     <script>
+      // Ensure the HTMX request(s) includes CSRF token in headers
       document.addEventListener('htmx:configRequest', (event)=>{
         event.detail.headers['X-CSRFToken'] = '{{csrf_token}}';
       })
@@ -107,8 +115,7 @@
         <div class="toast-body" id="toastBody"></div>
       </div>
     </div>
-    {% block script %}
-    {% endblock script %}
+    <script type="module" src="{% static '/js/htmxListener.js' %}"></script>
     <footer class="footer-industrial mt-auto">
       <div class="container-fluid px-4 d-flex justify-content-between">
         <p class="mb-0">© {{ now|date:"Y" }} PROPHOUSE_SYSTEM</p>
