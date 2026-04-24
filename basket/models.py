@@ -1,16 +1,18 @@
 from django.db import models, transaction
 from django.utils.text import slugify
-from django.contrib.auth.models import User
 from django.http import HttpRequest
 import uuid
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 from catalogue.models import Product
-
+from django.conf import settings
+from django.db import models
 from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from django.db.models.manager import RelatedManager
+
+USER_MODEL = getattr(settings, "AUTH_USER_MODEL")
 
 
 # Create your models here.
@@ -36,7 +38,10 @@ class Basket(models.Model):
         editable=False,
     )
     user = models.ForeignKey(
-        User, null=True, on_delete=models.CASCADE, related_name="basket_user"
+        USER_MODEL,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="basket_user",
     )
     status = models.CharField(
         max_length=2,

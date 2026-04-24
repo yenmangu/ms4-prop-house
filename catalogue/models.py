@@ -81,6 +81,28 @@ class Product(models.Model):
     stock_quantity = models.PositiveIntegerField(default=0)
     featured_image = models.URLField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
+
+    # New Stripe Fields
+    stripe_product_id = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Stripe Product ID (prod_...)",
+    )
+    stripe_price_id = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Stripe Price ID (price_...)",
+    )
+
+    # Type determination
+    is_recurring = models.BooleanField(
+        default=False,
+        help_text="Check this if product is a subscription",
+    )
+
+    is_hire = models.BooleanField(default=False)
+
+    # Administration
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
