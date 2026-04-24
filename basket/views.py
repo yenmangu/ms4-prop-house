@@ -175,6 +175,7 @@ class BasketUpdateView(BasketMixin, View):
             quantity = data.get("quantity", 1)
 
             basket = self.get_basket()
+            # basket = getattr(request, "basket", None)
 
             request.session["basket_id"] = str(basket.id)
             request.session.modified = True

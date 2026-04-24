@@ -2,6 +2,7 @@ from .models import Basket
 from django.http import HttpRequest, HttpResponse
 from django.utils.deprecation import MiddlewareMixin
 from typing import Callable
+from .services import get_basket_for_request
 
 
 class BasketMiddleware:
@@ -13,20 +14,33 @@ class BasketMiddleware:
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         """
+        UPDATE: Uses new unified service layer method `get_basket_for_request`
+
+        OLD:
         Attach a property to request to fetch basket lazily.
         Prevents unnecessary DB queries on static/media requests.
         """
+        # print(f"DEBUG: middleware firing")
 
-        # Check for session
-        if not request.session.session_key:
-            request.session.create()
+        request.basket = get_basket_for_request(request=request)
+        return self.get_response(request)
 
-        # Retrieve basket
-        request.basket = self.get_basket(request=request)
+        # Deprecated in favour of unified method abovez
 
-        response = self.get_response(request)
+        # # Check for session
+        # if not request.session.session_key:
+        #     request.session.create()
 
-        return response
+        # # Retrieve basket
+        # request.basket = self.get_basket(request=request)
+
+        # if request.basket and request.basket.pk:
+        #     if request.session.get("basket_id") != str(request.basket.id):
+        #         request.session["basket_id"] = str(request.basket.id)
+
+        # response = self.get_response(request)
+
+        # return response
 
     # New get_basket logic
     def get_basket(self, request: HttpRequest):
@@ -50,24 +64,38 @@ class BasketMiddleware:
             if basket:
                 return basket
 
-        # user__isnull - check for isnull property on `user` field
-        if request.session.session_key:
-            orphan = Basket.objects.filter(
-                session_key=request.session.session_key,
-                status=Basket.Status.OPEN,
-                user__isnull=True,
-            ).first()
-            if orphan:
-                request.session["basket_id"] = str(orphan.id)
-                return orphan
+        # Orphaned/Session key lookup (failsafe)
+        orphan = Basket.objects.filter(
+            session_key=request.session.session_key,
+            status=Basket.Status.OPEN,
+            user__isnull=True,
+        ).first()
 
-        # Return unsaved instance (ghost basket)
-        # Allows templates to call total_items without errors
-        # Does not save row to DB until item is added
-        return Basket(session_key=request.session.session_key)
+        if orphan:
+            return orphan
+
+        return Basket(
+            session_Key=request.session.session_key,
+        )
+
+    # TODO: Remove deprecated
+    # # user__isnull - check for isnull property on `user` field
+    # if request.session.session_key:
+    #     orphan = Basket.objects.filter(
+    #         session_key=request.session.session_key,
+    #         status=Basket.Status.OPEN,
+    #         user__isnull=True,
+    #     ).first()
+    #     if orphan:
+    #         request.session["basket_id"] = str(orphan.id)
+    #         return orphan
+
+    # # Return unsaved instance (ghost basket)
+    # # Allows templates to call total_items without errors
+    # # Does not save row to DB until item is added
+    # return Basket(session_key=request.session.session_key)
 
     # Deprecated in favour of above
-    # TODO: Remove deprecated
     # def get_basket(self, request: HttpRequest) -> Basket:
     #     basket_id = request.session.get("basket_id")
 

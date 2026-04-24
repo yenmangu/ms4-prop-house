@@ -1,7 +1,3 @@
 {% load static %}
-<span id="nav-basket-count"
-      hx-swap-oob="true"
-      class="basket badge {% if not basket.total_items %}hidden{% endif %}">{{ basket.total_items|default:0 }}</span>
-{% comment %}  {% endcomment %}
-<span id="nav-basket-total" hx-swap-oob="true" class="nav-basket-total">{{ basket.total_price|default:"0.00" }}</span>
+{% include "basket/partials/_nav_basket_logic.html" %}
 {% include "basket/partials/_basket_summary_content.html" %}

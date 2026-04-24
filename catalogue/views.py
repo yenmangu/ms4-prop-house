@@ -5,11 +5,13 @@ from django.views import generic
 from view_breadcrumbs import ListBreadcrumbMixin, DetailBreadcrumbMixin
 from .models import Product
 from .filters import ProductFilter
+from basket.mixins import BasketMixin
 
 
 # Create your views here.
 @method_decorator(ensure_csrf_cookie, name="dispatch")
 class ProductListView(
+    BasketMixin,
     ListBreadcrumbMixin,
     generic.ListView,
 ):
@@ -39,10 +41,15 @@ class ProductListView(
 
         # 4. Add filterset to context
         context["filter"] = self.filterset
+
         return context
 
 
-class ProductDetailView(DetailBreadcrumbMixin, generic.DetailView):
+class ProductDetailView(
+    BasketMixin,
+    DetailBreadcrumbMixin,
+    generic.DetailView,
+):
     model = Product
     template_name = "catalogue/catalogue_detail.html"
     slug_field = "slug"

@@ -1,9 +1,14 @@
 from .models import Basket
 from django.http import HttpRequest
+from .services import get_basket_for_request
 
 
 class BasketMixin:
     """
+    UPDATE:
+    Uses new service layer method `get_basket_for_request`
+
+    OLD:
     Provides utility methods to retrieve or create a basket from the session
     """
 
@@ -11,33 +16,39 @@ class BasketMixin:
 
         request: HttpRequest = self.request
 
-        if not request.session.session_key:
-            request.session.create()
+        return get_basket_for_request(request=request)
 
-        basket_id = self.request.session.get("basket_id")
+    # Deprecated in favour of above
 
-        # NEW DEBUG LINE
-        print(f"DEBUG: Session Key being checked: {self.request.session.session_key}")
-        print(f"DEBUG: basket_id found in session: {basket_id}")
+    # request: HttpRequest = self.request
 
-        if basket_id:
-            try:
-                return Basket.objects.get(id=basket_id, status=Basket.Status.OPEN)
-            except (Basket.DoesNotExist, ValueError):
-                pass
+    # if not request.session.session_key:
+    #     request.session.create()
 
-        if request.session.session_key:
-            orphan_basket = Basket.objects.filter(
-                session_key=request.session.session_key, status=Basket.Status.OPEN
-            ).last()
+    # basket_id = self.request.session.get("basket_id")
 
-            if orphan_basket:
-                # Re-Bind the lost data
-                request.session["basket_id"] = str(orphan_basket.id)
-                request.session.modified = True
-                return orphan_basket
+    # # NEW DEBUG LINE
+    # print(f"DEBUG: Session Key being checked: {self.request.session.session_key}")
+    # print(f"DEBUG: basket_id found in session: {basket_id}")
 
-        return self._create_basket()
+    # if basket_id:
+    #     try:
+    #         return Basket.objects.get(id=basket_id, status=Basket.Status.OPEN)
+    #     except (Basket.DoesNotExist, ValueError):
+    #         pass
+
+    # if request.session.session_key:
+    #     orphan_basket = Basket.objects.filter(
+    #         session_key=request.session.session_key, status=Basket.Status.OPEN
+    #     ).last()
+
+    #     if orphan_basket:
+    #         # Re-Bind the lost data
+    #         request.session["basket_id"] = str(orphan_basket.id)
+    #         request.session.modified = True
+    #         return orphan_basket
+
+    # return self._create_basket()
 
     def _create_basket(self):
 

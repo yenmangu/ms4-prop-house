@@ -18,7 +18,7 @@
       </svg>
       <span id="nav-basket-count"
             class="basket badge {% if not global_basket.total_items %}hidden{% endif %}">
-        {{ basket.total_items|default:0 }}
+        {{ basket_count|default:0 }}
       </span>
     </div>
     <span id="nav-basket-total" class="nav-basket-total">{{ basket.total_price|default:"0.00" }}</span>

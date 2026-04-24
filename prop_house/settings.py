@@ -90,6 +90,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "basket.middleware.BasketMiddleware",
 ]
 
 ROOT_URLCONF = "prop_house.urls"

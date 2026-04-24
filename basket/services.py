@@ -2,6 +2,49 @@ from django.http import HttpRequest
 from .models import Basket
 
 
+def get_basket_for_request(request: HttpRequest):
+    """
+    Retrieves the active basket for a given request across all domains (Catalogue, Basket, etc.).
+
+    This function bridges the gap between 'Lazy' middleware and 'Active' views by
+    performing a hierarchical search:
+    1. Authenticated User (Highest priority)
+    2. Explicit session ID (Stored from previous interactions)
+    3. Session Key (Orphan recovery for anonymous users)
+    4. Ghost Instance (Unsaved fallback to prevent 0-count display issues)
+    """
+
+    # Check auth user
+    if request.user.is_authenticated:
+        basket, created = Basket.objects.get_or_create(
+            user=request.user,
+            status=Basket.Status.OPEN,
+        )
+        return basket
+
+    # Check Session ID
+    basket_id = request.session.get("basket_id")
+    if basket_id:
+        basket = Basket.objects.filter(
+            id=basket_id,
+            status=Basket.Status.OPEN,
+        ).first()
+        if basket:
+            return basket
+
+    # Check Session Key (Orphan lookup)
+    if request.session.session_key:
+        orphan = Basket.objects.filter(
+            session_key=request.session.session_key,
+            status=Basket.Status.OPEN,
+        ).first()
+        if orphan:
+            return orphan
+
+    # Failsafe: Ghost Basket
+    return Basket(session_key=request.session.session_key)
+
+
 def perform_merge_basket(sender, request: HttpRequest, user, **kwargs):
     """
     When a User logs in, check if they have a guest basket in session.
