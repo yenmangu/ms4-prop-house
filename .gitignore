@@ -26,3 +26,4 @@ rubric.*
 *.log
 basketAction.js
 *_backup.json
+*_data.json

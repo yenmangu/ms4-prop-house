@@ -9,8 +9,8 @@ colorama==0.4.6
 crispy-bootstrap5==2026.3
 cssbeautifier==1.15.4
 dj-database-url==3.1.1
-Django==6.0.2
-django-allauth==65.14.3
+Django==6.0.4
+django-allauth==65.16.1
 django-cloudinary-storage==0.3.0
 django-crispy-forms==2.6
 django-extensions==4.1
@@ -39,7 +39,7 @@ regex==2026.2.28
 requests==2.32.5
 six==1.17.0
 sqlparse==0.5.5
-stripe>=15.0.0
+stripe==15.0.1
 tqdm==4.67.3
 typing_extensions==4.15.0
 urllib3==2.6.3
