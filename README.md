@@ -1,5 +1,3 @@
-# PropHouse - Digital Hire Platform
-
 ## Live Application
 
 - **Live site:** (To be added upon deployment)
@@ -415,20 +413,7 @@ Suggested fields (WishlistItem):
 
 ---
 
-## Data Operations Summary
-
-The schema supports full CRUD across the core domain:
-
-- Products: Create / Read / Update / Delete (admin managed).
-- Categories: Create / Read / Update / Delete (admin managed).
-- Addresses: Create / Read / Update / Delete (user managed).
-- Basket: Session-based read/update operations (not persisted as orders).
-- Orders: Created on successful checkout; viewable by the owning user; managed by staff.
-- Membership/Subscription: Created and updated via Stripe events and user actions.
-
----
-
-# Architecture
+## Architecture
 
 ## High-Level Overview
 
@@ -436,6 +421,30 @@ The schema supports full CRUD across the core domain:
 - Django ORM for relational data modelling.
 - Stripe test API for payments and subscriptions.
 - Modular apps aligned to domain boundaries.
+
+## Request Pipeline & State Management
+
+The application utilizes a **Single Source of Truth** architecture to manage the basket state across the entire request lifecycle. This ensures that the UI (navigation badges, totals) and the business logic (adding/removing items) are always synchronized.
+
+### 1. The Service Layer (`basket/services.py`)
+
+To prevent logic fragmentation, all basket retrieval and recovery logic is centralized in a dedicated service layer. This layer handles the hierarchical lookup of a basket:
+
+- **Authenticated User**: Priority check for an existing `OPEN` basket linked to the user account.
+- **Session ID**: Secondary check for a specific `basket_id` stored in the browser session.
+- **Orphan Recovery**: A fallback mechanism that matches an anonymous `session_key` to a database record to recover items if the session ID was lost or rotated.
+- **Ghost Fallback**: Returns an unsaved `Basket` instance to provide a consistent API for the UI without bloating the database with empty records.
+
+### 2. The Middleware (`basket/middleware.py`)
+
+The `BasketMiddleware` acts as a global pre-processor. It invokes the Service Layer on every request and attaches the resulting object directly to the `request` object.
+
+- **Global Accessibility**: By attaching the basket to the `request`, every view and template in the system has instant access to the current basket state.
+- **Lazy Loading**: The middleware ensures that database hits only occur when the basket is actually accessed, maintaining high performance for static or non-commerce pages.
+
+### 3. The Context Processor (`basket/context_processors.py`)
+
+A custom context processor bridges the gap between the Middleware and the Django Template Engine. It passes `request.basket` into the global context, allowing the navigation partials to render the item count and total price on every page without redundant database queries.
 
 ## App Structure
 
@@ -474,19 +483,31 @@ The `basket` app manages the temporary storage of products a user intends to pur
 
 #### Logic, Mixins & Properties
 
-To maintain modularity and avoid repetitive session lookups, the app utilizes a BasketMixin for all Class-Based Views (CBVs) that interact with user selections.
+To maintain modularity and avoid repetitive session lookups, the app utilizes a **BasketMixin** for all Class-Based Views (CBVs) that interact with user selections.
 
-- `BasketMixin.get_basket()`:
-  - Checks the `request.session` for an existing `basket_id`.
-  - Validates that the basket is still in an `OPEN` state.
-  - If no valid basket is found (e.g., a new guest or an expired session), it invokes `_create_basket()`.
-- `BasketMixin._create_basket()`:
-  - Instantiates a new `Basket` model.
-  - Securely stores the `UUID` as a string in the session to persist the guest's state.
-- User Merging Logic: (Planned) Handles the transition of an anonymous guest basket to a `User` account upon login, ensuring no items are lost during authentication.
+- **`BasketMixin.get_basket()`**:
+  - Acts as the view-level gateway to the **Service Layer**.
+  - Ensures that logic-heavy views (like `BasketUpdateView`) are using the exact same instance identified by the Middleware.
+  - Guarantees architectural consistency: the View, the Middleware, and the Context Processor all point to the same "Single Source of Truth."
 
-- `Line.line_reference`: A calculated property returning the subtotal for that specific line (Price $\times$ Quantity).
+- `Line.line_reference`: A calculated property returning the subtotal for that specific line (Price × Quantity).
 - `Basket.total_price`: A calculated property that aggregates all `line_reference` totals for a grand total.
+
+---
+
+### Deployment/Settings Note:
+
+Ensure the middleware is registered in `settings.py` after `AuthenticationMiddleware`:
+
+```python
+MIDDLEWARE = [
+    ...
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+    'basket.middleware.BasketMiddleware', # Global basket state provider
+    ...
+]
+```
 
 ---
 
@@ -705,3 +726,7 @@ PropHouse follows WCAG 2.1 AA guidelines, including:
 **Result:**
 
 PropHouse is a relational database-backed Django application implementing secure e-commerce hire functionality with optional membership discounts, designed for a real-world production hire context.
+
+```
+
+```
