@@ -254,45 +254,40 @@ footer {
 
 /* ------------------- Toast ------------------ */
 
-.industrial-toast {
-	/* Position & Layering */
+/* 1. Neutralize Bootstrap's display: none so the animation can actually run */
+#liveToast.industrial-toast:not(.show) {
+	display: block;
+}
+
+/* 2. Refined Base State */
+#liveToast.industrial-toast {
 	position: fixed;
 	bottom: 2rem;
 	right: 2rem;
-	z-index: var(--z-modal); /* Using your manifest z-index */
+	z-index: var(--z-modal);
 
-	/* Colors from Theme */
+	/* Ensure it's physically ready but invisible */
+	opacity: 0;
+	visibility: hidden;
+	transform: translateX(110%); /* Start slightly further out */
+
+	/* Theme Colors */
 	background-color: var(--bg-surface);
 	color: var(--txt-primary);
-	border: 1px solid var(--error-red-values); /* The 'Warning' border */
-	border-left: 4px solid rgba(var(--error-red-values), 1); /* Thick hazard stripe */
-
-	/* Box Decoration */
-	padding: 1rem 1.5rem;
-	font-family: 'Courier New', monospace;
-	border-radius: var(--radius-sm);
-	box-shadow: 0 4px var(--glow-spread) rgba(0, 0, 0, 0.5);
-
-	/* Animation State (Hidden) */
-	opacity: 0;
-	pointer-events: none;
-	transform: translateX(100%);
-	transition:
-		opacity 0.3s ease,
-		transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-	/* The 'Grit' Texture */
+	border: 1px solid var(--clr-accent);
+	border-left: 5px solid var(--clr-accent);
 	background-image: var(--texture-scanline);
+
+	/* Smooth "Snappy" Transition */
+	transition:
+		transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+		opacity 0.3s ease,
+		visibility 0.3s;
 }
 
-.industrial-toast.visible {
+/* 3. The 'Inward' Slide */
+body #liveToast.industrial-toast.show {
 	opacity: 1;
-	pointer-events: auto;
+	visibility: visible;
 	transform: translateX(0);
-}
-
-/* Optional: Add a subtle glow for 'System Critical' errors */
-.industrial-toast[data-context='NETWORK'],
-.industrial-toast[data-context='SYSTEM'] {
-	box-shadow: 0 0 var(--glow-spread) rgba(var(--error-red-values), 0.2);
 }

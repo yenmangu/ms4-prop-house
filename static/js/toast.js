@@ -34,6 +34,8 @@ export const showToast = (message, status = 'success') => {
 	titleElement.className =
 		status === 'danger' ? 'me-auto text-danger' : 'me-auto text-success';
 
+	titleElement.style.color = 'var(--clr-success)';
+
 	const toast = new bootstrap.Toast(toastElement);
 	toast.show();
 };
