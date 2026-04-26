@@ -23,5 +23,9 @@
   "bugs": {
     "url": "https://github.com/yenmangu/ms4-prop-house/issues"
   },
-  "homepage": "https://github.com/yenmangu/ms4-prop-house#readme"
+  "homepage": "https://github.com/yenmangu/ms4-prop-house#readme",
+  "dependencies": {
+    "@stripe/stripe-js": "^9.3.1",
+    "htmx.org": "^2.0.10"
+  }
 }

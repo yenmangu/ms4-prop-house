@@ -42,7 +42,11 @@
         </div>
       </div>
       <div class="col my-4">
-        <a href="/" class="btn--industrial btn--sidebar">Checkout</a>
+        <a hx-post="{% url 'commerce:create_paymet_intent' %}"
+           hx-trigger="click"
+           hx-swap="none"
+           id="checkout-button"
+           class="btn--industrial btn--sidebar">Checkout</a>
       </div>
     </div>
   </div>

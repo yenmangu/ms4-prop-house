@@ -42,6 +42,16 @@ if not SECRET_KEY:
 
 TINY_MCE_KEY = os.environ.get("TINY_MCE_KEY")
 
+STRIPE_KEYS = {
+    "stripe_sk": os.environ.get("STRIPE_SECRET"),
+    "stripe_pk": os.environ.get("STRIPE_PUBLIC"),
+}
+
+# Optional: Fail fast if keys are missing to avoid debugging headaches
+if not STRIPE_KEYS["stripe_sk"] or not STRIPE_KEYS["stripe_pk"]:
+    # Prevent app from running in broken state
+    print("WARNING: Stripe API keys are missing from the environment.")
+
 
 DEBUG = not IS_HEROKU_APP
 
@@ -71,6 +81,7 @@ INSTALLED_APPS = [
     "view_breadcrumbs",
     "django_filters",
     "djmoney",
+    "stripe",
     "core",
     "accounts",
     "basket",
