@@ -43,15 +43,20 @@ async function stripeListener(evt) {
 	if (detail.successful) {
 		const response = JSON.parse(detail.xhr.responseText);
 		const { clientSecret, stripePk } = response;
-		const paymentUI = showPaymentToast(clientSecret);
-		const mountPromise = mountStripeElements(stripePk, clientSecret, paymentUI);
+
 		try {
-			const stripeInstance = await mountPromise;
-			if (!stripeInstance) return;
-			const { stripe, elements } = stripeInstance;
-			console.log('Stripe live on toast');
-		} catch (e) {
-			throw e;
+			const paymentUI = await showPaymentToast(clientSecret);
+			if (!paymentUI) {
+				return;
+			}
+
+			const stripeInstance = await mountStripeElements(
+				stripePk,
+				clientSecret,
+				paymentUI
+			);
+		} catch (err) {
+			console.error('Handshake failed:', err);
 		}
 	} else {
 		showToast('Checkout failed to initialise.', 'danger');
