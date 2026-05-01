@@ -4,7 +4,7 @@
  * @property {'success'|'danger'|'warning'|'info'} status
  */
 
-import { mountStripeElements } from './checkout.js';
+import { attachPaymentListener, mountStripeElements } from './checkout.js';
 import { showToast, showPaymentToast } from './toast.js';
 
 /**
@@ -55,6 +55,10 @@ async function stripeListener(evt) {
 				clientSecret,
 				paymentUI
 			);
+			if (stripeInstance && paymentUI.form) {
+				const { stripe, elements } = stripeInstance;
+				attachPaymentListener(stripe, elements, paymentUI.form);
+			}
 		} catch (err) {
 			console.error('Handshake failed:', err);
 		}

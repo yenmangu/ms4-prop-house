@@ -9,52 +9,6 @@
     <h1>Your Basket</h1>
     <hr>
     <div id="summary-content">{% include "basket/partials/_basket_summary_content.html" %}</div>
-    {% comment %}
-
-    {% if basket and basket.lines.all %}
-      <table class="table basket-table" data-basket-count="{{ basket.lines.count }}">
-        <thead>
-          <tr>
-            <th>Prop Name</th>
-            <th>Quantity</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for line in basket.lines.all %}
-            <tr>
-              <td>{{ line.product.name }}</td>
-              <td>{{ line.quantity }}</td>
-              <td>
-                <button hx-post="{% url 'basket:update' %}" hx-trigger="click" hx-ext="json-enc" hx-vals='{"product_id": "{{ line.product.id }}","action":"remove"}' hx-swap="none" class="btn btn--industrial btn--product-list basket-remove">REMOVE_ITEM</button>
-
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <div class="container basket-actions px-0">
-        <div class="row">
-          <div class="col-6 pe-auto">
-            <button hx-post="{% url 'basket:update' %}" hx-trigger="click" hx-ext="json-enc" hx-vals='{"action":"CLEAR"}' hx-swap="none" class="btn--industrial btn--sidebar btn--ghost" id="basket_clear">CLEAR_ALL</button>
-
-          </div>
-          <div class="col-6">
-            <div class="text-end">
-              <h3>
-                Total: <span class="basket-total-value">{{ basket.total_price }}</span>
-              </h3>
-            </div>
-          </div>
-          <div class="col my-4">
-            <a href="/" class="btn--industrial btn--sidebar">Checkout</a>
-          </div>
-        </div>
-      </div>
-    {% else %}
-      <p>Your basket is currently empty</p>
-      <a href="{% url 'catalogue:product_list' %}">Find some props</a>
-    {% endif %}
-    {% endcomment %}
   </div>
+  {% include "commerce/includes/stripe_form.html" %}
 {% endblock content %}

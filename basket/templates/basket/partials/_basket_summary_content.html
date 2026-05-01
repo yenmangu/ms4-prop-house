@@ -1,3 +1,4 @@
+{% load static %}
 {% if basket and basket.lines.all %}
   <table class="table basket-table"
          data-basket-count="{{ basket.lines.count }}">
@@ -42,7 +43,7 @@
         </div>
       </div>
       <div class="col my-4">
-        <a hx-post="{% url 'commerce:create_paymet_intent' %}"
+        <a hx-post="{% url 'commerce:create_payment_intent' %}"
            hx-trigger="click"
            hx-swap="none"
            id="checkout-button"

@@ -30,6 +30,13 @@ urlpatterns = [
         ),
     ),
     path(
+        "checkout/",
+        include(
+            "commerce.urls",
+            namespace="commerce",
+        ),
+    ),
+    path(
         "",
         include(
             "catalogue.urls",

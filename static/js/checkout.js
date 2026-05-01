@@ -6,6 +6,7 @@
  */
 
 import { getStandardHeaders } from '../../static/js/apiConfig.js';
+import { getPaymentAppearance } from './stripeAppearance.js';
 
 /**
  * Returns the Stripe instance using the global window.Stripe constructor.
@@ -41,27 +42,44 @@ export const mountStripeElements = async (pk, clientSecret, paymentUI) => {
 	const stripe = getStripe(pk);
 	if (!stripe) return;
 
-	/** @type {Appearance} */
-	const appearance = {
-		theme: 'night',
-		variables: { colorPrimary: '#052c33' }
-	};
+	const elementsAppearance = getPaymentAppearance();
+
+	// /** @type {Appearance} */
+	// const appearance = {
+	// 	theme: 'night',
+	// 	inputs: 'spaced',
+	// 	labels: 'auto',
+
+	// 	variables: {
+	// 		colorPrimary: 'rgb(255,107,0)',
+	// 		colorBackground: 'rgb(18,18,18)',
+	// 		colorText: 'rgb(242,242,242)'
+	// 	}
+	// };
 
 	const elements = stripe.elements({
 		clientSecret,
-		appearance
+		appearance: elementsAppearance
 	});
 
 	if (!elements) return;
 	const paymentElement = elements.create('payment');
 
 	if (!paymentElement) return;
-	paymentElement.mount('#payment-element');
 
-	const mountPoint =
-		/** @type {HTMLElement} */ (
-			paymentUI.form?.querySelector('#payment-element')
-		) || paymentUI.form;
+	if (!paymentUI.form || paymentUI.form == null) {
+		return;
+	}
+	const mountPoint = /** @type {HTMLElement} */ (
+		paymentUI.form.querySelector('#payment-element')
+	);
+
+	if (!mountPoint) {
+		console.error(
+			'Mount point #payment-element not found within the injected form.'
+		);
+		return;
+	}
 
 	try {
 		await paymentElement.mount(mountPoint);
@@ -69,39 +87,51 @@ export const mountStripeElements = async (pk, clientSecret, paymentUI) => {
 	} catch (err) {
 		console.log('Mounting failed: ', err);
 	}
-
-	// // Ensure the container exists before mounting
-	// const container = document.getElementById('payment-element');
-	// if (container) {
-	// 	paymentElement.mount('#payment-element');
-	// } else {
-	// 	console.error('Target #payment-element not found in DOM.');
-	// }
-
-	// return { stripe, elements };
 };
 
-// /**
-//  *
-//  * @param {string} pk
-//  * @returns
-//  */
+/**
+ *
+ * @param {Stripe} stripe
+ * @param {StripeElements} elements
+ * @param {HTMLElement} form
+ */
+export const attachPaymentListener = (stripe, elements, form) => {
+	form.addEventListener('submit', async event => {
+		event.preventDefault();
 
-// async function initialiseCheckout(pk) {
-// 	try {
-// 		const response = await fetch('/checkout/create-payment-intent/', {
-// 			method: 'POST',
-// 			headers: getStandardHeaders()
-// 		});
+		const submitBtn = /** @type {HTMLButtonElement} */ (
+			form.querySelector('#submit-payment')
+		);
+		const spinner = /** @type {HTMLElement} */ (form.querySelector('#spinner'));
+		const buttonTxt = /** @type {HTMLElement} */ (
+			form.querySelector('#button-text')
+		);
+		const messageContainer = /** @type {HTMLElement} */ (
+			document.getElementById('payment-message')
+		);
 
-// 		if (!response.ok) throw new Error('Failed to create Payment Intent');
+		// UI Feedback
+		submitBtn.disabled = true;
+		spinner.classList.remove('d-none');
+		buttonTxt.innerText = 'PROCESSING...';
 
-// 		const { clientSecret } = await response.json();
+		// Confirm Payment
+		const { error } = await stripe.confirmPayment({
+			elements,
+			confirmParams: {
+				return_url: `${window.location.origin}/checkout/checkout-success`
+			}
+		});
 
-// 		return await mountStripeElements(pk, clientSecret);
+		// Handle errors
+		if (error && typeof error.message === 'string') {
+			messageContainer.classList.remove('d-none');
+			messageContainer.innerText = error.message;
 
-// 		// initialise Sripe Elements with the clientSecret
-// 	} catch (err) {
-// 		console.error('Checkout Initialization Error:', err);
-// 	}
-// }
+			// Re-enable UI
+			submitBtn.disabled = false;
+			spinner.classList.add('d-none');
+			buttonTxt.innerText = 'Complete Purchase';
+		}
+	});
+};

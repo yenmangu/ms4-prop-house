@@ -43,39 +43,66 @@ export const showToast = (message, status = 'success') => {
 /**
  *
  * @param {string} clientSecret
+ * @returns {Promise<PaymentUI>}
  */
 export const showPaymentToast = async clientSecret => {
-	const container = document.createElement('div');
+	return new Promise(resolve => {
+		const toastElement = /** @type {HTMLElement} */ (
+			document.getElementById('liveToast')
+		);
+		const bodyElement = /** @type {HTMLElement} */ (
+			document.getElementById('toastBody')
+		);
+		const titleElement = /** @type {HTMLElement} */ (
+			document.getElementById('toastTitle')
+		);
+		const template = /** @type {HTMLTemplateElement} */ (
+			document.getElementById('stripe-form-template')
+		);
 
-	const toastElement = document.getElementById('liveToast');
-	const bodyElement = document.getElementById('toastBody');
-	const titleElement = /** @type {HTMLElement} */ (
-		document.getElementById('toastTitle')
-	);
-	const template = /** @type {HTMLTemplateElement} */ (
-		document.getElementById('stripe-form-template')
-	);
+		// 1. Clear previous content and clone the template
+		bodyElement.innerHTML = '';
+		const clone = template.content.cloneNode(true);
 
-	if (!toastElement || !bodyElement || !template) return;
+		// 2. Inject the clone into the toast body
+		bodyElement.appendChild(clone);
 
-	// 1. Clear previous content and clone the template
-	bodyElement.innerHTML = '';
-	const clone = template.content.cloneNode(true);
+		if (!toastElement || !bodyElement || !template) return;
 
-	// 2. Inject the clone into the toast body
-	bodyElement.appendChild(clone);
+		// 3. Set your "Industrial" styling
+		titleElement.innerText = 'Secure Checkout';
+		titleElement.style.color = 'var(--clr-primary)';
 
-	// 3. Set your "Industrial" styling
-	titleElement.innerText = 'Secure Checkout';
-	titleElement.style.color = 'var(--clr-primary)';
+		// 4. Show toast without autohide
+		const toast = new bootstrap.Toast(toastElement, { autohide: false });
 
-	// 4. Show toast without autohide
-	const toast = new bootstrap.Toast(toastElement, { autohide: false });
-	toast.show();
+		toastElement.addEventListener(
+			'shown.bs.toast',
+			() => {
+				resolve({
+					form: document.getElementById('payment-form'),
+					messageContainer: document.getElementById('payment-message'),
+					clientSecret: clientSecret
+				});
+			},
+			{ once: true }
+		);
+		toast.show();
+	});
+	// const container = document.createElement('div');
 
-	return {
-		form: document.getElementById('payment-form'),
-		messageContainer: document.getElementById('payment-message'),
-		clientSecret: clientSecret
-	};
+	// // 1. Clear previous content and clone the template
+	// bodyElement.innerHTML = '';
+	// const clone = template.content.cloneNode(true);
+
+	// // 2. Inject the clone into the toast body
+	// bodyElement.appendChild(clone);
+
+	// toast.show();
+
+	// return {
+	// 	form: document.getElementById('payment-form'),
+	// 	messageContainer: document.getElementById('payment-message'),
+	// 	clientSecret: clientSecret
+	// };
 };
