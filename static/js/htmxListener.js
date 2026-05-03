@@ -5,7 +5,13 @@
  */
 
 import { attachPaymentListener, mountStripeElements } from './checkout.js';
-import { showToast, showPaymentToast } from './toast.js';
+import { intialiseCustomerForm } from './customerForm.js';
+import { getToastElements } from './domElements.js';
+import {
+	showToast,
+	showPaymentToast,
+	showCustomerDetailsToast
+} from './toast.js';
 
 /**
  * @typedef {CustomEvent<ToastDetail>} ToastEvent
@@ -13,7 +19,7 @@ import { showToast, showPaymentToast } from './toast.js';
 
 export const initialiseHtmxListeners = () => {
 	document.addEventListener('showToast', handleToastEvent);
-	document.addEventListener('htmx:afterRequest', stripeListener);
+	document.addEventListener('htmx:afterRequest', checkoutListener);
 };
 
 /**
@@ -24,47 +30,59 @@ function handleToastEvent(evt) {
 	const toastEvt = /** @type {ToastEvent} */ (evt);
 	const { message, status } = toastEvt.detail;
 	console.log('SHOW TOAST');
-
-	showToast(message, status);
+	const toastElements = getToastElements();
+	if (toastElements) {
+		showToast(toastElements, message, status);
+	}
 }
 
-// TODO: Remove deprecated
-// document.addEventListener(
-// 	'showToast',
-// 	/**
-// 	 *
-// 	 * @param {Event} evt
-// 	 */
-// 	evt => {
-// 		const toastEvt = /** @type {ToastEvent} */ (evt);
-// 		const { message, status } = toastEvt.detail;
-// 		console.log('SHOW TOAST');
-
-// 		showToast(message, status);
-// 	}
-// );
-
 /**
+ * Handles multi-stage checkout flow within the toast
  *
  * @param {Event} evt
  */
-async function stripeListener(evt) {
-	const paymentEvent = /** @type {AfterRequestEvent} */ (evt);
-	const { detail } = paymentEvent;
+async function checkoutListener(evt) {
+	const event = /** @type {AfterRequestEvent} */ (evt);
+	const { detail } = event;
+	const toastElements = getToastElements();
 
-	// Early return if request did not come from trigger
-	if (detail.elt.id !== 'checkout-button') return;
+	if (!toastElements) {
+		reportError('[DOM_ERROR]: Toast Elements not found in DOM');
+		return;
+	}
 
-	// success
-	if (detail.successful) {
+	// Success check
+	if (!detail.successful) {
+		showToast(
+			toastElements,
+			'Please try again. Contact supports if this persists.',
+			'danger'
+		);
+		return;
+	}
+
+	// Contact form injection
+	if (detail.elt.id === 'open-checkout') {
+		const { bodyElement, titleElement } = toastElements;
+		// const bodyElement = document.getElementById('toastBody');
+		// const titleElement = document.getElementById('toastTitle');
+		if (bodyElement && titleElement) {
+			titleElement.innerText = '_01: Contact Information';
+			bodyElement.innerHTML = detail.xhr.responseText;
+			// Re-initialise customer form
+			intialiseCustomerForm();
+			// Show customer details toast
+			showCustomerDetailsToast(toastElements);
+		}
+	}
+
+	// Stripe Handshake (from payment-form)
+	if (detail.elt.id === 'payment-form') {
 		const response = JSON.parse(detail.xhr.responseText);
 		const { clientSecret, stripePk } = response;
-
 		try {
-			const paymentUI = await showPaymentToast(clientSecret);
-			if (!paymentUI) {
-				return;
-			}
+			const paymentUI = await showPaymentToast(toastElements, clientSecret);
+			if (!paymentUI) return;
 
 			const stripeInstance = await mountStripeElements(
 				stripePk,
@@ -76,9 +94,13 @@ async function stripeListener(evt) {
 				attachPaymentListener(stripe, elements, paymentUI.form);
 			}
 		} catch (err) {
-			console.error('Handshake failed:', err);
+			const msg = err instanceof Error ? err.message : 'Handshake failed.';
+
+			showToast(
+				toastElements,
+				`Error: ${msg}. Contact support if this persists.`,
+				'danger'
+			);
 		}
-	} else {
-		showToast('Checkout failed to initialise.', 'danger');
 	}
 }

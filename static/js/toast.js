@@ -1,32 +1,16 @@
 // import { Toast } from 'bootstrap';
 import * as bootstrap from 'bootstrap';
-import { phNotify } from './reportError.js';
 
 /**
  *
+ * @param {ToastElements} toastElements
  * @param {string} message
  * @param {string} status
  * @returns
  */
-export const showToast = (message, status = 'success') => {
-	const toastElement = document.getElementById('liveToast');
-	const bodyElement = document.getElementById('toastBody');
-	const titleElement = document.getElementById('toastTitle');
-
-	if (!toastElement) {
-		reportError(new Error('[DOM_ERROR]: Toast element not found'));
-		return;
-	}
-
-	if (!bodyElement) {
-		reportError(new Error('[DOM_ERROR]: Toast body element not found'));
-		return;
-	}
-
-	if (!titleElement) {
-		reportError(new Error('[DOM_ERROR]: Toast title element not found'));
-		return;
-	}
+export const showToast = (toastElements, message, status = 'success') => {
+	if (!toastElements) return;
+	const { toastElement, bodyElement, titleElement } = toastElements;
 
 	bodyElement.innerText = message;
 	titleElement.innerText = status.charAt(0).toUpperCase() + status.slice(1);
@@ -42,38 +26,32 @@ export const showToast = (message, status = 'success') => {
 
 /**
  *
+ * @param {ToastElements} toastElements
  * @param {string} clientSecret
  * @returns {Promise<PaymentUI>}
  */
-export const showPaymentToast = async clientSecret => {
+export const showPaymentToast = async (toastElements, clientSecret) => {
 	return new Promise(resolve => {
-		const toastElement = /** @type {HTMLElement} */ (
-			document.getElementById('liveToast')
-		);
-		const bodyElement = /** @type {HTMLElement} */ (
-			document.getElementById('toastBody')
-		);
-		const titleElement = /** @type {HTMLElement} */ (
-			document.getElementById('toastTitle')
-		);
+		if (!toastElements) return;
+		const { toastElement, bodyElement, titleElement } = toastElements;
 		const template = /** @type {HTMLTemplateElement} */ (
 			document.getElementById('stripe-form-template')
 		);
 
-		// 1. Clear previous content and clone the template
+		// Clear previous content and clone the template
 		bodyElement.innerHTML = '';
 		const clone = template.content.cloneNode(true);
 
-		// 2. Inject the clone into the toast body
+		// Inject the clone into the toast body
 		bodyElement.appendChild(clone);
 
 		if (!toastElement || !bodyElement || !template) return;
 
-		// 3. Set your "Industrial" styling
+		// Set your styling
 		titleElement.innerText = 'Secure Checkout';
 		titleElement.style.color = 'var(--clr-primary)';
 
-		// 4. Show toast without autohide
+		// Show toast without autohide
 		const toast = new bootstrap.Toast(toastElement, { autohide: false });
 
 		toastElement.addEventListener(
@@ -89,20 +67,19 @@ export const showPaymentToast = async clientSecret => {
 		);
 		toast.show();
 	});
-	// const container = document.createElement('div');
+};
 
-	// // 1. Clear previous content and clone the template
-	// bodyElement.innerHTML = '';
-	// const clone = template.content.cloneNode(true);
+/**
+ *
+ * @param {ToastElements} toastElements
+ * @returns
+ */
+export const showCustomerDetailsToast = async toastElements => {
+	if (!toastElements) return;
+	const { toastElement, bodyElement, titleElement } = toastElements;
+	titleElement.innerText = 'Step _01: Contact Information';
+	titleElement.style.color = 'var(--clr-primary)';
 
-	// // 2. Inject the clone into the toast body
-	// bodyElement.appendChild(clone);
-
-	// toast.show();
-
-	// return {
-	// 	form: document.getElementById('payment-form'),
-	// 	messageContainer: document.getElementById('payment-message'),
-	// 	clientSecret: clientSecret
-	// };
+	const toast = new bootstrap.Toast(toastElement, { autohide: false });
+	toast.show();
 };
