@@ -64,8 +64,7 @@ async function checkoutListener(evt) {
 	// Contact form injection
 	if (detail.elt.id === 'open-checkout') {
 		const { bodyElement, titleElement } = toastElements;
-		// const bodyElement = document.getElementById('toastBody');
-		// const titleElement = document.getElementById('toastTitle');
+
 		if (bodyElement && titleElement) {
 			titleElement.innerText = '_01: Contact Information';
 			bodyElement.innerHTML = detail.xhr.responseText;
