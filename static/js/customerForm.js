@@ -13,11 +13,6 @@ export const intialiseCustomerForm = () => {
 	}
 };
 
-const userDefaults = {
-	name: '{{ user.get_full_name|default:user.username|escapejs }}',
-	email: '{{ user.email|escapejs }}'
-};
-
 /**
  * Scrapes data passed from Django json_script tags
  * @returns
