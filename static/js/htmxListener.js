@@ -11,22 +11,38 @@ import { showToast, showPaymentToast } from './toast.js';
  * @typedef {CustomEvent<ToastDetail>} ToastEvent
  */
 
-document.addEventListener(
-	'showToast',
-	/**
-	 *
-	 * @param {Event} evt
-	 */
-	evt => {
-		const toastEvt = /** @type {ToastEvent} */ (evt);
-		const { message, status } = toastEvt.detail;
-		console.log('SHOW TOAST');
+export const initialiseHtmxListeners = () => {
+	document.addEventListener('showToast', handleToastEvent);
+	document.addEventListener('htmx:afterRequest', stripeListener);
+};
 
-		showToast(message, status);
-	}
-);
+/**
+ *
+ * @param {Event} evt
+ */
+function handleToastEvent(evt) {
+	const toastEvt = /** @type {ToastEvent} */ (evt);
+	const { message, status } = toastEvt.detail;
+	console.log('SHOW TOAST');
 
-document.addEventListener('htmx:afterRequest', stripeListener);
+	showToast(message, status);
+}
+
+// TODO: Remove deprecated
+// document.addEventListener(
+// 	'showToast',
+// 	/**
+// 	 *
+// 	 * @param {Event} evt
+// 	 */
+// 	evt => {
+// 		const toastEvt = /** @type {ToastEvent} */ (evt);
+// 		const { message, status } = toastEvt.detail;
+// 		console.log('SHOW TOAST');
+
+// 		showToast(message, status);
+// 	}
+// );
 
 /**
  *
