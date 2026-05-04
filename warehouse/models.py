@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import Settings
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from catalogue.models import Product
@@ -103,6 +103,13 @@ class HireRecord(models.Model):
 
     if TYPE_CHECKING:
         order_item: OrderItem
+
+    def get_order_id(self) -> Optional[int]:
+        if self.order_item and self.order_item.order:
+            return self.order_item.order.id
+
+        # Implicit else - return None
+        return None
 
     def __str__(self):
         return (
