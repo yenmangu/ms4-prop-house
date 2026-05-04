@@ -1,25 +1,4 @@
-{% comment %}
-
-<form id="payment_form" class="p-2">
-  <div id="link_authentication_element"></div>
-  <div id="payment-element"></div>
-  <div id="payment-message" class="mt-3 text-danger d-none" role="alert"></div>
-  <button id="submit-payment" class="btn btn-success w-100 mt-4 py-2 position-relative">
-    <span id="button-text">Complete Purchase</span>
-    <div id="spinner" class="spinner-border spinner-border-sm d-none" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </button>
-</form>
-
-{% endcomment %}
-<!-- 1. The Template Wrapper: This is what showPaymentToast() searches for -->
 <template id="stripe-form-template">
-  <!--
-    Note: Your JS looks for 'payment-form' (hyphenated)
-    but your snippet had 'payment_form' (underscored).
-    I've aligned this to match your JS 'payment-form' requirement.
-  -->
   <form id="payment-form" class="p-2">
     <div id="link-authentication-element"></div>
     <div id="payment-element"></div>
@@ -35,7 +14,6 @@
     </button>
   </form>
 </template>
-<!-- 2. The Industrial Toast Structure (Required by toast.js) -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
   <div id="liveToast"
        class="toast"
@@ -49,8 +27,6 @@
               data-bs-dismiss="toast"
               aria-label="Close"></button>
     </div>
-    <div id="toastBody" class="toast-body">
-      <!-- Your JS will inject the cloned template content here -->
-    </div>
+    <div id="toastBody" class="toast-body"></div>
   </div>
 </div>

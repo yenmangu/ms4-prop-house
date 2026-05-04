@@ -38,6 +38,13 @@ h1 {
 	border-bottom: 4px solid var(--clr-accent);
 }
 
+.field-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin: 1rem 0;
+}
+
 .count {
 	font-size: 1rem;
 	color: var(--clr-accent);
@@ -226,6 +233,14 @@ footer {
 	border-color: #fff;
 }
 
+.btn--industrial:disabled {
+	cursor: not-allowed;
+	border-color: var(--border-hard);
+	color: var(--txt-muted);
+	filter: grayscale(1);
+	opacity: 0.5;
+}
+
 /* Modifier: Sidebar specific tweaks */
 .btn--sidebar {
 	width: 100%;
@@ -254,12 +269,12 @@ footer {
 
 /* ------------------- Toast ------------------ */
 
-/* 1. Neutralize Bootstrap's display: none so the animation can actually run */
+/* Neutralize Bootstrap's display: none so the animation can actually run */
 #liveToast.industrial-toast:not(.show) {
 	display: block;
 }
 
-/* 2. Refined Base State */
+/* Refined Base State */
 #liveToast.industrial-toast {
 	position: fixed;
 	bottom: 2rem;
@@ -285,9 +300,23 @@ footer {
 		visibility 0.3s;
 }
 
-/* 3. The 'Inward' Slide */
+/* The 'Inward' Slide */
 body #liveToast.industrial-toast.show {
 	opacity: 1;
 	visibility: visible;
 	transform: translateX(0);
+}
+
+/* Ensure the indicator only appears during the request */
+
+.htmx-indicator {
+	display: none;
+}
+.htmx-request .htmx-indicator {
+	display: inline-block;
+}
+.htmx-request.industrial-btn-primary {
+	/* Disables double-clicks */
+	pointer-events: none;
+	opacity: 0.6;
 }

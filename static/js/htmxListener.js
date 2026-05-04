@@ -3,10 +3,10 @@
  * @property {string} message
  * @property {'success'|'danger'|'warning'|'info'} status
  */
-
 import { attachPaymentListener, mountStripeElements } from './checkout.js';
 import { intialiseCustomerForm } from './customerForm.js';
 import { getToastElements } from './domElements.js';
+import { phReportError } from './reportError.js';
 import {
 	showToast,
 	showPaymentToast,
@@ -44,43 +44,75 @@ function handleToastEvent(evt) {
 async function checkoutListener(evt) {
 	const event = /** @type {AfterRequestEvent} */ (evt);
 	const { detail } = event;
-	const toastElements = getToastElements();
+	const toastUI = getToastElements();
 
-	if (!toastElements) {
-		reportError('[DOM_ERROR]: Toast Elements not found in DOM');
+	if (!toastUI) {
+		phReportError('[DOM_ERROR]: Toast Elements not found in DOM');
 		return;
 	}
 
 	// Success check
 	if (!detail.successful) {
 		showToast(
-			toastElements,
+			toastUI,
 			'Please try again. Contact supports if this persists.',
 			'danger'
 		);
 		return;
 	}
 
+	// Stage 1
 	// Contact form injection
 	if (detail.elt.id === 'open-checkout') {
-		const { bodyElement, titleElement } = toastElements;
+		const checkoutBtn = /** @type {HTMLButtonElement} */ (detail.elt);
 
-		if (bodyElement && titleElement) {
-			titleElement.innerText = '_01: Contact Information';
-			bodyElement.innerHTML = detail.xhr.responseText;
-			// Re-initialise customer form
-			intialiseCustomerForm();
-			// Show customer details toast
-			showCustomerDetailsToast(toastElements);
+		// Disable the checkout button
+		checkoutBtn.disabled = true;
+		checkoutBtn.classList.add('opacity-50');
+
+		toastUI.titleElement.innerText = '_01: Contact Information';
+		toastUI.bodyElement.innerHTML = detail.xhr.responseText;
+
+		// @ts-ignore
+		if (window.htmx) {
+			// @ts-ignore
+			window.htmx.process(toastUI.bodyElement);
+		} else {
+			console.error('[SYSTEM_ERROR]: HTMX not found on window object');
 		}
+
+		// Re-initialise customer form
+		intialiseCustomerForm();
+		// Show customer details toast
+		showCustomerDetailsToast(toastUI);
+
+		toastUI.toastElement.addEventListener(
+			'hidden.bs.toast',
+			() => {
+				checkoutBtn.disabled = false;
+				checkoutBtn.classList.remove('opacity-50');
+			},
+			{ once: true }
+		);
 	}
 
-	// Stripe Handshake (from payment-form)
-	if (detail.elt.id === 'payment-form') {
+	// Stage 2
+	// Stripe Handshake (from create-intent)
+	if (detail.elt.id === 'create-intent') {
+		const submitBtn = /** @type {HTMLButtonElement} */ (
+			detail.elt.querySelector('button[type="submit"]')
+		);
+
+		// Lock button and provide UX
+		if (submitBtn) {
+			submitBtn.disabled = true;
+			submitBtn.innerHTML = 'Initialising secure payment portal...';
+		}
+
 		const response = JSON.parse(detail.xhr.responseText);
 		const { clientSecret, stripePk } = response;
 		try {
-			const paymentUI = await showPaymentToast(toastElements, clientSecret);
+			const paymentUI = await showPaymentToast(toastUI, clientSecret);
 			if (!paymentUI) return;
 
 			const stripeInstance = await mountStripeElements(
@@ -96,7 +128,7 @@ async function checkoutListener(evt) {
 			const msg = err instanceof Error ? err.message : 'Handshake failed.';
 
 			showToast(
-				toastElements,
+				toastUI,
 				`Error: ${msg}. Contact support if this persists.`,
 				'danger'
 			);

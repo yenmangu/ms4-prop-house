@@ -44,7 +44,7 @@ const updateFormState = isAccountMode => {
 		);
 		if (input) {
 			input.value = isAccountMode ? field.value : '';
-			input.disabled = isAccountMode;
+
 			input.classList.toggle('is-locked', isAccountMode);
 			input.placeholder = isAccountMode ? field.value : 'Required for hire';
 

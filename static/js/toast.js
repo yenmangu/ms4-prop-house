@@ -20,7 +20,7 @@ export const showToast = (toastElements, message, status = 'success') => {
 
 	titleElement.style.color = 'var(--clr-success)';
 
-	const toast = new bootstrap.Toast(toastElement);
+	const toast = new bootstrap.Toast(toastElement, { autohide: false });
 	toast.show();
 };
 
@@ -38,14 +38,22 @@ export const showPaymentToast = async (toastElements, clientSecret) => {
 			document.getElementById('stripe-form-template')
 		);
 
+		// DEBUG
+		// if (!template) {
+		// 	console.log('NO TEMPLATE');
+		// }
+
 		// Clear previous content and clone the template
 		bodyElement.innerHTML = '';
+
 		const clone = template.content.cloneNode(true);
 
 		// Inject the clone into the toast body
 		bodyElement.appendChild(clone);
 
-		if (!toastElement || !bodyElement || !template) return;
+		if (!toastElement || !bodyElement || !template) {
+			console.error('ERROR');
+		}
 
 		// Set your styling
 		titleElement.innerText = 'Secure Checkout';

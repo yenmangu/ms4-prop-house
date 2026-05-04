@@ -5,6 +5,11 @@ app_name = "commerce"
 
 urlpatterns = [
     path(
+        "checkout-details/",
+        views.CheckoutDetailsView.as_view(),
+        name="checkout_details",
+    ),
+    path(
         "checkout-success/",
         views.CheckoutSuccessView.as_view(),
         name="checkout_success",

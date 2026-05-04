@@ -1,3 +1,4 @@
+import { getToastElements } from './domElements.js';
 import { showToast } from './toast.js';
 
 const IS_DEV = true;
@@ -46,9 +47,15 @@ const reportToConsole = (error, context) => {
  * @param {'success'|'error'|'info'|'danger'} type
  */
 const phNotify = (message, type = 'success') => {
+	const toastElements = getToastElements();
+	if (!toastElements) {
+		console.error('DOM ERROR: ToastElements not found');
+		return;
+	}
 	const formatted = message.toUpperCase();
 
-	showToast(message, type);
+	showToast(toastElements, message, type);
+	console.error('[TEMP CONSOLE]: ', message);
 
 	// Deprecated in favour of above
 	// Moved to centralised bootstrap toast system.

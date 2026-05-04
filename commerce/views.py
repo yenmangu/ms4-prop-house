@@ -18,6 +18,14 @@ import uuid
 # Create your views here.
 
 
+class CheckoutDetailsView(BasketMixin, generic.TemplateView):
+    """
+    Serves initial form via HTMX
+    """
+
+    template_name = "commerce/includes/_customer_details_form.html"
+
+
 class paymentIntentView(StripeMixin, BasketMixin, View):
     """
     Handles Stripe Payment Intent creation.
@@ -42,8 +50,8 @@ class paymentIntentView(StripeMixin, BasketMixin, View):
 
             order = Order.objects.create(
                 user=request.user if request.user.is_authenticated else None,
-                full_name=request.POST.get("name"),
-                email=request.POST.get("email"),
+                full_name=request.POST.get("name", "untitled"),
+                email=request.POST.get("email", "email@email.com"),
                 total_price=total,
                 stripe_pid="pending_ref_" + str(uuid.uuid4()),
             )

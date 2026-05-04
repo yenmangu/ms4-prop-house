@@ -1,0 +1,51 @@
+/* --- PROHOUSE INDUSTRIAL TOAST --- */
+
+#liveToast {
+	background-color: var(--bg-surface); /* Industrial Grey 'Concrete' */
+	border: 1px solid var(--clr-accent); /* Safety Orange 'Hazard' */
+	border-radius: var(--radius-sharp); /* Brutalist default */
+	box-shadow: 0 0 var(--glow-spread) var(--clr-accent-glow); /* Hazard glow */
+	color: var(--txt-primary); /* Stark White */
+}
+
+.toast-header {
+	background-color: var(--bg-main); /* Deep Slate 'Asphalt' */
+	border-bottom: 1px solid var(--border-glow); /* Subtle orange glow */
+	color: var(--clr-accent); /* Safety Orange */
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	padding: 0.75rem 1rem;
+}
+
+/* Override Bootstrap close button to match the 'Stark White' */
+.btn-close {
+	filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.toast-body {
+	padding: 1.5rem;
+	background-image: var(--texture-scanline); /* Apply the 'Grit' texture */
+}
+
+/* Match the input fields inside the toast to the manifest style */
+#liveToast input,
+#liveToast select {
+	background-color: var(--bg-main);
+	border: 1px solid var(--border-hard);
+	color: var(--txt-primary);
+	border-radius: var(--radius-sm);
+	padding: 0.5rem;
+}
+
+#liveToast input:focus {
+	border-color: var(--clr-accent);
+	box-shadow: 0 0 5px var(--clr-accent-glow);
+	outline: none;
+}
+
+.industrial-input[readonly] {
+	background-color: var(--industrial-asphalt);
+	cursor: not-allowed;
+	border-color: var(--industrial-border-muted);
+	color: var(--industrial-text-muted);
+}
