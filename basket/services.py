@@ -31,14 +31,21 @@ def get_basket_for_request(request: HttpRequest):
         ).first()
         if basket:
             return basket
+        else:
+            # Self-healing stale session ID logic
+            del request.session["basket_id"]
+            request.session.modified = True
 
     # Check Session Key (Orphan lookup)
     if request.session.session_key:
         orphan = Basket.objects.filter(
             session_key=request.session.session_key,
             status=Basket.Status.OPEN,
+            user__isnull=True,
         ).first()
         if orphan:
+            # Sync session ID
+            request.session["basket_id"] = str(orphan.id)
             return orphan
 
     # Failsafe: Ghost Basket

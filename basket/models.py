@@ -168,6 +168,13 @@ class Basket(models.Model):
         if int(quantity) < 1:
             return None
 
+        # Safety Check: if ghost basket, save to DB.
+        # Check if basket has been updated during current lifecycle
+
+        if not self._state.adding or not Basket.objects.filter(pk=self.pk).exists():
+            print(f"DEBUG: Basket {self.pk} not in DB. Saving now.")
+            self.save()
+
         product = Product.objects.get(id=product_id)
 
         line, created = self.lines.update_or_create(
@@ -203,6 +210,11 @@ class Basket(models.Model):
         Side Effects:
             - Saves the Basket instance to update the updated_on timestamp.
         """
+        # Safety check, almost redundant but my own peace of mind
+        if self._state.adding:
+            return (0, {})
+
+        # Back to normal
         result = self.lines.filter(product_id=product_id).delete()
         self.save()
         return result
