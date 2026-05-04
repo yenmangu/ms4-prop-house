@@ -19,6 +19,7 @@
           rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/theme.css' %}" />
     <link rel="stylesheet" href="{% static 'css/core.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toast.css' %}">
     {% block extra_css %}
     {% endblock extra_css %}
     <script type="importmap">
@@ -113,7 +114,7 @@
         <div class="toast-body" id="toastBody"></div>
       </div>
     </div>
-    <script type="module" src="{% static '/js/htmxListener.js' %}"></script>
+    <script type="module" src="{% static '/js/init.js' %}"></script>
     <footer class="footer-industrial mt-auto">
       <div class="container-fluid px-4 d-flex justify-content-between">
         <p class="mb-0">© {{ now|date:"Y" }} PROPHOUSE_SYSTEM</p>

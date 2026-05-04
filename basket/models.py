@@ -261,6 +261,12 @@ class Line(models.Model):
         max_digits=12, decimal_places=2, default_currency="GBP"
     )
 
+    # Add class level type checking for IDE auto completion
+    if TYPE_CHECKING:
+        from catalogue.models import Product
+
+        product: Product
+
     # Deprecated in favour of above
     # price_at_addition = models.DecimalField(
     #     max_digits=12,

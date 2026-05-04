@@ -42,13 +42,8 @@
           </h3>
         </div>
       </div>
-      <div class="col my-4">
-        <a hx-post="{% url 'commerce:create_payment_intent' %}"
-           hx-trigger="click"
-           hx-swap="none"
-           id="checkout-button"
-           class="btn--industrial btn--sidebar">Checkout</a>
-      </div>
+      {% include "commerce/partials/_open_checkout_button.html" %}
+      {% comment %} {% include "commerce/partials/_stripe_checkout_button.html" %} {% endcomment %}
     </div>
   </div>
 {% else %}
