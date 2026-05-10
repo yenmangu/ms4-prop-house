@@ -1,10 +1,14 @@
 from __future__ import annotations
+from datetime import timedelta
 from typing import TYPE_CHECKING, List
 from django.db import transaction
-from .models import HireRecord
+from django.db.models import Count, Q
+from django.utils import timezone
+from .models import HireRecord, StockItem
 
 if TYPE_CHECKING:
     from commerce.models import Order, OrderItem
+    from catalogue.models import Product
 
 
 def fulfill_order_items(order: Order) -> bool:
@@ -17,14 +21,89 @@ def fulfill_order_items(order: Order) -> bool:
 
     with transaction.atomic():
 
+        all_hire_records = []
+        stock_units_to_update = []
+
         for item in order.items.all():
+            # Lock rows
+            available_stock = list(
+                StockItem.objects.select_for_update().filter(
+                    product=item.product,
+                    status=StockItem.StockStatus.AVAILABLE,
+                )[: item.quantity]
+            )
 
-            records_to_create: List[HireRecord] = [
-                HireRecord(
-                    order_item=item,
+            if len(available_stock) < item.quantity:
+                raise ValueError(
+                    f"Insufficient physical stock for {item.product_name}"
+                    f"Required: {item.quantity}, Found:{len(available_stock)}"
+                    # TODO: Implement real alert system
                 )
-                for _ in range(item.quantity)
-            ]
 
-            HireRecord.objects.bulk_create(records_to_create)
+            for stock_unit in available_stock:
+                # Prepare HireRecord
+                all_hire_records.append(
+                    HireRecord(
+                        order_item=item,
+                        stock_item=stock_unit,
+                        due_date=timezone.now() + timedelta(days=7),
+                    )
+                )
+                # Queue item for status update
+                stock_unit.status = StockItem.StockStatus.ON_HIRE
+                stock_units_to_update.append(stock_unit)
+
+        if all_hire_records:
+            HireRecord.objects.bulk_create(all_hire_records)
+
+        if stock_units_to_update:
+            StockItem.objects.bulk_update(stock_units_to_update, ["status"])
+
+        # Finalise order status
+        order.status = Order.OrderStatus.PAID
+        order.save()
+
     return True
+
+
+def get_stock_availability(product: Product) -> dict:
+    """
+    Service Layer: Calculate the physical health of a product line.
+    Aggregate based on status field, which is updated in  `fulfill_order_items`
+
+    Returns:
+        dict: {
+            'total': Total physical assets,
+            'on_hire': Total assets currently on hire,
+            'available': Assets ready for a new order,
+            'maintenance': Assets under maintenance
+        }
+    """
+
+    stats = StockItem.objects.filter(product=product).aggregate(
+        total=Count("id"),
+        available=Count("id", filter=Q(status=StockItem.StockStatus.AVAILABLE)),
+        on_hire=Count("id", filter=Q(status=StockItem.StockStatus.ON_HIRE)),
+        maintenance=Count("id", filter=Q(status=StockItem.StockStatus.MAINTENANCE)),
+    )
+
+    return {
+        "total": stats["total"] or 0,
+        "on_hire": stats["on_hire"] or 0,
+        "available": stats["available"] or 0,
+        "maintenance": stats["maintenance"] or 0,
+    }
+
+
+def dispatch_hire_records(hire_record_ids: List[int], condition: str = "Good") -> int:
+    """
+    Marks physical items as having left the 'warehouse'
+    """
+    updated = HireRecord.objects.filter(
+        id__in=hire_record_ids,
+        out_date__isnull=True,
+    ).update(
+        out_date=timezone.now(),
+        condition_on_out=condition,
+    )
+    return updated
