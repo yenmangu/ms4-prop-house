@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import Settings
+from django.utils import timezone
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
@@ -95,7 +96,7 @@ class HireRecord(models.Model):
     # Timing Fields
     out_date = models.DateTimeField(null=True, blank=True)
     due_date = models.DateTimeField()
-    actual_return_date = models.DateTimeField(null=True, blank=True)
+    returned_date = models.DateTimeField(null=True, blank=True)
 
     # QC
     condition_on_out = models.TextField(blank=True)
@@ -103,6 +104,22 @@ class HireRecord(models.Model):
 
     if TYPE_CHECKING:
         order_item: OrderItem
+
+    @property
+    def days_remaining(self) -> int:
+        """
+        Calculate days until item is due back.
+        Returns 0 if overdue or already returned.
+        """
+        if self.returned_date or not self.due_date:
+            return 0
+
+        delta = self.due_date - timezone.now()
+        return max(0, delta.days)
+
+    @property
+    def is_overdue(self) -> bool:
+        return not self.returned_date and self.due_date < timezone.now()
 
     def get_order_id(self) -> Optional[int]:
         if self.order_item and self.order_item.order:
