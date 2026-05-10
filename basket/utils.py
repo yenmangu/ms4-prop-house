@@ -40,7 +40,7 @@ def get_basket_state(
     if basket:
         items = basket.total_items
         total = basket.total_price
-        is_empty = -basket.is_empty
+        is_empty = basket.is_empty
 
     else:
         items = 0
@@ -50,7 +50,7 @@ def get_basket_state(
     return {
         "status": status,
         "message": message,
-        "total_items": int(items),
+        "total_items": int(items if not is_empty else 0),
         "total_price": format_price(total),
         "is_empty": is_empty,
     }
