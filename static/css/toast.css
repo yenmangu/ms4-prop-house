@@ -43,7 +43,11 @@
 	outline: none;
 }
 
-.industrial-input[readonly] {
+.industrial-input {
+	cursor: unset;
+}
+
+.industrial-input.is-locked {
 	background-color: var(--industrial-asphalt);
 	cursor: not-allowed;
 	border-color: var(--industrial-border-muted);

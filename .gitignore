@@ -1,3 +1,4 @@
+# CI Patterns
 core.Microsoft*
 core.mongo*
 core.python*
@@ -8,22 +9,45 @@ __pycache__/
 *.py[cod]
 node_modules/
 # .github/
+
+# ENV Patterns
 .env
 .dev
 .dev/
 /.dev/
+.stripe_env
 cloudinary_python.txt
+
+#S Static patterns
+/static/js/tests/*.js
+/staticfiles
+staticfiles
+staticfiles/css/
+staticfiles/js/
+staticfiles/
+
+# Dot File & DS Patterns
 **/._*
 ./._*
 ._*
+.DS_*
+
+# Fixtures patterns
 fixtures
 products/fixtures
-.rubric
-rubric.*
-.DS_*
-*_context.md
-/static/js/tests/*.js
-*.log
-basketAction.js
+
+# Backup patterns
 *_backup.json
 *_data.json
+
+# DEV & Personal Patterns
+*.log
+basketAction.js
+.rubric
+rubric.*
+documentation/database/prop-house_with-stripe.drawio.xml
+*_context.md
+
+## allow only README.md
+/*.md
+!/README.md

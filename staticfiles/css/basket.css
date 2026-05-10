@@ -1,8 +1,0 @@
-.basket-purge {
-	opacity: 0;
-	transform: translateY(15px);
-	transition:
-		opacity 0.4s ease,
-		transform 0.4s ease;
-	pointer-events: none;
-}
