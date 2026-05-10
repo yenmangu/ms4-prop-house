@@ -63,7 +63,7 @@ class Basket(models.Model):
 
     # Allows access of method if Basket not instantiated in DB yet
     @classmethod
-    def handle_login_merge(cls, request: HttpRequest, user: User) -> None:
+    def handle_login_merge(cls, request: HttpRequest, user) -> None:
         """
         Refactored logic to find/merge baskets on login OR email confirmation.
         """
