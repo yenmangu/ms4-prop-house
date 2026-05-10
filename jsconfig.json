@@ -16,6 +16,7 @@
 		"venv",
 		".venv",
 		"static/admin",
-		"**/static/js/vendor"
+		"**/static/js/vendor",
+		"staticfiles/"
 	]
 }

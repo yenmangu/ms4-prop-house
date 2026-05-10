@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "- **Live site:** (To be added upon deployment) - **Repository:** (GitHub repository link) - **Documentation:** (GitHub README / Pages link if applicable)",
   "main": "index.js",
+  "module": "true",
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",
     "@types/jest": "^30.0.0",

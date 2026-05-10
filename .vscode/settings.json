@@ -1,0 +1,45 @@
+{
+	"python-envs.pythonProjects": [
+		{
+			"envManager": "ms-python.python:venv",
+			"packageManager": "ms-python.python:pip",
+			"path": "."
+		}
+	],
+	"python.analysis.indexing": true,
+	"python.analysis.autoImportCompletions": true,
+	"python.analysis.extraPaths": ["./.venv/lib/python3.14/site-packages"],
+	"python.analysis.packageIndexDepths": [
+		{
+			"name": "sklearn",
+			"depth": 2
+		},
+		{
+			"name": "matplotlib",
+			"depth": 2
+		},
+		{
+			"name": "scipy",
+			"depth": 2
+		},
+		{
+			"name": "django",
+			"depth": 10,
+			"includeAllSymbols": true
+		},
+		{
+			"name": "flask",
+			"depth": 2
+		},
+		{
+			"name": "fastapi",
+			"depth": 2
+		},
+		{
+			"name": "cuda",
+			"depth": 3,
+			"includeAllSymbols": true
+		}
+	],
+	"python.analysis.userFileIndexingLimit": -1
+}
