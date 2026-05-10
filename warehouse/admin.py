@@ -1,5 +1,9 @@
 from django.contrib import admin
+from django.db.models import QuerySet
+from django.http import HttpRequest
+from django.utils import timezone
 from .models import HireRecord, StockItem
+from .services import dispatch_hire_records
 
 
 @admin.register(StockItem)
@@ -29,6 +33,31 @@ class StockItemAdmin(admin.ModelAdmin):
         return ()
 
 
+@admin.action(
+    description="Mark selected items as DISPATCHED",
+)
+def mark_as_dispatched(
+    modeladmin: admin.ModelAdmin,
+    request: HttpRequest,
+    queryset: QuerySet[HireRecord],
+) -> None:
+    """
+    Uses warehouse service to dispatch items
+    """
+    queryset.update(out_date=timezone.now())
+    ids = list(
+        queryset.values_list(
+            "id",
+            flat=True,
+        )
+    )
+    count = dispatch_hire_records(
+        ids,
+        condition="Dispatched via Admin",
+    )
+    modeladmin.message_user(request, f"Successfully dispatched {count} items.")
+
+
 @admin.register(HireRecord)
 class HireRecordAdmin(admin.ModelAdmin):
     list_display = (
@@ -51,3 +80,5 @@ class HireRecordAdmin(admin.ModelAdmin):
         "order_item__order",
         "stock_item",
     )
+
+    actions = [mark_as_dispatched]
