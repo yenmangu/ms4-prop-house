@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     "catalogue",
     "commerce",
     "profiles",
+    "warehouse",
 ]
 
 MIDDLEWARE = [
