@@ -1,11 +1,13 @@
-from django.db import models
+from django.db import models, transaction
 from django.conf import settings
 from djmoney.models.fields import MoneyField
+import uuid
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from django.db.models.manager import RelatedManager
-
+    from accounts.models import User
+    from basket.models import Basket
 # Create your models here.
 
 
@@ -68,53 +70,42 @@ class Order(models.Model):
 
     # Allow class level type checking for IDE auto completion
     if TYPE_CHECKING:
-        lines: RelatedManager["OrderLine"]
         items: RelatedManager["OrderItem"]
+
+    @classmethod
+    def create_from_basket(
+        cls, basket: "Basket", user: "User", name: str, email: str
+    ) -> "Order":
+        """
+        Factory method to create an Order and its items from a Basket
+        """
+
+        with transaction.atomic():
+            order = cls.objects.create(
+                user=user if user.is_authenticated else None,
+                full_name=name,
+                email=email,
+                total_price=basket.total_price,
+                stripe_pid=f"pending_{uuid.uuid4()}",
+            )
+
+            order_items = [
+                OrderItem(
+                    order=order,
+                    # product=line.product.name,
+                    product=line.product,
+                    product_name=line.product.name,
+                    unit_price=line.price_at_addition,
+                    line_total=line.line_total,
+                    quantity=line.quantity,
+                )
+                for line in basket.lines.all()
+            ]
+            OrderItem.objects.bulk_create(order_items)
+        return order
 
     def __str__(self):
         return f"Order {self.id} [{self.get_status_display()}]"
-
-
-class OrderLine(models.Model):
-    """
-    _Domain:_ Sales / Inventory Planning
-    The 'Promise'.
-    An itemised line within the Master Contract (`Order`)
-    that breaks down exactly what product categories where purchased or hired.
-
-    _Real World Context:_
-    This model serves the 'Sales' and 'Front Desk' depts.
-    It translates the customer's payment into a specific request for the warehouse.
-    It captures the `abstract` agreement:
-
-    *'Customer paid for 10 rolls of Police Tape at current rate of £5.00'.*
-
-    _The Bridge (`OrderItem` -> `HireRecord`), and where OrderLine comes in:_
-    While `OrderItem` acts as a *parent* to the logistics layer,
-    `OrderLine` captures static data. It stores a `product_name` as a string
-    and a `price` as a value at the moment of transaction.
-
-    - _`OrderLine`_ - Ensures financial history is inscrutable.
-    If product is deleted or price changed, this record remains immutable.
-
-    - _`OrderItem`_ - Maintains live relationship via FK to `catalogue.Product`
-    """
-
-    order = models.ForeignKey(
-        Order,
-        related_name="lines",
-        on_delete=models.CASCADE,
-    )
-    product_name = models.CharField(max_length=255)
-    price = MoneyField(
-        max_digits=14,
-        decimal_places=2,
-        default_currency="GBP",
-    )
-    quantity = models.PositiveIntegerField(default=1)
-
-    def __str__(self):
-        return f"{self.quantity} x {self.product_name}"
 
 
 class OrderItem(models.Model):
@@ -153,6 +144,11 @@ class OrderItem(models.Model):
         # Prevent deleting products that are in orders.
         on_delete=models.PROTECT,
     )
+    product_name = models.CharField(
+        max_length=255,
+        help_text="Snapshot of the product name at time of purchase",
+    )
+
     quantity = models.PositiveIntegerField(default=1)
 
     unit_price = MoneyField(
@@ -170,4 +166,4 @@ class OrderItem(models.Model):
         product: Product
 
     def __str__(self):
-        return f"{self.quantity} x {self.product.name} (Order: {self.order.pk})"
+        return f"{self.quantity} x {self.product_name} (Order: {self.order.pk})"
