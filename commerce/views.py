@@ -1,4 +1,5 @@
 from typing import Optional
+from commerce.services import CheckoutService
 from django.conf import settings
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
@@ -9,7 +10,7 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from .mixins import StripeMixin
 from basket.mixins import BasketMixin
-from .models import Order, OrderLine
+from .models import Order, OrderItem
 from .utils import fulfill_order
 from basket.models import Basket
 import stripe
@@ -33,7 +34,7 @@ class paymentIntentView(StripeMixin, BasketMixin, View):
 
     def post(self, request: HttpRequest, *args, **kwargs):
         basket: Optional["Basket"] = self.get_basket()
-        if basket.is_empty:
+        if not basket or basket.is_empty:
             return JsonResponse(
                 {
                     "status": "error",
@@ -41,50 +42,76 @@ class paymentIntentView(StripeMixin, BasketMixin, View):
                 },
                 status=400,
             )
-        total = basket.total_price
 
-        with transaction.atomic():
+        # Use service for heavy lifting
+        intent, error = CheckoutService.create_payment_intent_for_basket(
+            basket=basket, user=request.user, post_data=request.POST
+        )
 
-            # Create Order object
-            # stripe_pid uses uuid.uuid4() to create a temp placeholder, because field is mandatory
-
-            order = Order.objects.create(
-                user=request.user if request.user.is_authenticated else None,
-                full_name=request.POST.get("name", "untitled"),
-                email=request.POST.get("email", "email@email.com"),
-                total_price=total,
-                stripe_pid="pending_ref_" + str(uuid.uuid4()),
-            )
-
-            for basket_line in basket.lines.all():
-                OrderLine.objects.create(
-                    order=order,
-                    product_name=basket_line.product.name,
-                    price=basket_line.price_at_addition,
-                    quantity=basket_line.quantity,
-                )
-
-            # Needed for stripe
-            total_small_units = int(total.amount * 100)
-
-        try:
-            intent = stripe.PaymentIntent.create(
-                amount=total_small_units,
-                currency="gbp",
-                metadata={"basket_id": basket.id, "order_id": order.id},
-            )
-            order.stripe_pid = intent.id
-            order.save()
-
+        if error:
             return JsonResponse(
                 {
-                    "clientSecret": intent.client_secret,
-                    "stripePk": self.stripe_public_key,
+                    "error": error,
                 },
+                status=400,
             )
 
-        except stripe.error.StripeError as e:
-            return JsonResponse({"error": str(e)}, status=400)
+        return JsonResponse(
+            {
+                "clientSecret": intent.client_secret,
+                "stripePk": self.stripe_public_key,
+            },
+        )
+
+        # TODO: Remove depprecated below
+        # Below is now deprecated as service does heavy lifting
+
+        # total = basket.total_price
+
+        # with transaction.atomic():
+
+        #     # Create Order object
+        #     # stripe_pid uses uuid.uuid4() to create a temp placeholder, because field is mandatory
+
+        #     order = Order.objects.create(
+        #         user=request.user if request.user.is_authenticated else None,
+        #         full_name=request.POST.get("name", "untitled"),
+        #         email=request.POST.get("email", "email@email.com"),
+        #         total_price=total,
+        #         stripe_pid="pending_ref_" + str(uuid.uuid4()),
+        #     )
+
+        #     for basket_line in basket.lines.all():
+        #         OrderItem.objects.create(
+        #             order=order,
+        #             product=basket_line.product,
+        #             product_name=basket_line.product.name,
+        #             unit_price=basket_line.price_at_addition,
+        #             line_total=basket_line.line_total,
+        #             quantity=basket_line.quantity,
+        #         )
+
+        #     # Needed for stripe
+        #     total_small_units = int(total.amount * 100)
+
+        # try:
+        #     intent = stripe.PaymentIntent.create(
+        #         amount=total_small_units,
+        #         currency="gbp",
+        #         metadata={"basket_id": basket.id, "order_id": order.id},
+        #     )
+        #     order.stripe_pid = intent.id
+        #     order.save()
+
+        #     return JsonResponse(
+        #         {
+        #             "clientSecret": intent.client_secret,
+        #             "stripePk": self.stripe_public_key,
+        #         },
+        #     )
+
+        # except stripe.error.StripeError as e:
+        #     return JsonResponse({"error": str(e)}, status=400)
 
 
 class CheckoutSuccessView(StripeMixin, BasketMixin, generic.TemplateView):
