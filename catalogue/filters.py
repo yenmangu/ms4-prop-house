@@ -1,5 +1,8 @@
+from typing import Optional
+
 import django_filters as df
-from django.db.models import Q, Count
+from django.db.models import Q, Count, QuerySet
+
 from django import forms
 from .models import Product, Category
 
@@ -12,7 +15,9 @@ class ProductFilter(df.FilterSet):
         method="filter_category_and",
     )
 
-    def filter_category_and(self, queryset, name, selected_categories):
+    def filter_category_and(
+        self, queryset, name, selected_categories: QuerySet[Category]
+    ):
         """
         Apply AND-based subject filtering to the queryset.
 
@@ -36,20 +41,28 @@ class ProductFilter(df.FilterSet):
         if not selected_categories:
             return queryset
 
-        selected_categories_ids = [category.id for category in selected_categories]
+        # selected_categories_ids = [category.id for category in selected_categories]
 
-        selected_count = len(selected_categories_ids)
+        selected_categories_ids: QuerySet[int] = selected_categories.values_list(
+            "id", flat=True
+        )
+
+        selected_count = selected_categories.count()
 
         # 1) Keep products that have at least the selected categories
         # 2) Count how many of the selected categories each product matches
         # 3) Only keep products where the match count equals number selected
 
-        return queryset.filter(categories__in=selected_categories_ids).annotate(
-            matched_category_count=Count(
-                "categories",
-                filter=Q(categories__in=selected_categories_ids),
-                distinct=True,
-            ).filter(matched_category_count=selected_count)
+        return (
+            queryset.filter(categories__in=selected_categories_ids)
+            .annotate(
+                matched_category_count=Count(
+                    "categories",
+                    filter=Q(categories__in=selected_categories_ids),
+                    distinct=True,
+                )
+            )
+            .filter(matched_category_count=selected_count)
         )
 
     class Meta:
