@@ -1,5 +1,5 @@
 from accounts.models import User
-from commerce.models import Order
+from .models import Order
 import stripe
 
 from django.conf import settings
