@@ -58,12 +58,6 @@ def mark_as_dispatched(
     modeladmin.message_user(request, f"Successfully dispatched {count} items.")
 
 
-# FIXME: [V2-REBUILD-DB-SYNC]
-# On 2026-05-11, resolved a critical migration desync where
-# commerce_orderitem.product_name was missing despite migration 0003 being marked applied.
-# Fix required manual psql DROP of commerce_orderline and re-running migrations.
-
-
 @admin.register(HireRecord)
 class HireRecordAdmin(admin.ModelAdmin):
     list_display = (
