@@ -37,7 +37,7 @@
           <div class="ledger-row">
             <dt>STOCK_STATUS</dt>
             <dd>
-              <span class="spec-value stock-highlight">{{ available_count }}</span>
+              <span class="spec-value stock-highlight {% if out_of_stock %}oos{% endif %}">{{ available_count }}</span>
               <span class="spec-unit">UNITS_IN_STOCK</span>
             </dd>
           </div>
@@ -49,9 +49,18 @@
           </div>
         </dl>
       </div>
-      <div class="action-zone" data-zone="logistics">
-        <button data-action="reveal-hire"
-                class="btn btn--industrial btn--product-list">Check Availability</button>
+      <div class="action-zone"
+           data-zone="logistics"
+           data-available="{% if out_of_stock %} false {% else %} true {% endif %}">
+        {% if available_count > 0 %}
+          <button data-action="reveal-hire"
+                  class="btn btn--industrial btn--product-list">Check Availability</button>
+        {% else %}
+          <div class="stock-alert industrial-alert">
+            <span class="alert-icon">⚠️</span>
+            <span class="alert-text">All units currently reserved!</span>
+          </div>
+        {% endif %}
         <div data-unit="hire-logistics-gate" class="hidden gate-reveal">
           <form hx-post="{% url 'basket:update' %}"
                 hx-ext="json-enc"
@@ -64,7 +73,9 @@
               {% include "commerce/partials/_hire_form_fields.html" with form=hire_form %}
             </div>
             <div class="form-actions mt-2">
-              <button type="submit" class="btn btn--industrial btn--sidebar">CONFIRM HIRE</button>
+              <button type="submit"
+                      class="btn btn--industrial btn--sidebar"
+                      {% if available_count <= 0 %}disabled{% endif %}>CONFIRM HIRE</button>
               <button type="button"
                       data-action="cancel-hire"
                       class="btn btn--sidebar btn--ghost">CANCEL</button>

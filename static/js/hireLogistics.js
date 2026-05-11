@@ -5,8 +5,14 @@ import { phReportError } from './reportError.js';
 
 export const initialiseHireLogistics = () => {
 	// Check this is a logistics section/page
-	const isLogistics = document.querySelector('[data-zone="logistics"]');
+	const isLogistics = /** @type {HTMLElement} */ (
+		document.querySelector('[data-zone="logistics"]')
+	);
 	if (!isLogistics) return;
+
+	// Early return if out of stock
+	const hasStock = isLogistics.dataset.available === 'true';
+	if (!hasStock) return;
 
 	const triggerBtn = /** @type {HTMLButtonElement} */ (
 		document.querySelector('[data-action="reveal-hire"]')
@@ -18,6 +24,8 @@ export const initialiseHireLogistics = () => {
 	const hireGate = /** @type {HTMLElement} */ (
 		document.querySelector('[data-unit="hire-logistics-gate"]')
 	);
+
+	// Report error if stock available and triggerBtn is supposed to exist
 	if (!triggerBtn) {
 		phReportError(
 			new Error('[DOM_ERROR]: Trigger Button Element  not found on page.'),

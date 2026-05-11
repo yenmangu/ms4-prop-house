@@ -86,6 +86,10 @@
 	color: #4caf50;
 }
 
+.stock-highlight.oos {
+	color: var(--txt-error);
+}
+
 .unit-text {
 	font-size: 0.75rem;
 	opacity: 0.8;

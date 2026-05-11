@@ -82,17 +82,22 @@ class ProductDetailView(
             }
         )
 
+        if net_available <= 0:
+            form.fields["quantity"].widget.attrs["disabled"] = True
+            context["out_of_stock"] = True
+        else:
+            context["out_of_stock"] = False
         # Sync quantity to basket quantity and max to actual available.
         form.fields["quantity"].widget.attrs.update(
             {
-                "max": net_available,
-                "min": 1,
+                "max": max(0, net_available),
+                "min": 1 if net_available > 0 else 0,
                 "class": "industrial-input qty-sync-input",
             }
         )
 
         context["hire_form"] = form
-        context["available_count"] = net_available
+        context["available_count"] = max(0, net_available)
         context["in_basket"] = current_basket_qty
 
         if not context:
