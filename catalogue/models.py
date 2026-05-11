@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from django.db import models
 from django.utils.text import slugify
 from djmoney.models.fields import MoneyField
@@ -105,6 +106,12 @@ class Product(models.Model):
     # Administration
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+
+    if TYPE_CHECKING:
+        from django.db.models.manager import RelatedManager
+        from warehouse.models import StockItem
+
+        stock_items: RelatedManager["StockItem"]
 
     class Meta:
         ordering = ["id"]
