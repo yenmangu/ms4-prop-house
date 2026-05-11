@@ -1,3 +1,11 @@
+/* ----------- Global Hidden Utility ---------- */
+
+.hidden {
+	display: none !important;
+}
+
+/* ---------------- Global CSS ---------------- */
+
 html,
 body {
 	height: 100%;
@@ -203,6 +211,18 @@ footer {
 	box-shadow: 4px 4px 0px var(--clr-accent); /* Safety Orange offset */
 }
 
+/* ---------------- Form Fields, Actions & Buttons --------------- */
+
+.form-fields.form-fields--industrial {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.form-actions {
+	display: flex;
+}
+
 .btn--industrial:hover {
 	background-color: var(--clr-accent);
 	border-color: var(--clr-accent);
@@ -366,4 +386,37 @@ body #liveToast.industrial-toast.show {
 	/* Disables double-clicks */
 	pointer-events: none;
 	opacity: 0.6;
+}
+
+/* ----------- Core Slide Animation ----------- */
+
+.industrial-fade-in {
+	opacity: 0;
+	transform: translateY(-10px);
+	transition: all 0.3s ease-out;
+}
+
+.industrial-fade-in.show {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.gate-reveal {
+	display: block;
+	overflow: hidden;
+	max-height: 0;
+	opacity: 0;
+	transition:
+		max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+		opacity 0.8s ease;
+	max-height: 0;
+}
+
+.gate-open {
+	max-height: 600px;
+	opacity: 1;
+}
+
+.gate-reveal:not(.hidden) {
+	max-height: 500px;
 }

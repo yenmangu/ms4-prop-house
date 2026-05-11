@@ -1,0 +1,7 @@
+{% for field in form %}
+  <div class="industrial-field-wrapper">
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {{ field }}
+    {% if field.errors %}<span class="error-text">{{ field.errors.0 }}</span>{% endif %}
+  </div>
+{% endfor %}
