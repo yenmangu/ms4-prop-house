@@ -78,6 +78,7 @@ class Order(models.Model):
     ) -> "Order":
         """
         Factory method to create an Order and its items from a Basket
+        Handles the new logistics pipeline for Hires
         """
 
         with transaction.atomic():
@@ -98,6 +99,10 @@ class Order(models.Model):
                     unit_price=line.price_at_addition,
                     line_total=line.line_total,
                     quantity=line.quantity,
+                    # Transfer hire data to OrderItem
+                    start_date=line.start_date,
+                    end_date=line.end_date,
+                    production_name=line.production_name,
                 )
                 for line in basket.lines.all()
             ]
@@ -150,6 +155,11 @@ class OrderItem(models.Model):
     )
 
     quantity = models.PositiveIntegerField(default=1)
+
+    # Logistical snapshot
+    start_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+    production_name = models.CharField(max_length=255, blank=True)
 
     unit_price = MoneyField(
         max_digits=14,

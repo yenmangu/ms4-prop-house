@@ -1,8 +1,10 @@
+from commerce.forms import PropHireForm
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views import generic
 from view_breadcrumbs import ListBreadcrumbMixin, DetailBreadcrumbMixin
+from warehouse.services import get_stock_availability
 from .models import Product
 from .filters import ProductFilter
 from basket.mixins import BasketMixin
@@ -59,6 +61,39 @@ class ProductDetailView(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        product: Product = self.get_object()
+
+        # Warehouse availability
+        warehouse_stats = get_stock_availability(product)
+        total_physical_avail = warehouse_stats["available"]
+
+        # Basket state
+        basket = self.get_basket()
+        basket_line = basket.lines.filter(product=product).first()
+        current_basket_qty = basket_line.quantity if basket_line else 1
+
+        # Form init
+        form = PropHireForm(
+            initial={
+                "quantity": current_basket_qty if current_basket_qty > 0 else 1,
+                "start_date": basket_line.start_date if basket_line else None,
+                "end_date": basket_line.end_date if basket_line else None,
+            }
+        )
+
+        # Sync quantity to basket quantity and max to actual available.
+        form.fields["quantity"].widget.attrs.update(
+            {
+                "max": total_physical_avail,
+                "min": 1,
+                "class": "industrial-input qty-sync-input",
+            }
+        )
+
+        context["hire_form"] = form
+        context["available_count"] = total_physical_avail
+        context["in_basket"] = current_basket_qty
+
         if not context:
             print("context not found")
         return context

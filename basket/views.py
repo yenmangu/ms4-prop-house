@@ -13,7 +13,6 @@ from .mixins import BasketMixin
 from .models import Line
 from .utils import get_basket_state
 
-
 # Create your views here.
 
 
@@ -162,6 +161,15 @@ class BasketClearView(BasketMixin, View):
 
 
 class BasketUpdateView(BasketMixin, View):
+    """
+    BasketUpdateView handles all basket modfiications.
+    Previously split across multiple views; this consolidation
+    allows all update logic to be centralised.
+
+    Args:
+        BasketMixin: _description_
+        View: _description_
+    """
 
     def post(self, request: HttpRequest, *args, **kwargs):
         message = "Basket updated successfullty"
@@ -169,10 +177,17 @@ class BasketUpdateView(BasketMixin, View):
 
         try:
             data = json.loads(request.body)
-            print(f"DATA: \n {data}")
+            # print(f"DATA: \n {data}")
             product_id = data.get("product_id")
             action = data.get("action")
             quantity = data.get("quantity", 1)
+            # Additional hire data - will NOT fail if missing values
+            # i.e., if added from summary view
+            hire_context = {
+                "start_date": data.get("start_date"),
+                "end_date": data.get("end_date"),
+                "production_name": data.get("production_name", ""),
+            }
 
             basket = self.get_basket()
             # basket = getattr(request, "basket", None)
@@ -185,6 +200,8 @@ class BasketUpdateView(BasketMixin, View):
                 product_id=product_id,
                 action_type=action,
                 quantity=quantity,
+                # Additional hire context supported by `**kwargs`
+                **hire_context,
             )
 
             # Dynamic messaging

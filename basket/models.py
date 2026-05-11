@@ -134,14 +134,15 @@ class Basket(models.Model):
             self.save()
         return target_basket
 
-    def update(self, product_id, action_type=Action.ADD, quantity=1):
+    def update(self, product_id, action_type=Action.ADD, quantity=1, *args, **kwargs):
         """
-        Public API for modifying basket. Uses private _add, _remove, _clear
+        Public API for modifying basket. Accepts any number of arguments to support evolving hire data.
+        Uses private _add, _remove, _clear
         methods for lower level DB function.
         """
 
         if action_type == self.Action.ADD:
-            return self._add(product_id=product_id, quantity=quantity)
+            return self._add(product_id=product_id, quantity=quantity, *args, **kwargs)
         elif action_type == self.Action.REMOVE:
             return self._remove(product_id=product_id)
         elif action_type == self.Action.CLEAR:
@@ -149,9 +150,10 @@ class Basket(models.Model):
         else:
             raise ValueError(f"Invalid update action: {action_type}")
 
-    def _add(self, product_id, quantity=1):
+    def _add(self, product_id, quantity=1, *args, **kwargs):
         """
         Internal handler to add a product to the basket or increment quantity.
+        Pulls specific hire data out of `**kwargs` for the `Line` model.
 
         Args:
             product_id (uuid/int): The primary key of the Product to add.
@@ -177,10 +179,32 @@ class Basket(models.Model):
 
         product = Product.objects.get(id=product_id)
 
+        defaults = {
+            "price_at_addition": product.price,
+        }
+
+        # Only update logistics if they are actually provided in the request
+        if kwargs.get("start_date"):
+            defaults["start_date"] = kwargs.get("start_date")
+        if kwargs.get("end_date"):
+            defaults["end_date"] = kwargs.get("end_date")
+        if kwargs.get("production_name"):
+            defaults["production_name"] = kwargs.get("production_name")
+
         line, created = self.lines.update_or_create(
             product=product,
-            defaults={"price_at_addition": product.price},
+            # defaults={
+            #     "price_at_addition": product.price,
+            #     # Additional Hire Data
+            #     "start_date": kwargs.get("start_date"),
+            #     "end_date": kwargs.get("end_date"),
+            #     "production_name": kwargs.get("production_name", ""),
+            # },
+            #
+            # Use new defaults dict created above
+            defaults=defaults,
         )
+
         if created:
             line.quantity = int(quantity)
         else:
@@ -267,6 +291,11 @@ class Line(models.Model):
         "catalogue.Product", on_delete=models.CASCADE, related_name="basket_lines"
     )
     quantity = models.PositiveIntegerField(default=1)
+
+    # Preliminary Hire Data
+    start_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+    production_name = models.CharField(max_length=255, blank=True)
 
     # New 'django-money' field
     price_at_addition = MoneyField(

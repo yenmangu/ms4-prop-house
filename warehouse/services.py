@@ -46,7 +46,8 @@ def fulfill_order_items(order: Order) -> bool:
                     HireRecord(
                         order_item=item,
                         stock_item=stock_unit,
-                        due_date=timezone.now() + timedelta(days=7),
+                        out_date=item.start_date or timezone.now(),
+                        due_date=item.end_date or timezone.now() + timedelta(days=7),
                     )
                 )
                 # Queue item for status update
