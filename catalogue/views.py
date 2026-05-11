@@ -71,6 +71,7 @@ class ProductDetailView(
         basket = self.get_basket()
         basket_line = basket.lines.filter(product=product).first()
         current_basket_qty = basket_line.quantity if basket_line else 1
+        net_available = total_physical_avail - current_basket_qty
 
         # Form init
         form = PropHireForm(
@@ -84,14 +85,14 @@ class ProductDetailView(
         # Sync quantity to basket quantity and max to actual available.
         form.fields["quantity"].widget.attrs.update(
             {
-                "max": total_physical_avail,
+                "max": net_available,
                 "min": 1,
                 "class": "industrial-input qty-sync-input",
             }
         )
 
         context["hire_form"] = form
-        context["available_count"] = total_physical_avail
+        context["available_count"] = net_available
         context["in_basket"] = current_basket_qty
 
         if not context:

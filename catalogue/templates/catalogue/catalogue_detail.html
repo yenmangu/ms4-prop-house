@@ -37,7 +37,7 @@
           <div class="ledger-row">
             <dt>STOCK_STATUS</dt>
             <dd>
-              <span class="spec-value stock-highlight">{{ product.stock_quantity }}</span>
+              <span class="spec-value stock-highlight">{{ available_count }}</span>
               <span class="spec-unit">UNITS_IN_STOCK</span>
             </dd>
           </div>
@@ -72,13 +72,10 @@
           </form>
         </div>
         {% comment %} LEGACY BELOW {% endcomment %}
-        <button hx-post="{% url 'basket:update' %}"
-                hx-trigger="click"
-                hx-ext="json-enc"
-                hx-vals='{"product_id": "{{ product.id }}","action":"add"}'
-                class="btn btn--industrial btn--product-list add-to-basket"
-                hx-swap="none"
-                data-product-id="{{ product.id }}">LEGACY ADD_TO_CART</button>
+        {% comment %}
+        <button hx-post="{% url 'basket:update' %}" hx-trigger="click" hx-ext="json-enc" hx-vals='{"product_id": "{{ product.id }}","action":"add"}' class="btn btn--industrial btn--product-list add-to-basket" hx-swap="none" data-product-id="{{ product.id }}">LEGACY ADD_TO_CART</button>
+
+        {% endcomment %}
       </div>
     </section>
   </div>
