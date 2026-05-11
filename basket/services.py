@@ -16,10 +16,16 @@ def get_basket_for_request(request: HttpRequest):
 
     # Check auth user
     if request.user.is_authenticated:
-        basket, created = Basket.objects.get_or_create(
+        basket = Basket.objects.filter(
             user=request.user,
             status=Basket.Status.OPEN,
-        )
+        ).last()
+
+        if not basket:
+            basket = Basket.objects.create(
+                user=request.user,
+                status=Basket.Status.OPEN,
+            )
         return basket
 
     # Check Session ID

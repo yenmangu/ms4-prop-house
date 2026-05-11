@@ -1,16 +1,21 @@
 {% load static %}
-<div id="nav-basket-wrapper" class="nav-basket-wrapper">
-      <a href="{% url 'basket:summary' %}"
-         class="basket-link"
-         aria-label="View shopping basket">
-            <div class="basket-icon-wrapper" id="basketIconWrapper">
-                  {% include "core/icons/icon_cart.svg" %}
-                  <span id="nav-basket-count"
-                        hx-swap-oob="true"
-                        class="basket badge {% if not basket.total_items %}hidden{% endif %}">
-                        {{ basket.total_items|default:0 }}
-                  </span>
-            </div>
-            <span id="nav-basket-total" hx-swap-oob="true" class="nav-basket-total">{{ basket.total_price|default:"0.00" }}</span>
-      </a>
+<div id="nav-basket-wrapper"
+     class="nav-basket-wrapper"
+     hx-get="{% url 'basket:summary' %}"
+     hx-trigger="basketUpdated from:body"
+     hx-select="#nav-basket-wrapper"
+     hx-swap="outerHTML"
+     {% if request.headers.HX_Request %}hx-swap-oob="true"{% endif %}>
+  <a href="{% url 'basket:summary' %}"
+     class="basket-link"
+     aria-label="View shopping basket">
+    <div class="basket-icon-wrapper" id="basketIconWrapper">
+      {% include "core/icons/icon_cart.svg" %}
+      <span id="nav-basket-count"
+            class="basket badge {% if not basket.total_items %}hidden{% endif %}">
+        {{ basket.total_items|default:0 }}
+      </span>
+    </div>
+    <span id="nav-basket-total" data-basket="total" class="nav-basket-total">{{ basket.total_price|default:"0.00" }}</span>
+  </a>
 </div>

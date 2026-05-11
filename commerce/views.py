@@ -117,6 +117,15 @@ class paymentIntentView(StripeMixin, BasketMixin, View):
 class CheckoutSuccessView(StripeMixin, BasketMixin, generic.TemplateView):
     template_name = "commerce/checkout-success.html"
 
+    def get(self, request, *args, **kwargs):
+        """
+        get Overrides the standard `get` method, to trigger the HTMX front end.
+        Calls the `super().get(...)` method to maintain existing pipeline.
+        """
+        response = super().get(request=request, *args, **kwargs)
+        response["HX-Trigger"] = "basketUpdated"
+        return response
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
