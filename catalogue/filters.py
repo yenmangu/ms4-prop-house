@@ -8,12 +8,26 @@ from .models import Product, Category
 
 
 class ProductFilter(df.FilterSet):
+    # Multi field query maps to core sidebar input
+    q = df.CharFilter(
+        method="filter_search",
+        label="PROP_SEARCH",
+    )
+
     name = df.CharFilter(field_name="name", lookup_expr="icontains")
 
     categories = df.ModelMultipleChoiceFilter(
         queryset=Category.objects.order_by("name"),
         method="filter_category_and",
     )
+
+    def filter_search(self, queryset: QuerySet, name, value):
+        """
+        Multi Field Search across name and description
+        """
+        return queryset.filter(
+            Q(name__icontains=value) | Q(description__icontains=value)
+        ).distinct()
 
     def filter_category_and(
         self, queryset, name, selected_categories: QuerySet[Category]
@@ -43,8 +57,8 @@ class ProductFilter(df.FilterSet):
 
         # selected_categories_ids = [category.id for category in selected_categories]
 
-        selected_categories_ids: QuerySet[int] = selected_categories.values_list(
-            "id", flat=True
+        selected_categories_ids: QuerySet[int] = (
+            selected_categories.values_list("id", flat=True)
         )
 
         selected_count = selected_categories.count()

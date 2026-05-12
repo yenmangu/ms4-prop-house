@@ -107,7 +107,12 @@
       {% block content %}
       {% endblock content %}
     </main>
-    {% comment %} Toast {% endcomment %}
+    {% comment %}
+    <main>
+      {% block content %}
+      {% endblock content %}
+    </main>
+    {% endcomment %}
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
       <div id="liveToast"
            class="toast industrial-toast"

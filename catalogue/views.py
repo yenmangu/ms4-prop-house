@@ -3,7 +3,10 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views import generic
-from view_breadcrumbs import ListBreadcrumbMixin, DetailBreadcrumbMixin
+from view_breadcrumbs import (
+    ListBreadcrumbMixin,
+    DetailBreadcrumbMixin,
+)
 from warehouse.services import get_stock_availability
 from .models import Product
 from .filters import ProductFilter
@@ -19,24 +22,30 @@ class ProductListView(
 ):
     model = Product
     context_object_name = "catalogue"
+    # Fallback for initial page load
     template_name = "catalogue/catalogue_list.html"
     paginate_by = 12
 
     def get_queryset(self):
 
-        # 1. Start with standard QuerySet, use prefetch_related to access the categories associated with CategoryJoin table
-        queryset = Product.objects.all().prefetch_related("categories")
+        # NEW
+        # Use new filter_search:
+        qs = super().get_queryset().prefetch_related("categories")
 
-        # 2. Initialise the filter with GET params
+        # TODO: Remove deprecated below
+        # 1. Start with standard QuerySet, use prefetch_related to access the categories associated with CategoryJoin table
+        # queryset = Product.objects.all().prefetch_related(
+        #     "categories"
+        # )
+
+        # Initialise the filter with GET params
         self.filterset = ProductFilter(
             self.request.GET,
-            queryset=queryset,
+            queryset=qs,
         )
 
-        # 3. Return filtered queryset
+        # Return filtered queryset
         return self.filterset.qs
-
-        # return base_queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -45,6 +54,11 @@ class ProductListView(
         context["filter"] = self.filterset
 
         return context
+
+    def get_template_names(self):
+        if self.request.headers.get("HX-Request"):
+            return "catalogue/partials/_product_grid.html"
+        return "catalogue/catalogue_list.html"
 
 
 class ProductDetailView(
@@ -70,15 +84,25 @@ class ProductDetailView(
         # Basket state
         basket = self.get_basket()
         basket_line = basket.lines.filter(product=product).first()
-        current_basket_qty = basket_line.quantity if basket_line else 1
+        current_basket_qty = (
+            basket_line.quantity if basket_line else 1
+        )
         net_available = total_physical_avail - current_basket_qty
 
         # Form init
         form = PropHireForm(
             initial={
-                "quantity": current_basket_qty if current_basket_qty > 0 else 1,
-                "start_date": basket_line.start_date if basket_line else None,
-                "end_date": basket_line.end_date if basket_line else None,
+                "quantity": (
+                    current_basket_qty
+                    if current_basket_qty > 0
+                    else 1
+                ),
+                "start_date": (
+                    basket_line.start_date if basket_line else None
+                ),
+                "end_date": (
+                    basket_line.end_date if basket_line else None
+                ),
             }
         )
 
