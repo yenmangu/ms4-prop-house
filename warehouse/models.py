@@ -81,6 +81,12 @@ class HireRecord(models.Model):
     as a permanent audit trail of asset's history and company's fulfillment activity.
     """
 
+    class HireStatus(models.TextChoices):
+        NOMINAL = "NO", "Nominal"
+        WARNING = "WA", "Warning"
+        OVERDUE = "OV", "Overdue"
+        RETURNED = "RE", "Returned"
+
     order_item = models.ForeignKey(
         "commerce.OrderItem",
         on_delete=models.PROTECT,
@@ -119,7 +125,42 @@ class HireRecord(models.Model):
 
     @property
     def is_overdue(self) -> bool:
-        return not self.returned_date and self.due_date < timezone.now()
+        return (
+            not self.returned_date and self.due_date < timezone.now()
+        )
+
+    @property
+    def alert_level(self):
+        """
+        Calculates alert state based on time remaining.
+        - RETURNED if date exists.
+        - OVERDUE if now > due_date.
+        - WARNING if < 10% of time remains.
+        - NOMINAL otherwise.
+        """
+
+        if self.returned_date:
+            return self.HireStatus.RETURNED
+
+        now = timezone.now()
+        if now > self.due_date:
+            return self.HireStatus.OVERDUE
+
+        total_duration = self.due_date - self.out_date
+        time_remianing = self.due_date - now
+
+        # Calculate 10% or less of time_remaining
+
+        # Safety check for  zero-duration hires
+        if total_duration.total_seconds() > 0:
+            percent_remaining = (
+                time_remianing.total_seconds()
+                / total_duration.total_seconds()
+            )
+            if percent_remaining <= 0.10:
+                return self.HireStatus.WARNING
+
+            # return self.HireStatus.NOMINAL
 
     def get_order_id(self) -> Optional[int]:
         if self.order_item and self.order_item.order:
@@ -129,6 +170,4 @@ class HireRecord(models.Model):
         return None
 
     def __str__(self):
-        return (
-            f"Hire: {self.stock_item.serial_number} for Order Item {self.order_item.pk}"
-        )
+        return f"Hire: {self.stock_item.serial_number} for Order Item {self.order_item.pk}"

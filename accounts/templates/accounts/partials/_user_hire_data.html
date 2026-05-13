@@ -1,0 +1,56 @@
+<header class="manifest-header">
+  <h1 class="glitch-text">ASSET_INVENTORY</h1>
+  <p class="subtitle"></p>
+  <div class="stats-bar">
+    <span class="stat-item">Active Hire Records for {{ user.email }}</span>
+    <span class="stat-item">TOTAL_HIRES:</span>
+  </div>
+</header>
+<section class="state-overview">
+</section>
+<div class="table-wrapper">
+  <table class="industrial-table">
+    <thead>
+      <tr>
+        <th>Ref ID</th>
+        <th>Asset Serial</th>
+        <th>Prop Name</th>
+        <th>Status</th>
+        <th>Due Date</th>
+        <th>Condition (Out)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in hire_records %}
+        <tr class="record-row alert-{{ record.alert_level|lower }}">
+          <td class="font-mono">#{{ record.id }}</td>
+          <td class="font-mono small text-muted--bright">{{ record.stock_item.serial_number }}</td>
+          <td class="bold">{{ record.order_item.product_name }}</td>
+          <td class="status-cell">
+            <span class="status-badge indicator status-{{ record.stock_item.status|lower }}">
+              {{ record.stock_item.get_status_display }}
+              <span class="status-text">
+                {% if record.alert_level.label %}{{ record.alert_level.label|upper }}{% endif %}
+              </span>
+            </span>
+          </td>
+          <td>{{ record.due_date|date:"d M Y" }}</td>
+          <td>
+            {% comment %} {{ record }} {% endcomment %}
+            {% if record.condition_on_out %}
+              {{ record.condition_on_out }}
+            {% else %}
+              <span class="text-muted--bright italic">Awaiting Prep</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5" class="empty-state">
+            No active hires found. <a href="{% url 'catalogue:product_list' %}">Browse the House</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

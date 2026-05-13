@@ -36,6 +36,16 @@ class StockItemAdmin(admin.ModelAdmin):
 @admin.action(
     description="Mark selected items as DISPATCHED",
 )
+def update_due_date(
+    modeladmin: admin.ModelAdmin,
+    request: HttpRequest,
+    queryset: QuerySet[HireRecord],
+) -> None:
+    """
+    Update hire record due date
+    """
+
+
 def mark_as_dispatched(
     modeladmin: admin.ModelAdmin,
     request: HttpRequest,
@@ -55,7 +65,9 @@ def mark_as_dispatched(
         ids,
         condition="Dispatched via Admin",
     )
-    modeladmin.message_user(request, f"Successfully dispatched {count} items.")
+    modeladmin.message_user(
+        request, f"Successfully dispatched {count} items."
+    )
 
 
 @admin.register(HireRecord)

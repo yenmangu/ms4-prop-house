@@ -38,6 +38,7 @@
 	/* Text */
 	--txt-primary: rgba(var(--stark-white-values), 1);
 	--txt-muted: rgba(var(--stark-white-values), 0.6);
+	--txt-muted-bright: rgba(var(--stark-white-values), 0.65);
 	--txt-error: rgba(var(--error-red-values), 1);
 
 	/* Borders */

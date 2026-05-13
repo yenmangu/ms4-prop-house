@@ -48,6 +48,18 @@ h1 {
 	border-bottom: 4px solid var(--clr-accent);
 }
 
+.italic {
+	font-style: italic;
+}
+
+.text-muted {
+	color: var(--txt-muted);
+}
+
+.text-muted--bright {
+	color: var(--txt-muted-bright);
+}
+
 .field-group {
 	display: flex;
 	flex-direction: column;

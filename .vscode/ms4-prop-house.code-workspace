@@ -90,6 +90,7 @@
 			"**/bower_components": true,
 			"**/*.code-search": true,
 			"**/static/vendor/*": true
-		}
+		},
+		"black-formatter.args": ["--config", "pyproject.toml"]
 	}
 }

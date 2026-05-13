@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock extra_css %}
+{% block content %}
+  <div class="manifest-wrapper">
+    {% include "core/partials/_sidebar.html" %}
+    <div class="manifest-main" id="manifest-results">{% include "accounts/partials/_user_hire_data.html" %}</div>
+  </div>
+{% endblock content %}
