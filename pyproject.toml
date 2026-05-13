@@ -2,7 +2,7 @@
 ignore = "H020,H023,H006,H021,H031,D018,H030,H005"
 
 [tool.black]
-line-length = 88
+line-length = 70
 target-version = ["py311"]
 exclude = '''
 /(
