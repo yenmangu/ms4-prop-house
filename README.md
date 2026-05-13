@@ -704,11 +704,12 @@ PropHouse follows WCAG 2.1 AA guidelines, including:
 
 ## Feature Credits
 
-| Feature                   | Source                         | Notes                    |
-| ------------------------- | ------------------------------ | ------------------------ |
-| Stripe Integration        | Stripe Documentation           | Test mode implementation |
-| Authentication            | Django Auth                    | Standard auth system     |
-| Event Driven Architecture | [HTMX](https://htmx.org/docs/) |                          |
+| Feature                                                            | Source                                                          | Notes                                             |
+| ------------------------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------- |
+| Stripe Integration                                                 | Stripe Documentation                                            | Test mode implementation                          |
+| Authentication                                                     | Django Auth                                                     | Standard auth system                              |
+| Event Driven Architecture                                          | [HTMX](https://htmx.org/docs/)                                  |                                                   |
+| [HTMX Responsive Form](core/templates/core/partials/_sidebar.html) | [HTMX - Active Search](https://htmx.org/examples/active-search) | Show live filter results without full page reload |
 
 ## Development Credits
 
