@@ -32,12 +32,6 @@ class ProductListView(
         # Use new filter_search:
         qs = super().get_queryset().prefetch_related("categories")
 
-        # TODO: Remove deprecated below
-        # 1. Start with standard QuerySet, use prefetch_related to access the categories associated with CategoryJoin table
-        # queryset = Product.objects.all().prefetch_related(
-        #     "categories"
-        # )
-
         # Initialise the filter with GET params
         self.filterset = ProductFilter(
             self.request.GET,
@@ -50,7 +44,10 @@ class ProductListView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # 4. Add filterset to context
+        # Inject context zone
+        context["zone"] = "catalogue"
+
+        # Add filterset to context
         context["filter"] = self.filterset
 
         return context
