@@ -113,3 +113,69 @@ header#header {
 	background: var(--clr-accent-glow);
 	padding-left: 10px;
 }
+
+/* -------------- Custom Resizer -------------- */
+
+.resizer {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 8px;
+	height: auto !important;
+	cursor: col-resize;
+	user-select: none;
+	z-index: 100;
+	border-right: 1px solid var(--border-hard);
+	transition: border-color 0.2s;
+}
+
+.resizer:hover,
+.resizer.resizing {
+	border-right: 2px solid var(--clr-accent);
+	background: var(--clr-accent-glow);
+}
+
+/* Ensure the table doesn't collapse weirdly */
+#result_list {
+	table-layout: fixed;
+	width: 100%;
+}
+
+#result_list td,
+#result_list th {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	vertical-align: middle;
+	position: relative;
+}
+
+#result_list th,
+#result_list th:not(.field-id) {
+	background-image: var(--texture-scanline) !important;
+}
+
+#result_list th.field-id {
+	background-image: none !important;
+}
+
+/* Prevent the first checkbox column from disappearing */
+.action-checkbox-column {
+	width: 40px !important;
+}
+
+/* Ensure the ID column has a consistent starting width too */
+.column-id {
+	width: 60px !important;
+}
+
+#result_list {
+	table-layout: fixed !important;
+	width: 100%;
+	/* Ensure the table can't shrink smaller than its container */
+	min-width: 100%;
+}
+
+/* ------------ end custom resizer ------------ */
