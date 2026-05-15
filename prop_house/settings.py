@@ -52,7 +52,9 @@ STRIPE_WH_SECRET = os.environ.get("STRIPE_WH")
 # Optional: Fail fast if keys are missing to avoid debugging headaches
 if not STRIPE_KEYS["stripe_sk"] or not STRIPE_KEYS["stripe_pk"]:
     # Prevent app from running in broken state
-    print("WARNING: Stripe API keys are missing from the environment.")
+    print(
+        "WARNING: Stripe API keys are missing from the environment."
+    )
 
 if not STRIPE_WH_SECRET:
     print("WARNING: Stripe Webhook Secret missing from environment")
@@ -98,6 +100,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "django_permissions_policy.PermissionsPolicyMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "prop_house.middleware.HeaderDebugMiddleware",
@@ -109,6 +112,10 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     "basket.middleware.BasketMiddleware",
 ]
+
+PERMISSIONS_POLICY = {
+    "unload": ["self"],
+}
 
 ROOT_URLCONF = "prop_house.urls"
 
@@ -158,7 +165,9 @@ CSRF_USE_SESSIONS = False
 
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
-SESSION_SERIALIZER = "django.contrib.sessions.serializers.JSONSerializer"
+SESSION_SERIALIZER = (
+    "django.contrib.sessions.serializers.JSONSerializer"
+)
 
 
 # Ensure the cookie is accessible to your local dev environment
@@ -228,7 +237,9 @@ CLOUDINARY_STORAGE = {
 }
 
 # This ensures uploaded files go to Cloudinary
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+DEFAULT_FILE_STORAGE = (
+    "cloudinary_storage.storage.MediaCloudinaryStorage"
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/

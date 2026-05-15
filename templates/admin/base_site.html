@@ -1,5 +1,18 @@
 {% extends "admin/base.html" %}
 {% load static %}
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="icon"
+        href="{% static 'images/favicon/favicon.ico' %}"
+        sizes="any">
+  <link rel="icon"
+        type="image/png"
+        sizes="32x32"
+        href="{% static 'images/favicon/favicon-32x32.png' %}">
+  <link rel="apple-touch-icon"
+        href="{% static 'images/favicon/apple-touch-icon-180x180.png' %}">
+  <link rel="manifest" href="{% static 'images/favicon/site.webmanifest' %}">
+{% endblock extrahead %}
 {% block extrastyle %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'css/theme.css' %}">
