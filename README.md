@@ -704,19 +704,25 @@ PropHouse follows WCAG 2.1 AA guidelines, including:
 
 ## Feature Credits
 
-| Feature                                                            | Source                                                          | Notes                                             |
-| ------------------------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------- |
-| Stripe Integration                                                 | Stripe Documentation                                            | Test mode implementation                          |
-| Authentication                                                     | Django Auth                                                     | Standard auth system                              |
-| Event Driven Architecture                                          | [HTMX](https://htmx.org/docs/)                                  |                                                   |
-| [HTMX Responsive Form](core/templates/core/partials/_sidebar.html) | [HTMX - Active Search](https://htmx.org/examples/active-search) | Show live filter results without full page reload |
+| Feature                                                            | Source                                                                                                           | Notes                                                         |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Stripe Integration                                                 | Stripe Documentation                                                                                             | Test mode implementation                                      |
+| Authentication                                                     | Django Auth                                                                                                      | Standard auth system                                          |
+| Event Driven Architecture                                          | [HTMX](https://htmx.org/docs/)                                                                                   |                                                               |
+| [HTMX Responsive Form](core/templates/core/partials/_sidebar.html) | [HTMX - Active Search](https://htmx.org/examples/active-search)                                                  | Show live filter results without full page reload             |
+| Hire status alert queries                                          | [Field lookups](https://docs.djangoproject.com/en/6.0/ref/models/querysets/#field-lookups)                       |                                                               |
+|                                                                    |
+| Reverse Admin URL Patterns                                         | [Django Docs: Reverse admin URLs](https://docs.djangoproject.com/en/6.0/ref/contrib/admin/#reversing-admin-urls) | Used to provide links between the various models within admin |
 
 ## Development Credits
 
 | Development Feature         | Source                                                                                            | Notes |
-| --------------------------- | ------------------------------------------------------------------------------------------------- | ----- |
+| --------------------------- | ------------------------------------------------------------------------------------------------- | ----- | --- |
 | Custom Management Commmands | [Django Docs](https://docs.djangoproject.com/en/6.0/howto/custom-management-commands/)            |       |
-| Cloudinary SDK              | [Python Image & Video Upload](https://cloudinary.com/documentation/django_image_and_video_upload) |       |
+| Cloudinary SDK              | [Python Image & Video Upload](https://cloudinary.com/documentation/django_image_and_video_upload) |
+|                             |                                                                                                   |       |     |
+
+Used to perform advanced and related WHERE clause lookups on `HireRecord` model. |
 
 ## Acknowledgements
 
