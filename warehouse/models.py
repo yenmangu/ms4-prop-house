@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F, Case, ExpressionWrapper, Value, When
 from django.conf import Settings
 from django.utils import timezone
 from typing import TYPE_CHECKING, Optional
@@ -58,6 +59,26 @@ class StockItem(models.Model):
         return f"{self.product.name} [{self.serial_number}]"
 
 
+class HireRecordQuerySet(models.QuerySet):
+    def with_alert_levels(self):
+        now = timezone.now()
+        return self.annotate(
+            calculated_alert=Case(
+                When(returned_date__isnull=False, then=Value("RE")),
+                When(due_date__lt=now, then=Value("OV")),
+                When(
+                    due_date__lte=ExpressionWrapper(
+                        now + (F("due_date") - F("out_date")) * 0.1,
+                        output_field=models.DateTimeField(),
+                    ),
+                    then=Value("WA"),
+                ),
+                default=Value("NO"),
+                output_field=models.CharField(),
+            )
+        )
+
+
 class HireRecord(models.Model):
     """
     _Domain:_ Logistics / Fulfillment
@@ -86,6 +107,9 @@ class HireRecord(models.Model):
         WARNING = "WA", "Warning"
         OVERDUE = "OV", "Overdue"
         RETURNED = "RE", "Returned"
+
+    # QuerySet Ref
+    objects = HireRecordQuerySet.as_manager()
 
     order_item = models.ForeignKey(
         "commerce.OrderItem",
@@ -128,39 +152,6 @@ class HireRecord(models.Model):
         return (
             not self.returned_date and self.due_date < timezone.now()
         )
-
-    @property
-    def alert_level(self):
-        """
-        Calculates alert state based on time remaining.
-        - RETURNED if date exists.
-        - OVERDUE if now > due_date.
-        - WARNING if < 10% of time remains.
-        - NOMINAL otherwise.
-        """
-
-        if self.returned_date:
-            return self.HireStatus.RETURNED
-
-        now = timezone.now()
-        if now > self.due_date:
-            return self.HireStatus.OVERDUE
-
-        total_duration = self.due_date - self.out_date
-        time_remianing = self.due_date - now
-
-        # Calculate 10% or less of time_remaining
-
-        # Safety check for  zero-duration hires
-        if total_duration.total_seconds() > 0:
-            percent_remaining = (
-                time_remianing.total_seconds()
-                / total_duration.total_seconds()
-            )
-            if percent_remaining <= 0.10:
-                return self.HireStatus.WARNING
-
-            # return self.HireStatus.NOMINAL
 
     def get_order_id(self) -> Optional[int]:
         if self.order_item and self.order_item.order:

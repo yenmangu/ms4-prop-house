@@ -1,8 +1,18 @@
 from commerce.models import Order
 from django import forms
-from django.db.models import Q, QuerySet
+from django.db.models import (
+    F,
+    Q,
+    Case,
+    ExpressionWrapper,
+    QuerySet,
+    Value,
+    When,
+    fields,
+)
+from django.utils import timezone
 import django_filters as df
-from warehouse.models import HireRecord
+from warehouse.models import HireRecord, StockItem
 
 
 class UserOrderFilter(df.FilterSet):
@@ -31,6 +41,13 @@ class UserOrderFilter(df.FilterSet):
         empty_label="ALL_RECORDS",
     )
 
+    alert_level = df.ChoiceFilter(
+        choices=HireRecord.HireStatus.choices,
+        method="filter_by_alert_level",
+        label="ALERT_LEVEL",
+        empty_label="ALL_RECORDS",
+    )
+
     class Meta:
         model = HireRecord
         fields = []
@@ -50,3 +67,9 @@ class UserOrderFilter(df.FilterSet):
             return queryset.filter(returned_date__isnull=False)
 
         return queryset
+
+    def filter_by_alert_level(self, queryset: QuerySet, name, value):
+
+        return queryset.with_alert_levels().filter(
+            calculated_alert=value
+        )
