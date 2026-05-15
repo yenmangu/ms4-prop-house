@@ -1,0 +1,115 @@
+:root {
+	/* Map Django's UI to PropHouse Industrial Theme */
+	--primary: var(--clr-accent);
+	--primary-fg: var(--bg-main);
+
+	--body-bg: var(--bg-main);
+	--body-fg: var(--txt-primary);
+
+	--header-bg: var(--bg-surface);
+	--header-color: var(--txt-primary);
+
+	--breadcrumbs-bg: var(--bg-main);
+	--breadcrumbs-fg: var(--txt-muted);
+
+	/* Links - Use 'Secondary' blue for general links */
+	--link-fg: var(--clr-secondary);
+	--link-hover-color: var(--clr-accent);
+
+	/* Buttons & Accents */
+	--button-bg: var(--clr-accent);
+	--button-hover-bg: rgba(var(--accent-orange-values), 0.8);
+}
+
+/* Force Industrial Background onto whole admin */
+body {
+	background-color: var(--bg-main) !important;
+	color: var(--txt-primary) !important;
+}
+header#header {
+	background: var(--bg-surface) !important;
+	background-image: var(--texture-scanline) !important;
+	border-bottom: 3px solid var(--clr-accent) !important;
+}
+
+#header a:link {
+	color: var(--clr-accent);
+}
+
+#header a:visited {
+	color: var(--txt-muted-bright);
+}
+
+#user-tools a,
+#logout-form button {
+	color: var(--clr-secondary);
+}
+
+#branding h1 {
+	color: var(--clr-accent) !important;
+	font-weight: 900;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+#nav-sidebar {
+	background: var(--bg-surface) !important;
+	border-right: 1px solid var(--border-hard) !important;
+}
+
+/* Sidebar category headers */
+#nav-sidebar .module th,
+#nav-sidebar .module caption {
+	background: transparent !important;
+	color: var(--clr-accent) !important;
+	border-bottom: 1px solid var(--border-hard) !important;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+/* Table Headers */
+.results th {
+	background: var(--bg-surface) !important;
+	border-bottom: 1px solid var(--border-hard) !important;
+	color: var(--txt-muted-bright) !important;
+	text-transform: uppercase;
+	font-size: 0.75rem;
+}
+
+.results a:link,
+.results a:visited {
+	color: var(--clr-secondary) !important;
+}
+
+.results a:hover {
+	color: var(--clr-accent) !important;
+}
+
+/* Row Hover - Subtle Glow */
+.results tr:hover {
+	background-color: var(--clr-accent-glow) !important;
+	transition: background-color 0.1s ease;
+}
+
+.results th {
+	background: var(--bg-surface) !important;
+	/* border-bottom: 1px solid var(--clr-accent) !important; */
+	color: var(--txt-muted-bright) !important;
+}
+
+/* The Stripe Link - Custom Pill */
+.field-link_stripe_transaction a {
+	/* Keep Stripe brand identity */
+	color: #6772e5 !important;
+	border: 1px solid rgba(103, 114, 229, 0.4);
+	padding: 2px 8px;
+	font-size: 11px;
+	border-radius: var(--radius-sm);
+	background: rgba(103, 114, 229, 0.05);
+}
+
+#changelist-filter li.selected {
+	border-left: 2px solid var(--clr-accent);
+	background: var(--clr-accent-glow);
+	padding-left: 10px;
+}
