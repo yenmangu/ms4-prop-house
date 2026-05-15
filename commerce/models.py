@@ -64,13 +64,16 @@ class Order(models.Model):
         default=OrderStatus.PENDING,
     )
 
-    total_price = MoneyField(max_digits=14, decimal_places=2, default_currency="GBP")
+    total_price = MoneyField(
+        max_digits=14, decimal_places=2, default_currency="GBP"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     # Allow class level type checking for IDE auto completion
     if TYPE_CHECKING:
         items: RelatedManager["OrderItem"]
+        user: User
 
     @classmethod
     def create_from_basket(
