@@ -47,7 +47,11 @@ STRIPE_KEYS = {
     "stripe_pk": os.environ.get("STRIPE_PUBLIC"),
 }
 
-STRIPE_WH_SECRET = os.environ.get("STRIPE_WH")
+if IS_HEROKU_APP:
+    STRIPE_WH_SECRET = os.environ.get("STRIPE_WH")
+else:
+    STRIPE_WH_SECRET = os.environ.get("STRIPE_LOCAL_WH")
+
 
 # Optional: Fail fast if keys are missing to avoid debugging headaches
 if not STRIPE_KEYS["stripe_sk"] or not STRIPE_KEYS["stripe_pk"]:
@@ -57,7 +61,9 @@ if not STRIPE_KEYS["stripe_sk"] or not STRIPE_KEYS["stripe_pk"]:
     )
 
 if not STRIPE_WH_SECRET:
-    print("WARNING: Stripe Webhook Secret missing from environment")
+    print(
+        f"WARNING: Stripe Webhook Secret missing from environment({'Production' if IS_HEROKU_APP else 'Local'}) is unconfigured"
+    )
 
 
 DEBUG = not IS_HEROKU_APP
