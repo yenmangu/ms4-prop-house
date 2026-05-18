@@ -41,6 +41,13 @@ class MembershipTier(models.Model):
         help_text="The percentage discount applied to the basket total (e.g., 15 for 15% off)",
     )
 
+    features = models.JSONField(
+        default=list,
+        blank=True,
+        null=True,
+        help_text="An array of feature strings.",
+    )
+
     class Meta:
         verbose_name = "Membership Tier"
         verbose_name_plural = "Membership Tiers"

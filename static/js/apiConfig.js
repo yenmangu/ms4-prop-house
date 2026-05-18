@@ -8,15 +8,33 @@ export const getStandardHeaders = () => ({
 });
 
 const ENDPOINTS = {
-	update: '/basket/update/'
+	update: '/basket/update/',
+	/**
+	 *
+	 * @param {string} tierId
+	 */
+	membership: tierId => {
+		return `/accounts/membership/initiate/${tierId}`;
+	}
 };
 
-const getLiveEndpoint = () => {
-	const wrapper = document.querySelector('.manifest-wrapper');
-	const htmlWrapper = /** @type {HTMLElement} */ (wrapper);
+/**
+ *
+ * @param {string} [zone]
+ * @param {string|null} [tierId]
+ * @returns
+ */
+export const getLiveEndpoint = (zone = 'basket', tierId = null) => {
+	if (zone === 'basket') {
+		const wrapper = document.querySelector('.manifest-wrapper');
+		const htmlWrapper = /** @type {HTMLElement} */ (wrapper);
 
-	// Fallback to hardcoded string if DOM attribute not found
-	return htmlWrapper.dataset.basketUpdateUrl || ENDPOINTS.update;
+		// Fallback to hardcoded string if DOM attribute not found
+		return htmlWrapper.dataset.basketUpdateUrl || ENDPOINTS.update;
+	}
+	if (zone === 'membership' && typeof tierId === 'string') {
+		return ENDPOINTS.membership(tierId);
+	}
 };
 
 /**
@@ -27,7 +45,7 @@ const getLiveEndpoint = () => {
  * @returns {BasketUpdateReport}
  */
 export const createBasketUpdatePayload = (action, productId, quantity = 1) => {
-	const endpoint = getLiveEndpoint();
+	const endpoint = getLiveEndpoint('basket');
 	if (!endpoint) {
 		throw new Error('[CONFIG_ERROR]: Basket update endpoint is not defined.');
 	}

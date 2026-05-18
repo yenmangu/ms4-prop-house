@@ -1,0 +1,111 @@
+/* accounts.css */
+:root {
+	--animation-value: 0.2s;
+}
+.membership-matrix-zone {
+	padding-top: 3rem;
+	padding-bottom: 3rem;
+	text-align: center;
+}
+
+.membership-matrix-zone .membership-card {
+	background-color: var(--bg-main);
+	color: var(--txt-primary);
+	border: 2px solid var(--border-hard);
+	border-radius: 0;
+	background-image: var(--texture-scanline);
+	padding: 1.5rem;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	transition: border-color var(--animation-value) ease;
+}
+
+.membership-price-manifest {
+	transition: color var(--animation-value) ease;
+}
+
+.membership-price-manifest:hover {
+	color: var(--clr-accent);
+}
+
+.membership-matrix-zone .membership-card:hover:not(.state--active) {
+	border-color: var(--clr-accent);
+}
+
+/* Typography and block bases */
+
+.membership-matrix-zone .membership-card-header {
+	min-height: 4rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 0.5rem;
+}
+
+.membership-matrix-zone .membership-card-title {
+	margin: 0;
+	text-transform: uppercase;
+	font-weight: 900;
+}
+
+/* Dynamic dashed layout banner separating prices and terms */
+.membership-matrix-zone .membership-price-manifest {
+	background-color: var(--bg-main);
+	border-top: 2px dashed var(--border-hard);
+	border-bottom: 2px dashed var(--border-hard);
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	margin-top: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+/* Matrix layout column listing features */
+.membership-matrix-zone .membership-feature {
+	list-style: none;
+	padding: 0;
+	margin-top: 1rem;
+	margin-bottom: 1.5rem;
+	text-align: left;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+/* Action block spacing base layout hook */
+.membership-matrix-zone .membership-action-portal {
+	margin-top: auto;
+	padding-top: 1rem;
+}
+/*
+div[data-zone='membership'] .industrial-membership-card {
+	background-color: var(--bg-surface);
+	color: var(--txt-primary);
+	border: 2px solid var(--clr-accent);
+	border-radius: 0;
+	box-shadow: none;
+	background-image: var(--texture-scanline);
+	transition:
+		border-color 0.3s ease,
+		box-shadow 0.3s ease;
+}
+
+div[data-zone='membership'] .industrial-membership-card.state--active {
+	border-color: var(--clr-success);
+	box-shadow: 0 0 15px rgba(var(--success-green-values), 0.3);
+}
+
+div[data-zone='membership'] .industrial-membership-card .price-manifest-block {
+	background-color: var(--bg-main);
+	border-top: 2px dashed var(--border-hard);
+	border-bottom: 2px dashed var(--border-hard);
+}
+
+div[data-zone='membership'] .industrial-membership-card .txt-muted {
+	color: var(--txt-muted);
+}
+
+div[data-zone='membership'] .industrial-membership-card .txt-success {
+	color: var(--clr-success);
+} */
