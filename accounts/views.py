@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.functional import classproperty
 from django.views import View
 from django.views.generic import ListView
@@ -84,12 +84,16 @@ class MembershipOptionsView(ListBreadcrumbMixin, ListView):
     template_name = "accounts/membership_options.html"
     context_object_name = "membership_tiers"
 
-    @classproperty
-    def list_view_name(self):
+    @classmethod
+    def list_view_name(cls):
+        return "membership_options"
+
+    @property
+    def list_view_url(self):
         """
         Override the breadcrumb mixin
         """
-        return "membership_options"
+        return reverse_lazy("accounts:membership_options")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -102,48 +106,48 @@ class MembershipOptionsView(ListBreadcrumbMixin, ListView):
 
         return context
 
-    class InitiateMembershipCheckoutView(
-        LoginRequiredMixin, StripeMixin, View
-    ):
+
+class InitiateMembershipCheckoutView(
+    LoginRequiredMixin, StripeMixin, View
+):
+    """
+    Handles secure POST requests to initiate a Stripe Subscription checkout lifecycle for a targeted membership tier.
+    """
+
+    def post(self, request: HttpRequest, pk):
         """
-        Handles secure POST requests to initiate a Stripe Subscription checkout lifecycle for a targeted membership tier.
+        Post request for view
         """
+        # Fetch targeted tier safely
+        tier = get_object_or_404(MembershipTier, pk=pk)
 
-        def post(self, request: HttpRequest, pk):
-            """
-            Post request for view
-            """
-            # Fetch targeted tier safely
-            tier = get_object_or_404(MembershipTier, pk=pk)
-
-            intent, error = (
-                MembershipService.create_subscription_intent(
-                    user=request.user,
-                    tier=tier,
-                )
-            )
-            if error:
-                return JsonResponse(
-                    {
-                        "error": f"Stripe Setup Error: {error}",
-                    },
-                    status=400,
-                )
-
+        intent, error = MembershipService.create_subscription_intent(
+            user=request.user,
+            tier=tier,
+        )
+        if error:
             return JsonResponse(
                 {
-                    "clientSecret": intent.client_secret,
-                    "stripePK": self.stripe_public_key,
-                }
+                    "error": f"Stripe Setup Error: {error}",
+                },
+                status=400,
             )
 
-    class MembershipSuccessView(LoginRequiredMixin, View):
-        """
-        Landing checkpoint verifying completed user billing flow.
-        """
+        return JsonResponse(
+            {
+                "clientSecret": intent.client_secret,
+                "stripePK": self.stripe_public_key,
+            }
+        )
 
-        def get(self, request: HttpRequest):
-            messages.success(
-                request, "Welcome to your new membership plan."
-            )
-            return redirect("membership_options")
+
+class MembershipSuccessView(LoginRequiredMixin, View):
+    """
+    Landing checkpoint verifying completed user billing flow.
+    """
+
+    def get(self, request: HttpRequest):
+        messages.success(
+            request, "Welcome to your new membership plan."
+        )
+        return redirect("accounts:membership_options")
