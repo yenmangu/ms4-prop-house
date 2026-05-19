@@ -612,6 +612,52 @@ The project utilizes Allauth's element system to create a single source of truth
 
 ---
 
+## Local Development & Integration Verification
+
+The integration infrastructure supports local testing workflows without requiring firewall modifications or public DNS proxy tools.
+
+> [!IMPORTANT]
+>
+> ### Stripe CLI required.
+>
+> Step 1: Install and Authenticate the Stripe CLI
+>
+> - macOS (Homebrew): brew install stripe/stripe-cli/stripe
+> - Windows (Scoop): `scoop bucket add stripe https://github.com/stripe/stripe-cli.git` then `scoop install stripe`
+> - Linux: Follow the standard APT/RPM packages from Stripe's docs.
+>
+> Once installed, link it to your Stripe developer account by running this command in your terminal:
+
+### Establish the Webhook Forwarding Tunnel
+
+Execute the Stripe CLI listener to create a secure proxy link capable of intercepting webhooks from your developer account dashboard and redirecting them to your local Django server loop:
+
+```bash
+stripe listen --forward-to localhost:8000/checkout/webhook/
+```
+
+### Sync Signing Secrets
+
+Upon execution, capture the unique local webhook signature token printed to the console:
+
+```text
+> Ready! Your webhook signing secret is whsec_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+Assign this string value directly to your local runtime parameters inside `env.py` under the environment key name **`STRIPE_LOCAL_WH`**.
+
+### Trigger Simulated Event Pipelines
+
+Open an independent terminal shell while your development server and tunnel are active, and dispatch a simulated subscription payload to verify your validation systems:
+
+```bash
+stripe trigger checkout.session.completed
+```
+
+Monitor your local Django execution server logs to confirm that all incoming transaction states process seamlessly and return uniform, healthy **`HTTP 200 OK`** response codes.
+
+---
+
 ## Security & Best Practice
 
 - Environment variables for secrets.
