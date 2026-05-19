@@ -38,10 +38,10 @@ export const showPaymentToast = async (toastElements, clientSecret) => {
 			document.getElementById('stripe-form-template')
 		);
 
-		// DEBUG
-		// if (!template) {
-		// 	console.log('NO TEMPLATE');
-		// }
+		// DEBUG;
+		if (!template) {
+			console.log('NO TEMPLATE');
+		}
 
 		// Clear previous content and clone the template
 		bodyElement.innerHTML = '';
@@ -65,11 +65,25 @@ export const showPaymentToast = async (toastElements, clientSecret) => {
 		toastElement.addEventListener(
 			'shown.bs.toast',
 			() => {
-				resolve({
+				/** @type {PaymentUI} */
+				const paymentUI = {
 					form: document.getElementById('payment-form'),
 					messageContainer: document.getElementById('payment-message'),
 					clientSecret: clientSecret
-				});
+				};
+				if (toast) {
+					paymentUI.toastInstance = toast;
+				}
+				resolve(
+					paymentUI
+
+					// {
+					// form: document.getElementById('payment-form'),
+					// messageContainer: document.getElementById('payment-message'),
+					// clientSecret: clientSecret,
+
+					// }
+				);
 			},
 			{ once: true }
 		);
@@ -90,4 +104,14 @@ export const showCustomerDetailsToast = async toastElements => {
 
 	const toast = new bootstrap.Toast(toastElement, { autohide: false });
 	toast.show();
+};
+
+/**
+ *
+ * @param {bootstrap.Toast} toast
+ */
+export const hideToast = toast => {
+	if (toast) {
+		toast.hide();
+	}
 };

@@ -73,6 +73,10 @@
 	gap: 0.5rem;
 }
 
+/* .discount-percentage {
+	margin-bottom: 0.5rem;
+} */
+
 /* Action block spacing base layout hook */
 .membership-matrix-zone .membership-action-portal {
 	margin-top: auto;

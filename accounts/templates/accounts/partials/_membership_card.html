@@ -1,0 +1,45 @@
+<div class="membership-card {% if tier == current_tier %}state--active{% endif %}"
+     {% if is_oob_swap %}hx-swap="true"{% endif %}
+     id="membership-card-{{ tier.pk }}"
+     data-tier="{{ tier.pk }}">
+  <div class="membership-card-header">
+    <h2 class="membership-card-title h4">{{ tier.name }}</h2>
+  </div>
+  <div class="membership-price-manifest font-mono">
+    <span class="display-4 fw-bold">{{ tier.price.amount|floatformat:"0" }}</span>
+    <span class="text-muted--bright small">{{ tier.price.currency }}/MO</span>
+  </div>
+  <ul class="membership-feature font-mono small">
+    <li class="discount-percentage">
+      <span class="text-success-industrial fw-bold me-1">[&check;]</span>
+      <strong>{{ tier.discount_percentage }}% DISCOUNT</strong> ALLOCATED ON ASSET CONTRACTS
+    </li>
+    {% if tier.features %}
+      {% for feature in tier.features %}
+        <li class="{% if not feature.included %}text-muted--bright opacity-50{% endif %}">
+          {% if feature.included %}
+            <span class="text-success-industrial fw-bold me-1">[&check;]</span>
+          {% else %}
+            <span class="text-error-industrial fw-bold me-1">[✘]</span>
+          {% endif %}
+          {{ feature.text|upper }}
+        </li>
+      {% endfor %}
+    {% endif %}
+  </ul>
+  <div class="membership-action-portal">
+    {% if tier == current_tier %}
+      <button class="btn btn--industrial btn--success w-100 py-2 text-uppercase"
+              disabled>CURRENT_PLAN</button>
+    {% else %}
+      <form hx-post="{% url 'accounts:initiate_membership' tier.pk %}"
+            hx-swap="none"
+            id="create-intent-{{ tier.pk }}"
+            data-tier="{{ tier.pk }}">
+        {% csrf_token %}
+        <button type="submit"
+                class="btn btn--industrial btn--accent w-100 py-2 text-uppercase">INITIALIZE_UPGRADE</button>
+      </form>
+    {% endif %}
+  </div>
+</div>

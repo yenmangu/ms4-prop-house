@@ -52,6 +52,14 @@ h1 {
 	font-style: italic;
 }
 
+.text-success-industrial {
+	color: var(--txt-success);
+}
+
+.text-error-industrial {
+	color: var(--txt-error);
+}
+
 .text-muted {
 	color: var(--txt-muted);
 }

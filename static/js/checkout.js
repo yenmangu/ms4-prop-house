@@ -3,9 +3,11 @@
  * @typedef {import('@stripe/stripe-js').StripeConstructor} StripeConstructor
  * @typedef {import('@stripe/stripe-js').StripeElements} StripeElements
  * @typedef {import('@stripe/stripe-js').Appearance} Appearance
+ * @typedef {import('@stripe/stripe-js').SetupIntent} SetupIntent
  */
 
 import { getStandardHeaders } from '../../static/js/apiConfig.js';
+import { phReportError } from './reportError.js';
 import { getPaymentAppearance } from './stripeAppearance.js';
 
 /**
@@ -94,8 +96,16 @@ export const mountStripeElements = async (pk, clientSecret, paymentUI) => {
  * @param {Stripe} stripe
  * @param {StripeElements} elements
  * @param {HTMLElement} form
+ * @param {string} clientSecret
+ * @param {SubscriptionIntentMetadata} [metadata={}]
  */
-export const attachPaymentListener = (stripe, elements, form) => {
+export const attachPaymentListener = (
+	stripe,
+	elements,
+	form,
+	clientSecret,
+	metadata
+) => {
 	form.addEventListener('submit', async event => {
 		event.preventDefault();
 
@@ -115,23 +125,93 @@ export const attachPaymentListener = (stripe, elements, form) => {
 		spinner.classList.remove('d-none');
 		buttonTxt.innerText = 'PROCESSING...';
 
-		// Confirm Payment
-		const { error } = await stripe.confirmPayment({
+		// Determine operation routing based on Stripe token structure rules
+		const isSubscription = clientSecret.startsWith('seti_');
+
+		const confirmParams = {
 			elements,
 			confirmParams: {
-				return_url: `${window.location.origin}/checkout/checkout-success`
+				return_url: isSubscription
+					? `${window.location.origin}/accounts/membership/success`
+					: `${window.location.origin}/checkout/checkout-success`
 			}
-		});
+		};
 
-		// Handle errors
-		if (error && typeof error.message === 'string') {
-			messageContainer.classList.remove('d-none');
-			messageContainer.innerText = error.message;
+		// Confirm Payment/Subscription Setup
+		// Disgusting JSDoc typecast to `any` to get around Stripe's
+		// incredibly strict return type.
+		/** @type {any} */
+		const result = isSubscription
+			? await stripe.confirmSetup({
+					elements: elements,
+					redirect: 'if_required'
+				})
+			: await stripe.confirmPayment(confirmParams);
+
+		// Handle errors first
+		if (result.error) {
+			const error = result.error;
+			if (typeof error.message === 'string') {
+				messageContainer.classList.remove('d-none');
+				messageContainer.innerText = error.message;
+			}
 
 			// Re-enable UI
 			submitBtn.disabled = false;
-			spinner.classList.add('d-none');
-			buttonTxt.innerText = 'Complete Purchase';
+			if (spinner) spinner.classList.add('d-none');
+			if (buttonTxt) buttonTxt.innerText = 'PAY NOW';
+			return;
 		}
+
+		if (isSubscription) {
+			// Nice and friendly `SetupIntent` type again
+			const setupIntent = /** @type {SetupIntent} */ (result.setupIntent);
+			if (
+				setupIntent &&
+				(setupIntent.status === 'succeeded' ||
+					setupIntent.status === 'processing')
+			) {
+				let tierId;
+				if (metadata && metadata.tierId) {
+					tierId = metadata.tierId;
+				} else {
+					phReportError(
+						new Error(
+							'[DOM_ERROR]: tierId property not found in metadata, but required for subscription intent'
+						),
+						'SYSTEM'
+					);
+					if (metadata && metadata.toastInstance) {
+						metadata.toastInstance.hide();
+					}
+					// Return immediately
+					return;
+				}
+
+				// @ts-ignore
+				window.htmx.ajax(
+					'GET',
+					`/accounts/membership/success/?inline=1&tier_id=${tierId}&setup_intent=${setupIntent.id}`,
+					{
+						target: `#membership-card-${tierId}`,
+						swap: 'outerHTML'
+					}
+				);
+
+				if (metadata && metadata.toastInstance) {
+					metadata.toastInstance.hide();
+				}
+
+				return;
+			}
+		}
+
+		// Deprecated because above now handles subscriptions
+		// const { error } = await stripe.confirmPayment({
+		// 	elements,
+		// 	confirmParams: {
+		// 		return_url: `${window.location.origin}/checkout/checkout-success`
+		// 	}
+		// });
 	});
 };

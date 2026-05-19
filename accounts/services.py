@@ -37,15 +37,15 @@ class MembershipService:
                 user.stripe_customer_id = customer.id
                 user.save(update_fields=["stripe_customer_id"])
 
-                intent = stripe.SetupIntent.create(
-                    customer=user.stripe_customer_id,
-                    payment_method_types=["card"],
-                    metadata={
-                        "user_id": str(user.pk),
-                        "tier_id": str(tier.pk),
-                        "stripe_price_id": tier.stripe_price_id,
-                    },
-                )
+            intent = stripe.SetupIntent.create(
+                customer=user.stripe_customer_id,
+                payment_method_types=["card"],
+                metadata={
+                    "user_id": str(user.pk),
+                    "tier_id": str(tier.pk),
+                    "stripe_price_id": tier.stripe_price_id,
+                },
+            )
             return intent, None
 
         except stripe.error.StripeError as e:

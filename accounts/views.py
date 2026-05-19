@@ -1,3 +1,4 @@
+import json
 from typing import Optional, Tuple
 
 from accounts.filters import UserOrderFilter
@@ -7,8 +8,9 @@ from commerce.mixins import StripeMixin
 from commerce.models import Order
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.functional import classproperty
 from django.views import View
@@ -114,6 +116,23 @@ class InitiateMembershipCheckoutView(
     Handles secure POST requests to initiate a Stripe Subscription checkout lifecycle for a targeted membership tier.
     """
 
+    def handle_no_permission(self):
+        """
+        Custom interceptor to handle unauthenticated HTMX requests.
+        """
+
+        if self.request.headers.get("HX-Request"):
+            login_url = f"{reverse('account_login')}?next={self.request.path})"
+
+            response = JsonResponse(
+                {
+                    "error": "AUTHENTICATION_REQUIRED",
+                },
+                status=401,
+            )
+            response["HX-Redirect"] = login_url
+            return response
+
     def post(self, request: HttpRequest, pk):
         """
         Post request for view
@@ -136,7 +155,7 @@ class InitiateMembershipCheckoutView(
         return JsonResponse(
             {
                 "clientSecret": intent.client_secret,
-                "stripePK": self.stripe_public_key,
+                "stripePk": self.stripe_public_key,
             }
         )
 
@@ -147,7 +166,65 @@ class MembershipSuccessView(LoginRequiredMixin, View):
     """
 
     def get(self, request: HttpRequest):
-        messages.success(
-            request, "Welcome to your new membership plan."
-        )
+
+        # Capture intent ID
+        setup_intent_id = request.GET.get("setup_intent")
+        tier_id = request.GET.get("tier_id")
+        inline = request.GET.get("inline")
+
+        membership_partial = "accounts/partials/_membership_card.html"
+        status = "success"
+
+        if setup_intent_id and not tier_id:
+            try:
+                intent = stripe.SetupIntent.retrieve(setup_intent_id)
+                extracted_tier_id = intent.metadata.get("tier_id")
+                if extracted_tier_id:
+                    tier_id = int(extracted_tier_id)
+            except Exception as e:
+                messages.error(
+                    request,
+                    f"TRANSACTION_VERIFICATION_FAILED // {str(e)}",
+                )
+        if tier_id:
+            MembershipService.provision_tier(
+                request.user,
+                tier_id=int(tier_id),
+            )
+        if inline:
+            updated_tier = get_object_or_404(
+                MembershipTier, pk=tier_id
+            )
+
+            html_string = render_to_string(
+                membership_partial,
+                {
+                    "tier": updated_tier,
+                    "current_tier": updated_tier,
+                },
+                request=request,
+            )
+            response = HttpResponse(
+                html_string,
+                status=200,
+            )
+            message = f"Membership updated to {updated_tier.name} successfully."
+
+            response["HX-Trigger"] = json.dumps(
+                {
+                    "showToast": {
+                        "message": message,
+                        "status": status,
+                    },
+                },
+            )
+
+            return response
+
+        if setup_intent_id:
+            messages.success(
+                request=request,
+                message="SUCCESS // Welcome to your new membership plan.",
+            )
+
         return redirect("accounts:membership_options")

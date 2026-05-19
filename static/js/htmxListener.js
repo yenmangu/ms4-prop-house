@@ -98,7 +98,7 @@ async function checkoutListener(evt) {
 
 	// Stage 2
 	// Stripe Handshake (from create-intent)
-	if (detail.elt.id === 'create-intent') {
+	if (detail.elt.id && detail.elt.id.startsWith('create-intent')) {
 		const submitBtn = /** @type {HTMLButtonElement} */ (
 			detail.elt.querySelector('button[type="submit"]')
 		);
@@ -120,12 +120,39 @@ async function checkoutListener(evt) {
 				clientSecret,
 				paymentUI
 			);
+
+			// Typesafe and gated tierId assignment
+			let tierId;
+
+			/** @type {SubscriptionIntentMetadata} */
+			let metadata = {};
+
+			const element = /** @type {HTMLElement} */ (detail.elt);
+			if (element.dataset && element.dataset.tier) {
+				tierId = element.dataset.tier;
+				metadata.tierId = tierId;
+				metadata.toastInstance = paymentUI.toastInstance
+					? paymentUI.toastInstance
+					: undefined;
+			}
+
 			if (stripeInstance && paymentUI.form) {
 				const { stripe, elements } = stripeInstance;
-				attachPaymentListener(stripe, elements, paymentUI.form);
+
+				attachPaymentListener(
+					stripe,
+					elements,
+					paymentUI.form,
+					clientSecret,
+					metadata
+				);
 			}
 		} catch (err) {
 			const msg = err instanceof Error ? err.message : 'Handshake failed.';
+			if (err instanceof Error) {
+				console.error(err);
+				phReportError(new Error(msg), 'SYSTEM');
+			}
 
 			showToast(
 				toastUI,

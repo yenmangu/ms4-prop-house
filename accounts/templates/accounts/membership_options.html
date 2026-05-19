@@ -4,11 +4,14 @@
   <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
 {% endblock extra_css %}
 {% block content %}
+  {{ context }}
   <div class="container membership-matrix-zone">
     <h1 class="mb-5">System_Upgrade // Production_Plans</h1>
     <div class="row g-4 justify-content-center">
       {% for tier in membership_tiers %}
         <div class="col-md-4">
+          {% include "accounts/partials/_membership_card.html" with tier=tier current_tier=current_tier is_oob_swap=False %}
+          {% comment %}
           <div class="membership-card {% if tier == current_tier %}state--active{% endif %}">
             <div class="membership-card-header">
               <h2 class="membership-card-title h4">{{ tier.name }}</h2>
@@ -37,21 +40,19 @@
             </ul>
             <div class="membership-action-portal">
               {% if tier == current_tier %}
-                <button class="btn btn--industrial btn--success w-100 py-2 text-uppercase"
-                        disabled>CURRENT_PLAN</button>
+                <button class="btn btn--industrial btn--success w-100 py-2 text-uppercase" disabled>CURRENT_PLAN</button>
               {% else %}
-                <form hx-post="{% url 'accounts:initiate_membership' tier.pk %}"
-                      hx-swap="none"
-                      id="create-intent-{{ tier.pk }}">
+                <form hx-post="{% url 'accounts:initiate_membership' tier.pk %}" hx-swap="none" id="create-intent-{{ tier.pk }}">
                   {% csrf_token %}
-                  <button type="submit"
-                          class="btn btn--industrial btn--accent w-100 py-2 text-uppercase">INITIALIZE_UPGRADE</button>
+                  <button type="submit" class="btn btn--industrial btn--accent w-100 py-2 text-uppercase">INITIALIZE_UPGRADE</button>
                 </form>
               {% endif %}
             </div>
           </div>
+          {% endcomment %}
         </div>
       {% endfor %}
     </div>
   </div>
+  {% include "commerce/includes/stripe_form.html" %}
 {% endblock content %}
