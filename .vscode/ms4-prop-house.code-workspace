@@ -10,6 +10,14 @@
 			"**/templates/**/*.html": "django-html",
 			"**/static/vendor/htmx.min.js": "plaintext"
 		},
+		"editor.suggest.insertMode": "replace",
+		"[python]": {
+			"editor.snippetSuggestions": "top",
+			"editor.suggest.matchOnWordStartOnly": true,
+			"editor.suggestOnTriggerCharacters": true,
+			"editor.suggest.filterGraceful": true,
+			"editor.suggestSelection": "first"
+		},
 		"python-envs.pythonProjects": [
 			{
 				"envManager": "ms-python.python:venv",
