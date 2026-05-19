@@ -13,11 +13,17 @@
     <div class="collapse navbar-collapse" id="mainNavbar">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mono-font">
         <li class="nav-item">
-          <a class="nav-link active" href="{% url 'catalogue:product_list' %}">CATALOGUE</a>
+          <a class="nav-link {% if request.resolver_match.app_name == 'catalogue' %}active{% endif %}"
+             href="{% url 'catalogue:product_list' %}">CATALOGUE</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'membership_options' %}active{% endif %}"
+             href="{% url 'accounts:membership_options' %}">MEMBERSHIP</a>
         </li>
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="#">MY_BOOKINGS</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+               href="{% url 'accounts:dashboard' %}">MY_BOOKINGS</a>
           </li>
           <li class="nav-item">
             <form action="{% url 'account_logout' %}" method="post" class="d-inline">
@@ -34,7 +40,6 @@
           </li>
         {% endif %}
       </ul>
-      {% include "basket/partials/_nav_basket_logic.html" %}
     </div>
   </div>
 </nav>
