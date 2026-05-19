@@ -1,5 +1,12 @@
 from django.db import models
-from django.db.models import F, Case, ExpressionWrapper, Value, When
+from django.db.models import (
+    F,
+    Q,
+    Case,
+    ExpressionWrapper,
+    Value,
+    When,
+)
 from django.conf import Settings
 from django.utils import timezone
 from typing import TYPE_CHECKING, Optional
@@ -62,19 +69,32 @@ class StockItem(models.Model):
 class HireRecordQuerySet(models.QuerySet):
     def with_alert_levels(self):
         now = timezone.now()
+        whole_duration = F("due_date") - F("out_date")
+
+        status = HireRecord.HireStatus
         return self.annotate(
             calculated_alert=Case(
-                When(returned_date__isnull=False, then=Value("RE")),
-                When(due_date__lt=now, then=Value("OV")),
                 When(
-                    due_date__lte=ExpressionWrapper(
-                        now + (F("due_date") - F("out_date")) * 0.1,
-                        output_field=models.DateTimeField(),
-                    ),
-                    then=Value("WA"),
+                    returned_date__isnull=False,
+                    then=Value(status.RETURNED),
                 ),
-                default=Value("NO"),
-                output_field=models.CharField(),
+                When(due_date__lt=now, then=Value(status.OVERDUE)),
+                When(
+                    # If current time has advanced past 90% of the timeline allocations
+                    Q(returned_date__isnull=True)
+                    & Q(out_date__isnull=False)
+                    & Q(
+                        out_date__lte=ExpressionWrapper(
+                            now - (whole_duration * 0.9),
+                            output_field=models.DateTimeField(),
+                        )
+                    ),
+                    then=Value(
+                        status.WARNING
+                    ),  # Warning (Impending Overdue)
+                ),
+                output_field=models.CharField(max_length=2),
+                default=Value(status.NOMINAL),
             )
         )
 
@@ -134,6 +154,23 @@ class HireRecord(models.Model):
 
     if TYPE_CHECKING:
         order_item: OrderItem
+
+    @property
+    def alert_level_label(self) -> str:
+        """
+        Python fallback property descriptor providing runtime visibility
+        if evaluated outside an annotated query chain context.
+        """
+
+        status_code = getattr(
+            self, "calculated_alert", self.HireStatus.NOMINAL
+        )
+
+        if status_code is None:
+            print("NO STATUS")
+            status_code = self.HireStatus.NOMINAL
+
+        return self.HireStatus(status_code).label
 
     @property
     def days_remaining(self) -> int:
