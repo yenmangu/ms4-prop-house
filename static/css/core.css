@@ -68,6 +68,20 @@ h1 {
 	color: var(--txt-muted-bright);
 }
 
+a.upgrade-link {
+	color: var(--clr-accent);
+	text-underline-offset: 3px;
+}
+
+.text-upper {
+	text-transform: uppercase;
+}
+
+/* !important used here to quickly override any other styles */
+.text-accent {
+	color: var(--clr-accent) !important;
+}
+
 .field-group {
 	display: flex;
 	flex-direction: column;
@@ -464,7 +478,15 @@ button[type='submit'].btn-manifest-primary:active {
 	color: var(--txt-muted);
 	font-family: 'Courier New', Courier, monospace;
 	font-size: 0.8rem;
+	/* text-transform: uppercase; */
+}
+
+.manifest-header .stat-item {
 	text-transform: uppercase;
+}
+
+.manifest-header .stat-item-lower {
+	text-transform: none;
 }
 
 .manifest-main .menifest-header h1 {

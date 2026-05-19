@@ -2,8 +2,31 @@
   <h1 class="glitch-text">ASSET_INVENTORY</h1>
   <p class="subtitle"></p>
   <div class="stats-bar">
-    <span class="stat-item">Active Hire Records for {{ user.email }}</span>
+    <span class="stat-item">Today's Date:</span>
+    <span class="stat-item text-accent">{% now "Y-m-d" %}</span>
+  </div>
+  <div class="stats-bar">
+    <span class="stat-item">Active Hire Records for</span>
+    <span class="stat-item-lower">{{ user.email }}</span>
+    &nbsp;
     <span class="stat-item">TOTAL_HIRES:</span>
+    <span class="stat-item">
+      {% if total_hires %}{{ total_hires }}{% endif %}
+    </span>
+  </div>
+  <div class="stats-bar membership-bar">
+    <span class="stat-item">Active Membership Plan:
+      {% if user.membership_tier %}
+        <span class="stat-item-lower">
+          {{ user.membership_tier.name }}
+          <a href="{% url 'accounts:membership_options' %}"
+             class="upgrade-link text-upper">Upgrade Plan</a>
+        </span>
+      {% else %}
+        NO PLAN <a href="{% url 'accounts:membership_options' %}"
+    class="upgrade-link text-upper">Upgrade Plan</a>
+      {% endif %}
+    </span>
   </div>
 </header>
 <section class="state-overview">
@@ -27,11 +50,8 @@
           <td class="font-mono small text-muted--bright">{{ record.stock_item.serial_number }}</td>
           <td class="bold">{{ record.order_item.product_name }}</td>
           <td class="status-cell">
-            <span class="status-badge indicator status-{{ record.stock_item.status|lower }}">
-              {{ record.stock_item.get_status_display }}
-              <span class="status-text">
-                {% if record.alert_level.label %}{{ record.alert_level.label|upper }}{% endif %}
-              </span>
+            <span class="status-text indicator alert-{{ record.alert_level_label|lower }} font-mono">
+              {{ record.alert_level_label }}
             </span>
           </td>
           <td>{{ record.due_date|date:"d M Y" }}</td>

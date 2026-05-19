@@ -1,15 +1,17 @@
 /* dashboard.css */
 
-/* record-row alert classes */
-.record-row.alert-ov {
-	border-left: 5px solid var(--alert-red);
-	background: rgba(255, 62, 62, 0.05);
-	animation: alert-pulse 1.5s infinite;
+.record-row .status-text[class='^alert-'] {
+	color: unset;
 }
 
-.record-row.alert-wa {
-	border-left: 5px solid var(--warning-yellow);
-	color: var(--warning-yellow);
+/* record-row alert classes */
+.record-row .status-text.alert-overdue {
+	color: rgba(var(--alert-red) 1);
+	animation: alert-pulse 2s infinite;
+}
+
+.record-row .status-text.alert-warning {
+	color: var(--alert-yellow);
 }
 
 .record-row.alert-no {
@@ -19,6 +21,15 @@
 /* Pulse for Critical Overdue Items */
 @keyframes alert-pulse {
 	0% {
+		color: rgba(var(--error-red-values), 0.2);
+	}
+	50% {
+		color: rgba(var(--error-red-values), 1);
+	}
+	100% {
+		color: rgba(var(--error-red-values), 0.2);
+	}
+	/* 0% {
 		box-shadow: inset 0 0 0px rgba(255, 62, 62, 0);
 	}
 	50% {
@@ -26,5 +37,5 @@
 	}
 	100% {
 		box-shadow: inset 0 0 0px rgba(255, 62, 62, 0);
-	}
+	} */
 }

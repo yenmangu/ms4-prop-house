@@ -41,6 +41,7 @@ class UserDashboardHireView(LoginRequiredMixin, ListView):
             .select_related(
                 "stock_item__product", "order_item__order"
             )
+            .with_alert_levels()
             .order_by("-order_item__order__created_at")
         )
         self.filterset = UserOrderFilter(
@@ -56,8 +57,8 @@ class UserDashboardHireView(LoginRequiredMixin, ListView):
         context["zone"] = "dashboard"
 
         # Initialise qs
-        qs = self.get_queryset()
-        base_qs = self.filterset.qs
+        base_qs = self.get_queryset()
+        # base_qs = self.filterset.qs
 
         # Assign context
         context["filter"] = self.filterset
@@ -68,6 +69,8 @@ class UserDashboardHireView(LoginRequiredMixin, ListView):
         context["returned_hires"] = base_qs.filter(
             returned_date__isnull=False
         )
+
+        context["total_hires"] = base_qs.count()
 
         return context
 

@@ -35,7 +35,7 @@ class UserOrderFilter(df.FilterSet):
     )
 
     state = df.ChoiceFilter(
-        choices=STATUS_CHOICES,
+        choices=HireRecord.HireStatus.choices,
         method="filter_by_state",
         label="HIRE_STATE",
         empty_label="ALL_RECORDS",
@@ -69,7 +69,9 @@ class UserOrderFilter(df.FilterSet):
         return queryset
 
     def filter_by_alert_level(self, queryset: QuerySet, name, value):
-
-        return queryset.with_alert_levels().filter(
-            calculated_alert=value
-        )
+        """
+        Filter the annotated field 'calculated_alert' directly
+        """
+        if value:
+            return queryset.filter(calculated_alert=value)
+        return queryset
