@@ -21,22 +21,6 @@ def fulfill_order(stripe_intent_id, basket_id=None) -> bool:
 
     if basket_id:
         # Close basket
-        Basket.objects.filter(id=basket_id).update(status=Basket.Status.SUBMITTED)
-
-    # TODO: Check refactor doesnt encounter ghost basket,
-    # and then remove deprecated (below)
-
-    # order_queryset = Order.objects.filter(stripe_pid=stripe_intent_id)
-    # order = order_queryset.first()
-
-    # # Safety check
-    # if order and order.status != Order.OrderStatus.PAID:
-    #     order_queryset.update(status=Order.OrderStatus.PAID)
-
-    #     # Clear associated basket ONLY when marked PAID
-    #     if basket_id:
-    #         Basket.objects.filter(id=basket_id).first().lines.all().delete()
-
-    #         return True
-
-    # return False
+        Basket.objects.filter(id=basket_id).update(
+            status=Basket.Status.SUBMITTED
+        )
