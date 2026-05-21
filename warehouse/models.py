@@ -98,6 +98,20 @@ class HireRecordQuerySet(models.QuerySet):
             )
         )
 
+    def for_dashboard_user(self, user):
+        """
+        Single source of truth for user's hire data.
+        Combines filtering, N+1 optimisations and alert calculations.
+        """
+        return (
+            self.filter(order_item__order__user=user)
+            .select_related(
+                "stock_item__product", "order_item__order"
+            )
+            .with_alert_levels()
+            .order_by("-order_item__order__created_at")
+        )
+
 
 class HireRecord(models.Model):
     """
@@ -128,9 +142,6 @@ class HireRecord(models.Model):
         OVERDUE = "OV", "Overdue"
         RETURNED = "RE", "Returned"
 
-    # QuerySet Ref
-    objects = HireRecordQuerySet.as_manager()
-
     order_item = models.ForeignKey(
         "commerce.OrderItem",
         on_delete=models.PROTECT,
@@ -152,8 +163,13 @@ class HireRecord(models.Model):
     condition_on_out = models.TextField(blank=True)
     condition_on_return = models.TextField(blank=True)
 
+    # QuerySet ref
+    objects = HireRecordQuerySet.as_manager()
+
     if TYPE_CHECKING:
         order_item: OrderItem
+        # QuerySet Ref
+        objects: HireRecordQuerySet
 
     @property
     def alert_level_label(self) -> str:

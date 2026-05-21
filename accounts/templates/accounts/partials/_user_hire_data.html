@@ -28,6 +28,14 @@
       {% endif %}
     </span>
   </div>
+  <div class="dashboard-actions mt-2">
+    <a href="?{{ request.GET.urlencode }}&pdf=1"
+       hx-boost="false"
+       class="btn btn--industrial-ghost btn--accent"
+       download>Export current manifest
+      <span class="text-lower">(.pdf)</span>
+    </a>
+  </div>
 </header>
 <section class="state-overview">
 </section>

@@ -77,6 +77,10 @@ a.upgrade-link {
 	text-transform: uppercase;
 }
 
+.text-lower {
+	text-transform: lowercase;
+}
+
 /* !important used here to quickly override any other styles */
 .text-accent {
 	color: var(--clr-accent) !important;
