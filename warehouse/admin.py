@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils import timezone
 from .models import HireRecord, StockItem
 from .services import dispatch_hire_records
-from core.utils import get_admin_link
+from core.utils.admin_link import get_admin_link
 
 if TYPE_CHECKING:
     from commerce.models import Order
