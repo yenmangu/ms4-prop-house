@@ -1,5 +1,13 @@
 /* dashboard.css */
 
+.btn.btn--accent-txt {
+	color: var(--clr-accent);
+}
+.btn.btn.btn--accent-txt:hover {
+	color: var(--text-primary);
+	border-color: var(--clr-accent);
+}
+
 .record-row .status-text[class='^alert-'] {
 	color: unset;
 }
