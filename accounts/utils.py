@@ -49,21 +49,21 @@ def generate_user_inventory_pdf_response(
 
         # Dynamic context params for print layour styling
 
-        filename = f"prop_house_manifest_{client_name}"
+    filename = f"prop_house_manifest_{client_name}.pdf"
 
-        pdf_context = {
-            "client_name": client_name,
-            "generated_at": timezone.now().strftime("%Y-%m-%d %H:%M"),
-        }
+    pdf_context = {
+        "client_name": client_name,
+        "generated_at": timezone.now().strftime("%Y-%m-%d %H:%M"),
+    }
 
-        report = UserInventoryPDF(
-            filename=filename,
-            headers=headers,
-            data_rows=rows,
-            context=pdf_context,
-        )
+    report = UserInventoryPDF(
+        filename=filename,
+        headers=headers,
+        data_rows=rows,
+        context=pdf_context,
+    )
 
-        report.title = "Your Account Asset Manifest"
+    report.title = "Your Account Asset Manifest"
 
-        # Return evaluated Django HttpResponse object
-        return report.render()
+    # Return evaluated Django HttpResponse object
+    return report.render()
