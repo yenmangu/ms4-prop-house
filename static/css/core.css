@@ -645,3 +645,26 @@ body #liveToast.industrial-toast.show {
 .gate-reveal:not(.hidden) {
 	max-height: 500px;
 }
+
+/* Sidebar CSS Patch */
+
+.sidebar-header.mobile {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.sidebar-header.mobile h2 {
+	color: var(--txt-primary);
+}
+
+.offcanvas-body.sidebar {
+	padding: 0;
+}
+.mobile-sidebar-override .manifest-sidebar {
+	display: block !important;
+	width: 100% !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+}

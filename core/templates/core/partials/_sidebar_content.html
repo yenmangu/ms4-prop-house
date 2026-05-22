@@ -1,0 +1,44 @@
+<div class="sidebar-header {% if mobile %}mobile{% endif %}">
+  <h2 class="label-mono">FILTER_UNIT</h2>
+  {% if mobile %}
+    <span>
+      <button type="button"
+              class="btn-close text-reset btn-close-white"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"></button>
+    </span>
+  {% endif %}
+</div>
+<form id="sidebar-form"
+      method="get"
+      class="manifest-form"
+      hx-get="{{ request.path }}"
+      hx-target="#manifest-results"
+      hx-trigger="keyup changed delay:300ms from:input, change"
+      hx-push-url="true">
+  <div class="input-group">
+    <label for="id_q">PROP_SEARCH</label>
+    {{ filter.form.q }}
+  </div>
+  <div class="input-group">
+    <label for="id_alert_level">Hire Alert Status</label>
+    {{ filter.form.alert_level }}
+  </div>
+  {% if zone == 'catalogue' %}
+    <div class="input-group">
+      <label for="id_categories">CATEGORY_TAGS</label>
+      <div class="custom-checkbox-list">{{ filter.form.categories }}</div>
+    </div>
+    <div class="manifest-form__action-zone">
+      <button type="submit" class="btn btn--industrial btn--sidebar">EXECUTE_SEARCH</button>
+      <a href="{% url 'catalogue:product_list' %}"
+         class="btn btn--ghost btn--sidebar">RESET_SYSTEM</a>
+    </div>
+  {% endif %}
+  {% if zone == 'dashboard' %}
+    <div class="input-group">
+      <label for="id_state">HIRE_STATE</label>
+      {{ filter.form.state }}
+    </div>
+  {% endif %}
+</form>

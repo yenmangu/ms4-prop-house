@@ -1,39 +1,24 @@
-<aside class="manifest-sidebar"
+<aside class="manifest-sidebar d-none d-md-block"
        data-zone="{% if zone %}{{ zone }}{% else %}'default'{% endif %}">
-  <div class="sidebar-header">
-    <span class="status-dot"></span>
-    <h2 class="label-mono">FILTER_UNIT</h2>
-  </div>
-  <form method="get"
-        class="manifest-form"
-        hx-get="{{ request.path }}"
-        hx-target="#manifest-results"
-        hx-trigger="keyup changed delay:300ms from:input, change"
-        hx-push-url="true">
-    <div class="input-group">
-      <label for="id_q">PROP_SEARCH</label>
-      {{ filter.form.q }}
-    </div>
-    <div class="input-group">
-      <label for="id_alert_level">Hire Alert Status</label>
-      {{ filter.form.alert_level }}
-    </div>
-    {% if zone == 'catalogue' %}
-      <div class="input-group">
-        <label for="id_categories">CATEGORY_TAGS</label>
-        <div class="custom-checkbox-list">{{ filter.form.categories }}</div>
-      </div>
-      <div class="manifest-form__action-zone">
-        <button type="submit" class="btn btn--industrial btn--sidebar">EXECUTE_SEARCH</button>
-        <a href="{% url 'catalogue:product_list' %}"
-           class="btn btn--ghost btn--sidebar">RESET_SYSTEM</a>
-      </div>
-    {% endif %}
-    {% if zone == 'dashboard' %}
-      <div class="input-group">
-        <label for="id_state">HIRE_STATE</label>
-        {{ filter.form.state }}
-      </div>
-    {% endif %}
-  </form>
+  {% include "core/partials/_sidebar_content.html" %}
 </aside>
+<div class="offcanvas offcanvas-start d-md-none bg-surface border-end border-hard text-txt-primary"
+     tabindex="-1"
+     id="mobileFilterDrawer"
+     data-bs-backdrop="true"
+     aria-labelledby="mobileFilterDrawerLabel"
+     style="background-image: var(--texture-scanline)">
+  {% comment %}
+  <div class="offcanvas-header border-bottom border-hard">
+    <h5 class="offcanvas-title font-mono text-xs text-muted text-uppercase" id="mobileFilterDrawerLabel">SYSTEM_FILTERS //</h5>
+
+
+    <button type="button" class="btn-close text-reset btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+</div>
+  {% endcomment %}
+  <div class="offcanvas-body sidebar">
+    <div class="mobile-sidebar-override manifest-sidebar">
+      {% include "core/partials/_sidebar_content.html" with mobile=True %}
+    </div>
+  </div>
+</div>

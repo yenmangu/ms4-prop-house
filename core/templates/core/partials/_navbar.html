@@ -4,6 +4,18 @@
        href="{% url 'catalogue:product_list' %}">
       PROP<span class="text-accent">HOUSE</span>_
     </a>
+    <div class="d-flex d-md-none align-items-center gap-4">
+      {% if filter %}
+        <button class="btn btn-dark border border-hard text-xs py-2 px-2 font-mono d-flex align-items-center justify-content-center"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#mobileFilterDrawer"
+                aria-controls="mobileFilterDrawer"
+                style="height: 38px"
+                title="Access View Filters">Filters</button>
+      {% endif %}
+      <div class="mnobile-basket-nav-housing">{% include "basket/partials/_nav_basket_logic.html" %}</div>
+    </div>
     <button class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
@@ -39,8 +51,10 @@
             <a class="nav-link" href="{% url 'account_login' %}">LOGIN</a>
           </li>
         {% endif %}
+        <li class="nav-item d-md-none">
+          <a href="{% url 'basket:summary' %}" class="nav-link">BASKET</a>
+        </li>
       </ul>
-      {% include "basket/partials/_nav_basket_logic.html" %}
     </div>
   </div>
 </nav>

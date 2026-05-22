@@ -7,6 +7,7 @@ import { attachPaymentListener, mountStripeElements } from './checkout.js';
 import { intialiseCustomerForm } from './customerForm.js';
 import { getToastElements } from './domElements.js';
 import { phReportError } from './reportError.js';
+import { handleSidebar } from './sidebarOffcanvas.js';
 import {
 	showToast,
 	showPaymentToast,
@@ -20,6 +21,7 @@ import {
 export const initialiseHtmxListeners = () => {
 	document.addEventListener('showToast', handleToastEvent);
 	document.addEventListener('htmx:afterRequest', checkoutListener);
+	document.addEventListener('htmx:beforeProcess', handleSidebar);
 };
 
 /**
