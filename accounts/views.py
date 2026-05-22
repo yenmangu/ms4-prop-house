@@ -3,15 +3,19 @@ from typing import Optional, Tuple
 
 from accounts.filters import UserOrderFilter
 from accounts.models import MembershipTier, User
+from accounts.reports import UserInventoryPDF
 from accounts.services import MembershipService
+from accounts.utils import generate_user_inventory_pdf_response
 from commerce.mixins import StripeMixin
 from commerce.models import Order
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.functional import classproperty
 from django.views import View
 from django.views.generic import ListView
@@ -23,6 +27,7 @@ from warehouse.models import HireRecord
 class UserDashboardHireView(LoginRequiredMixin, ListView):
     """
     Displays active hre records derived from completed orders
+    UPDATE: supports raw binary PDF rendering.
     """
 
     model = HireRecord
@@ -32,23 +37,57 @@ class UserDashboardHireView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         """
         Optimised query bridging physical assets to the authenticated User
-        Uses ''SQL JOIN' with `select_related` to pull all linked data
+        Uses ''SQL JOIN' with `select_related` to pull all linked data.
+        UPDATE: Utilises for_dashboard_users layer,
+        so no need for previous deprecated code
         """
-        qs = (
-            HireRecord.objects.filter(
-                order_item__order__user=self.request.user
-            )
-            .select_related(
-                "stock_item__product", "order_item__order"
-            )
-            .with_alert_levels()
-            .order_by("-order_item__order__created_at")
-        )
+
+        qs = HireRecord.objects.for_dashboard_user(self.request.user)
+
+        # All of the deprecated code is now encapsulated in `for_dashboard_users`
+
+        # qs = (
+        #     HireRecord.objects.filter(
+        #         order_item__order__user=self.request.user
+        #     )
+        #     .select_related(
+        #         "stock_item__product", "order_item__order"
+        #     )
+        #     .with_alert_levels()
+        #     .order_by("-order_item__order__created_at")
+        # )
+
         self.filterset = UserOrderFilter(
             self.request.GET, queryset=qs
         )
 
         return self.filterset.qs
+
+    def get(self, request: HttpRequest, *args, **kwargs):
+        """
+        Intercept standard execution if client requests PDF
+        """
+
+        if request.GET.get("pdf"):
+            filtered_records: QuerySet[HireRecord] = (
+                self.get_queryset()
+            )
+
+            client_name = (
+                request.user.get_full_name()
+                or request.user.email
+                or request.user.username
+            )
+
+            return generate_user_inventory_pdf_response(
+                user_id=request.user.pk,
+                client_name=client_name,
+                queryset=filtered_records,
+            )
+
+        # Default for non PDF requests.
+
+        return super().get(request=request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
 
