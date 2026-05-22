@@ -3,7 +3,6 @@ from typing import Optional, Tuple
 
 from accounts.filters import UserOrderFilter
 from accounts.models import MembershipTier, User
-from accounts.reports import UserInventoryPDF
 from accounts.services import MembershipService
 from accounts.utils import generate_user_inventory_pdf_response
 from commerce.mixins import StripeMixin
@@ -74,9 +73,7 @@ class UserDashboardHireView(LoginRequiredMixin, ListView):
             )
 
             client_name = (
-                request.user.get_full_name()
-                or request.user.email
-                or request.user.username
+                request.user.get_full_name() or request.user.username
             )
 
             return generate_user_inventory_pdf_response(
