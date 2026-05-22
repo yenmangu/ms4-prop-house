@@ -4,10 +4,9 @@
   <link rel="stylesheet" href="{% static 'css/basket.css' %}">
 {% endblock extra_css %}
 {% block content %}
-  <div class="container manifest-wrapper"
+  <div class="container manifest-wrapper manifest-wrapper--basket"
        data-basket-update-url="{% url 'basket:update' %}">
     <h1>Your Basket</h1>
-    <hr>
     <div id="summary-content">{% include "basket/partials/_basket_summary_content.html" %}</div>
   </div>
   {% include "commerce/includes/stripe_form.html" %}

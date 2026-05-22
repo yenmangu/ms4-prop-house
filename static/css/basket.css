@@ -1,4 +1,8 @@
 /* basket.css */
+.manifest-wrapper--basket {
+	display: flex;
+	flex-direction: column;
+}
 
 .basket-purge {
 	opacity: 0;
