@@ -9,6 +9,13 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from basket.models import Basket
 
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: Stripe Developers SDK Framework (https://stripe.com/docs/api)
+# Purpose: Initialize Stripe authentication via a secure server-side API key.
+# Scope: Configures the global runtime runtime parameters for the commerce layer.
+# =========================================================================
+
 STRIPE_CONFIG = getattr(settings, "STRIPE_KEYS", {})
 stripe_api_key = STRIPE_CONFIG.get("stripe_sk")
 
@@ -32,12 +39,20 @@ class PaymentService:
 
             currency = str(basket.total_price.currency).lower()
 
+            # =========================================================================
+            # EXTERNAL DEPENDENCY ATTRIBUTION
+            # Method: stripe.PaymentIntent.create()
+            # Purpose: Safe remote handshake establishing an intent session matching
+            #          the current basket state, mapping customer tracking tags to metadata fields.
+            # =========================================================================
             intent = stripe.PaymentIntent.create(
                 amount=amount_in_Pence,
                 currency=currency,
                 metadata={
                     "basket_id": str(basket.id),
-                    "user_id": basket.user.id if basket.user else "anonymous",
+                    "user_id": (
+                        basket.user.id if basket.user else "anonymous"
+                    ),
                 },
                 automatic_payment_methods={"enabled": True},
             )
@@ -53,7 +68,9 @@ class CheckoutService:
     """
 
     @staticmethod
-    def create_payment_intent_for_basket(basket: Basket, user: "User", post_data):
+    def create_payment_intent_for_basket(
+        basket: Basket, user: "User", post_data
+    ):
         """
         Orchestrates:
         1. Order Creation via Model Classmethod
@@ -62,6 +79,7 @@ class CheckoutService:
         """
 
         # 1. Delegation to Model
+
         order = Order.create_from_basket(
             basket=basket,
             user=user,
@@ -82,12 +100,20 @@ class CheckoutService:
 
             currency = str(basket.total_price.currency).lower()
 
+            # =========================================================================
+            # EXTERNAL DEPENDENCY ATTRIBUTION
+            # Method: stripe.PaymentIntent.create()
+            # Purpose: Safe remote handshake establishing an intent session matching
+            #          the current basket state, mapping customer tracking tags to metadata fields.
+            # =========================================================================
             intent = stripe.PaymentIntent.create(
                 amount=amount_in_Pence,
                 currency=currency,
                 metadata={
                     "basket_id": str(basket.id),
-                    "user_id": basket.user.id if basket.user else "anonymous",
+                    "user_id": (
+                        basket.user.id if basket.user else "anonymous"
+                    ),
                 },
                 automatic_payment_methods={"enabled": True},
             )
