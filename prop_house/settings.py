@@ -47,8 +47,14 @@ STRIPE_KEYS = {
     "stripe_pk": os.environ.get("STRIPE_PUBLIC"),
 }
 
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 if IS_HEROKU_APP:
     STRIPE_WH_SECRET = os.environ.get("STRIPE_WH")
+    EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+    RESEND = {
+        "RESEND_API_KEY": os.environ.get("RESEND_EMAIL"),
+    }
 else:
     STRIPE_WH_SECRET = os.environ.get("STRIPE_LOCAL_WH")
 
@@ -89,6 +95,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "allauth",
     "allauth.account",
+    "anymail",
     # "allauth.socialaccount",
     "cloudinary",
     "view_breadcrumbs",
@@ -119,6 +126,8 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     "basket.middleware.BasketMiddleware",
 ]
+
+ACCOUNT_ADAPTER = "core.adapter.PropHouseAccountAdapter"
 
 PERMISSIONS_POLICY = {
     "unload": ["self"],
@@ -215,7 +224,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SITE_ID = 1
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # ACCOUNT_UNIQUE_EMAIL = True
