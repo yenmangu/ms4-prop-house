@@ -5,7 +5,6 @@
  * @returns {Promise<void>}
  */
 export const performAnimation = (element, className) => {
-	// TODO: Switch DEBUG to `false`
 	const DEBUG = false;
 	let debugId = '';
 	/**

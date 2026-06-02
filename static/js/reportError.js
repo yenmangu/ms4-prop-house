@@ -36,11 +36,6 @@ const reportToConsole = (error, context) => {
 	console.groupEnd();
 };
 
-// TODO: Remove belo during cleanup
-
-// /** @type {number|undefined} */
-// let toastTimeout;
-
 /**
  *
  * @param {string} message
@@ -56,34 +51,6 @@ const phNotify = (message, type = 'success') => {
 
 	showToast(toastElements, message, type);
 	console.error('[TEMP CONSOLE]: ', message);
-
-	// Deprecated in favour of above
-	// Moved to centralised bootstrap toast system.
-	// TODO: Remove deporecated during cleanup
-
-	// let feedbackEl = document.querySelector('#system-feedback');
-
-	// if (!feedbackEl) {
-	// 	feedbackEl = document.createElement('div');
-	// 	feedbackEl.id = 'system-feedback';
-	// 	document.body.appendChild(feedbackEl);
-	// }
-
-	// const feedbackHTMLElement = /** @type {HTMLElement} */ (feedbackEl);
-
-	// feedbackHTMLElement.className = `industrual-toast toast-${type}`;
-	// feedbackHTMLElement.innerText = message.toUpperCase();
-
-	// feedbackHTMLElement.classList.add('visible');
-
-	// if (toastTimeout) {
-	// 	clearTimeout(toastTimeout);
-	// }
-
-	// // Using `window` to explicitly set return type of number
-	// toastTimeout = window.setTimeout(() => {
-	// 	feedbackHTMLElement.classList.remove('visible');
-	// }, 4000);
 };
 
 export { phReportError, phNotify };
