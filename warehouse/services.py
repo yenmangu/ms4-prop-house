@@ -11,6 +11,14 @@ if TYPE_CHECKING:
     from catalogue.models import Product
 
 
+class StockFulfillmentError(ValueError):
+    """
+    Raised when an orderr tries to claim stock that is no longer available.
+    """
+
+    pass
+
+
 def fulfill_order_items(order: Order) -> bool:
     """
     Service Layer: Translate a 'paid' order into a physical warehouse task.
@@ -25,7 +33,9 @@ def fulfill_order_items(order: Order) -> bool:
         stock_units_to_update = []
 
         for item in order.items.all():
-            stock_item = StockItem.objects.filter(product=item.product).first()
+            stock_item = StockItem.objects.filter(
+                product=item.product
+            ).first()
             print(f"Item found: {stock_item}")
             # Lock rows
             available_stock = list(
@@ -39,13 +49,12 @@ def fulfill_order_items(order: Order) -> bool:
 
             if len(available_stock) < item.quantity:
                 actual_phys_count = StockItem.objects.filter(
-                    product=item.product, status=StockItem.StockStatus.AVAILABLE
+                    product=item.product,
+                    status=StockItem.StockStatus.AVAILABLE,
                 ).count()
-                raise ValueError(
-                    f"Warehouse Error: {item.product_name} has {actual_phys_count} available"
-                    # f"Insufficient physical stock for {item.product_name}"
-                    # f"Required: {item.quantity}, Found:{len(available_stock)}"
-                    # TODO: Implement real alert system
+                raise StockFulfillmentError(
+                    f"Fulfillment failed for '{item.product.name}'. "
+                    f"Requested: {item.quantity}, Available: {len(available_stock)}"
                 )
 
             for stock_unit in available_stock:
@@ -55,7 +64,8 @@ def fulfill_order_items(order: Order) -> bool:
                         order_item=item,
                         stock_item=stock_unit,
                         out_date=item.start_date or timezone.now(),
-                        due_date=item.end_date or timezone.now() + timedelta(days=7),
+                        due_date=item.end_date
+                        or timezone.now() + timedelta(days=7),
                     )
                 )
                 # Queue item for status update
@@ -66,7 +76,9 @@ def fulfill_order_items(order: Order) -> bool:
             HireRecord.objects.bulk_create(all_hire_records)
 
         if stock_units_to_update:
-            StockItem.objects.bulk_update(stock_units_to_update, ["status"])
+            StockItem.objects.bulk_update(
+                stock_units_to_update, ["status"]
+            )
 
         # Finalise order status
         order.status = Order.OrderStatus.PAID
@@ -91,9 +103,15 @@ def get_stock_availability(product: Product) -> dict:
 
     stats = StockItem.objects.filter(product=product).aggregate(
         total=Count("id"),
-        available=Count("id", filter=Q(status=StockItem.StockStatus.AVAILABLE)),
-        on_hire=Count("id", filter=Q(status=StockItem.StockStatus.ON_HIRE)),
-        maintenance=Count("id", filter=Q(status=StockItem.StockStatus.MAINTENANCE)),
+        available=Count(
+            "id", filter=Q(status=StockItem.StockStatus.AVAILABLE)
+        ),
+        on_hire=Count(
+            "id", filter=Q(status=StockItem.StockStatus.ON_HIRE)
+        ),
+        maintenance=Count(
+            "id", filter=Q(status=StockItem.StockStatus.MAINTENANCE)
+        ),
     )
 
     return {
@@ -104,7 +122,9 @@ def get_stock_availability(product: Product) -> dict:
     }
 
 
-def dispatch_hire_records(hire_record_ids: List[int], condition: str = "Good") -> int:
+def dispatch_hire_records(
+    hire_record_ids: List[int], condition: str = "Good"
+) -> int:
     """
     Marks physical items as having left the 'warehouse'
     """

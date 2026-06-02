@@ -1,11 +1,17 @@
+from django.db import transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Order
-from warehouse.services import fulfill_order_items
+from warehouse.services import (
+    StockFulfillmentError,
+    fulfill_order_items,
+)
 
 
 @receiver(post_save, sender=Order)
-def trigger_warehouse_fulfillment(sender, instance: Order, created: bool, **kwargs):
+def trigger_warehouse_fulfillment(
+    sender, instance: Order, created: bool, **kwargs
+):
     """
     Listen for Order being marked as 'PAID' and trigger warehouse service.
 
@@ -17,4 +23,17 @@ def trigger_warehouse_fulfillment(sender, instance: Order, created: bool, **kwar
 
     # Only trigger if status has moved to 'PAID'
     if instance.status == Order.OrderStatus.PAID:
-        fulfill_order_items(instance)
+
+        def safe_fulfillment_wrapper():
+            try:
+                fulfill_order_items(instance)
+            except StockFulfillmentError as e:
+                instance.status = Order.OrderStatus.FAILED
+
+                instance.admin_notes = (
+                    f"inventory allocation failed: {str(e)}"
+                )
+
+                instance.save(update_fields=["status", "admin_notes"])
+
+        transaction.on_commit(safe_fulfillment_wrapper(instance))

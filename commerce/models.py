@@ -78,6 +78,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    admin_notes = models.TextField(null=True, blank=True)
+
     # Allow class level type checking for IDE auto completion
     if TYPE_CHECKING:
         items: RelatedManager["OrderItem"]
