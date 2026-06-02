@@ -6,6 +6,14 @@ from django.http import HttpRequest
 from django.dispatch import receiver
 
 try:
+
+    # =========================================================================
+    # EXTERNAL DEPENDENCY ATTRIBUTION
+    # Source: django-allauth (https://codeberg.org/allauth/django-allauth)
+    # Purpose: Provides account lifecycle signals (email confirmation) to bridge
+    #          guest user interactions over to authenticated sessions.
+    # Localisation: Triggers automated guest-to-user basket merging routines.
+    # =========================================================================
     from allauth.account.signals import email_confirmed
 except ImportError:
     # Fallback in case allauth does not import
@@ -17,7 +25,9 @@ if TYPE_CHECKING:
 
 
 @receiver(user_logged_in)
-def merge_basket_on_login(sender, request: HttpRequest, user, **kwargs):
+def merge_basket_on_login(
+    sender, request: HttpRequest, user, **kwargs
+):
     """
     When a User logs in, call method om basket model
     """
@@ -28,7 +38,10 @@ if email_confirmed:
 
     @receiver(email_confirmed)
     def merge_on_email_confirmation(
-        sender, request: HttpRequest, email_address: "EmailAddress", **kwargs
+        sender,
+        request: HttpRequest,
+        email_address: "EmailAddress",
+        **kwargs,
     ):
         """
         Triggered when allauth received email confirmation

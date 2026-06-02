@@ -11,6 +11,14 @@ from django.db.models import (
     fields,
 )
 from django.utils import timezone
+
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: django-filter (https://github.com/carltongibson/django-filter)
+# Purpose: FilterSet and CharFilter/ChoiceFilter utilities for building
+#          dynamic, user-facing database query filters.
+# Localisation: Controls query filtering logic for user order history tables.
+# =========================================================================
 import django_filters as df
 from warehouse.models import HireRecord, StockItem
 

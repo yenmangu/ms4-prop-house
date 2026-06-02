@@ -2,6 +2,13 @@ from typing import TYPE_CHECKING
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: django-money (https://github.com/django-money/django-money)
+# Purpose: MoneyField model field wrapper for localized currency management.
+# Localisation: Controls commercial pricing structures on MembershipTier.
+# =========================================================================
 from djmoney.models.fields import MoneyField
 
 if TYPE_CHECKING:

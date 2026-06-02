@@ -1,5 +1,13 @@
 from django.db import models, transaction
 from django.conf import settings
+
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: Django Money & py-moneyed Framework (https://github.com/django-money/django-money)
+# Purpose: Provides type-safe currency field containment (`MoneyField`) and
+#          localisation protections for financial auditing tables.
+# Localisation: Enforces strict type-safety boundaries around decimal calculations.
+# =========================================================================
 from djmoney.models.fields import MoneyField
 import uuid
 from typing import TYPE_CHECKING

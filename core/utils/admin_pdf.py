@@ -1,5 +1,12 @@
 from typing import Any
 
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: ReportLab PDF Library (https://www.reportlab.com/)
+# Purpose: Plautypus structural layout classes and custom color properties
+#          used to generate granular invoice design tables.
+# Localisation: Controls internal spacing configurations and line-item formatting.
+# =========================================================================
 from reportlab.platypus import Paragraph, Spacer, TableStyle, Table
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle
@@ -14,6 +21,13 @@ class UserInvoicePDF(BasePDFGenerator):
     title = "TAX INVOICE / RECEIPT"
 
     def get_table_styles(self) -> TableStyle:
+
+        # =========================================================================
+        # EXTERNAL DEPENDENCY ATTRIBUTION
+        # Class: TableStyle / colors.HexColor
+        # Purpose: Formats the commercial tax table grid cells with precise custom
+        #          hexadecimal brand colours matching the system theme palette.
+        # =========================================================================
         return TableStyle(
             [
                 (

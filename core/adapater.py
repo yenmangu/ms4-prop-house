@@ -1,3 +1,11 @@
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: django-allauth (https://codeberg.org/allauth/django-allauth)
+# Purpose: DefaultAccountAdapter foundation class to override lifecycle
+#          account communication logic.
+# Localisation: Intercepts automated email workflows to seamlessly map
+#               them to internal transactional email layouts.
+# =========================================================================
 from allauth.account.adapter import DefaultAccountAdapter
 from core.utils.emails import TransactionalMail
 

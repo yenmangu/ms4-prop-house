@@ -1,5 +1,13 @@
 from typing import Any
 
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: ReportLab PDF Library (https://www.reportlab.com/)
+# Purpose: Platypus structural layout classes, style objects, and custom
+#          color properties used to build document flows and styling.
+# Localisation: Direct impact on document structure (Paragraph, Spacer, Table),
+#               table layouts (TableStyle), and visual styling colors.
+# =========================================================================
 from reportlab.platypus import Paragraph, Spacer, TableStyle
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle

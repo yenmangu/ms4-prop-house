@@ -2,6 +2,14 @@ from django.db import models, transaction
 from django.utils.text import slugify
 from django.http import HttpRequest
 import uuid
+
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: django-money (https://github.com/django-money/django-money)
+# Purpose: MoneyField model field and Money utility class for precise,
+#          currency-aware arithmetic operations.
+# Localisation: Controls monetary calculations on basket items and line totals.
+# =========================================================================
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 from catalogue.models import Product
@@ -68,12 +76,18 @@ class Basket(models.Model):
         Refactored logic to find/merge baskets on login OR email confirmation.
         """
 
-        guest_basket_id: Optional[str] = request.session.get("basket_id")
+        guest_basket_id: Optional[str] = request.session.get(
+            "basket_id"
+        )
 
-        print(f"DEBUG: Signal received. Session Basket ID: {guest_basket_id}")
+        print(
+            f"DEBUG: Signal received. Session Basket ID: {guest_basket_id}"
+        )
 
         if not guest_basket_id:
-            print("DEBUG: No basket ID found in session. Merging aborted.")
+            print(
+                "DEBUG: No basket ID found in session. Merging aborted."
+            )
             return
         try:
 
@@ -82,7 +96,9 @@ class Basket(models.Model):
                 user__isnull=True,
             )
 
-            print(f"DEBUG: Found Guest Basket {guest_basket.id} in DB.")
+            print(
+                f"DEBUG: Found Guest Basket {guest_basket.id} in DB."
+            )
 
             user_basket: Optional[Basket] = (
                 cls.objects.filter(
@@ -114,7 +130,9 @@ class Basket(models.Model):
         except cls.DoesNotExist:
             # If the guest basket ID in session doesn't exist in DB,
             # do nothing and let the next request create a fresh one.
-            print(f"DEBUG: Basket {guest_basket_id} exists in session but NOT in DB.")
+            print(
+                f"DEBUG: Basket {guest_basket_id} exists in session but NOT in DB."
+            )
             pass
 
     def merge_into(self, target_basket: Basket):
@@ -129,12 +147,21 @@ class Basket(models.Model):
         # If one line fails, all fail
         with transaction.atomic():
             for line in self.lines.all():
-                target_basket.update(product_id=line.product.id, quantity=line.quantity)
+                target_basket.update(
+                    product_id=line.product.id, quantity=line.quantity
+                )
             self.status = self.Status.MERGED
             self.save()
         return target_basket
 
-    def update(self, product_id, action_type=Action.ADD, quantity=1, *args, **kwargs):
+    def update(
+        self,
+        product_id,
+        action_type=Action.ADD,
+        quantity=1,
+        *args,
+        **kwargs,
+    ):
         """
         Public API for modifying basket. Accepts any number of arguments to support evolving hire data.
         Uses private _add, _remove, _clear
@@ -142,7 +169,12 @@ class Basket(models.Model):
         """
 
         if action_type == self.Action.ADD:
-            return self._add(product_id=product_id, quantity=quantity, *args, **kwargs)
+            return self._add(
+                product_id=product_id,
+                quantity=quantity,
+                *args,
+                **kwargs,
+            )
         elif action_type == self.Action.REMOVE:
             return self._remove(product_id=product_id)
         elif action_type == self.Action.CLEAR:
@@ -173,7 +205,10 @@ class Basket(models.Model):
         # Safety Check: if ghost basket, save to DB.
         # Check if basket has been updated during current lifecycle
 
-        if not self._state.adding or not Basket.objects.filter(pk=self.pk).exists():
+        if (
+            not self._state.adding
+            or not Basket.objects.filter(pk=self.pk).exists()
+        ):
             print(f"DEBUG: Basket {self.pk} not in DB. Saving now.")
             self.save()
 
@@ -189,7 +224,9 @@ class Basket(models.Model):
         if kwargs.get("end_date"):
             defaults["end_date"] = kwargs.get("end_date")
         if kwargs.get("production_name"):
-            defaults["production_name"] = kwargs.get("production_name")
+            defaults["production_name"] = kwargs.get(
+                "production_name"
+            )
 
         line, created = self.lines.update_or_create(
             product=product,
@@ -286,9 +323,13 @@ class Line(models.Model):
     Stores a single product and its quantity within a specific Basket.
     """
 
-    basket = models.ForeignKey(Basket, on_delete=models.CASCADE, related_name="lines")
+    basket = models.ForeignKey(
+        Basket, on_delete=models.CASCADE, related_name="lines"
+    )
     product = models.ForeignKey(
-        "catalogue.Product", on_delete=models.CASCADE, related_name="basket_lines"
+        "catalogue.Product",
+        on_delete=models.CASCADE,
+        related_name="basket_lines",
     )
     quantity = models.PositiveIntegerField(default=1)
 

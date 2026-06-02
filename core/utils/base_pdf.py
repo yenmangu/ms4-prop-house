@@ -2,6 +2,14 @@ import io
 from typing import Any
 from django.http import HttpResponse
 from django.utils import timezone
+
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: ReportLab PDF Library (https://www.reportlab.com/)
+# Purpose: Core layout engine components handling structural document flow bindings,
+#          typography styling matrices, and color spectrum variables.
+# Localisation: Establishes base parameters for PDF binary stream compilation.
+# =========================================================================
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import (
     SimpleDocTemplate,
@@ -40,6 +48,13 @@ class BasePDFGenerator:
         self.data_rows = data_rows
         self.context = context or {}
         self.buffer = io.BytesIO()
+
+        # =========================================================================
+        # EXTERNAL DEPENDENCY ATTRIBUTION
+        # Method: getSampleStyleSheet()
+        # Purpose: Initialises ReportLab's built-in structural typography container
+        #          to allow safe generation of contextual text components.
+        # =========================================================================
         self.styles = getSampleStyleSheet()
 
     def get_document_settings(self):
@@ -55,6 +70,12 @@ class BasePDFGenerator:
         }
 
     def get_table_styles(self):
+
+        # =========================================================================
+        # EXTERNAL DEPENDENCY ATTRIBUTION
+        # Class: TableStyle
+        # Purpose: Compiles strict tabular matrix formatting arrays for structural tables.
+        # =========================================================================
         return TableStyle(
             [
                 (
@@ -83,6 +104,11 @@ class BasePDFGenerator:
         story = []
 
         # Title
+        # =========================================================================
+        # EXTERNAL DEPENDENCY ATTRIBUTION
+        # Class: ParagraphStyle
+        # Purpose: Creates a specific typographical signature mapping custom size rules.
+        # =========================================================================
         title_style = ParagraphStyle(
             "TitleStyle",
             parent=self.styles["Heading1"],
@@ -105,7 +131,12 @@ class BasePDFGenerator:
         Compiles the story into raw bytes
         and returns it as a Django HttpResponse.
         """
-
+        # =========================================================================
+        # EXTERNAL DEPENDENCY ATTRIBUTION
+        # Class: SimpleDocTemplate
+        # Purpose: Orchestrates the sequential layout manager flow (story list parsing)
+        #          to render complex multipage binary PDF canvases reliably.
+        # =========================================================================
         doc = SimpleDocTemplate(
             self.buffer, **self.get_document_settings()
         )

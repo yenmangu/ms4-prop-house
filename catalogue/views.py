@@ -3,6 +3,15 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views import generic
+
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: django-view-breadcrumbs (https://github.com/mhipszki/django-view-breadcrumbs)
+# Purpose: ListBreadcrumbMixin and DetailBreadcrumbMixin generic view extensions
+#          for automated page trail tracking.
+# Localisation: Establishes navigational path rendering for the catalog
+#               list and detail views.
+# =========================================================================
 from view_breadcrumbs import (
     ListBreadcrumbMixin,
     DetailBreadcrumbMixin,

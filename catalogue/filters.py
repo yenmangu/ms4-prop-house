@@ -1,5 +1,12 @@
 from typing import Optional
 
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: django-filter (https://github.com/carltongibson/django-filter)
+# Purpose: FilterSet and field filters (CharFilter, ModelMultipleChoiceFilter)
+#          to seamlessly connect client requests to parameterized database queries.
+# Localisation: Evaluates query filters for the client-facing product catalog.
+# =========================================================================
 import django_filters as df
 from django.db.models import Q, Count, QuerySet
 

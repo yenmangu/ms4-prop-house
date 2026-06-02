@@ -1,6 +1,15 @@
 from typing import TYPE_CHECKING
 from django.db import models
 from django.utils.text import slugify
+
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: django-money (https://github.com/django-money/django-money)
+# Purpose: MoneyField model field wrapper for localized, currency-aware
+#          monetary storage.
+# Localisation: Establishes base inventory values on the commercial Product
+#               definition.
+# =========================================================================
 from djmoney.models.fields import MoneyField
 
 # Create your models here.

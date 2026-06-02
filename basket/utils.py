@@ -1,6 +1,15 @@
 from django.conf import settings
 from decimal import Decimal
 from typing import Any, Dict, Optional, TYPE_CHECKING
+
+# =========================================================================
+# EXTERNAL DEPENDENCY ATTRIBUTION
+# Source: py-moneyed (https://github.com/py-moneyed/py-moneyed)
+# Purpose: Money class validation and localized currency formatting utilities
+#          (format_money).
+# Localisation: Standardises international currency layout formats across the
+#               application's user-facing response state.
+# =========================================================================
 from moneyed import Money
 from moneyed.l10n import format_money
 from django.db.models import Model
