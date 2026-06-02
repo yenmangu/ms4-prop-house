@@ -1,10 +1,15 @@
 <nav class="navbar navbar-expand-lg navbar-dark border-bottom-industrial">
   <div class="container-fluid px-4">
-    <a class="navbar-brand glitch-text-sm"
+    <a href="{% url 'catalogue:product_list' %}"
+       class="navbar-brand glitch-text-sm d-sm-none">
+      <span>P</span>
+      <span class="text-accent">H</span>
+    </a>
+    <a class="navbar-brand glitch-text-sm d-none d-sm-block"
        href="{% url 'catalogue:product_list' %}">
       PROP<span class="text-accent">HOUSE</span>_
     </a>
-    <div class="d-flex d-md-none align-items-center gap-4">
+    <div class="mobile-nav-section justify-content-md-between d-lg-none gap-md-1">
       {% if filter %}
         <button class="btn btn-dark border border-hard text-xs py-2 px-2 font-mono d-flex align-items-center justify-content-center"
                 type="button"
@@ -15,13 +20,13 @@
                 title="Access View Filters">Filters</button>
       {% endif %}
       <div class="mnobile-basket-nav-housing">{% include "basket/partials/_nav_basket_logic.html" %}</div>
+      <button class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#mainNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
     </div>
-    <button class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#mainNavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
     <div class="collapse navbar-collapse" id="mainNavbar">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mono-font">
         <li class="nav-item">
@@ -51,7 +56,7 @@
             <a class="nav-link" href="{% url 'account_login' %}">LOGIN</a>
           </li>
         {% endif %}
-        <li class="nav-item d-md-none">
+        <li class="nav-item d-lg-none">
           <a href="{% url 'basket:summary' %}" class="nav-link">BASKET</a>
         </li>
       </ul>

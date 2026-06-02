@@ -142,6 +142,16 @@ a.upgrade-link {
 	color: var(--txt-muted);
 }
 
+.mobile-nav-section {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	/* max-width: 50%;
+	width: 50%; */
+	gap: 2rem;
+	justify-content: flex-end;
+}
+
 .breadcrumb-wrapper.ph-breadcrumbs .breadcrumb-item a {
 	color: var(--txt-muted);
 	text-decoration: none;
