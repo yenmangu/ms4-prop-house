@@ -1,4 +1,8 @@
+{% comment %}
 {% load i18n %}
 {% autoescape off %}
 {% blocktrans %}Email Confirmation{% endblocktrans %}
 {% endautoescape %}
+{% endcomment %}
+
+PROP HOUSE (email_confirm_subject.txt) // Verify Your Email Address

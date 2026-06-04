@@ -1,1 +1,4 @@
+{% comment %}
 {% include "account/email/email_confirmation_message.txt" %}
+{% endcomment %}
+PROP HOUSE (email_confirmation_signup_message.txt) // Activate Your Account

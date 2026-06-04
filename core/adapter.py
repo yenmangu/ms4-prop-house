@@ -8,6 +8,8 @@
 # =========================================================================
 from allauth.account.adapter import DefaultAccountAdapter
 from core.utils.emails import TransactionalMail
+from django.template import TemplateDoesNotExist
+from django.template.loader import get_template
 
 
 class PropHouseAccountAdapter(DefaultAccountAdapter):
@@ -19,20 +21,32 @@ class PropHouseAccountAdapter(DefaultAccountAdapter):
 
     def send_mail(self, template_prefix, email, context):
         """
-        Itercept allauth email triggers and processes with TransactionalMail class.
+        Intercept allauth email triggers and processes with TransactionalMail class.
         """
 
-        subject = self.format_email_subject(
-            self.render_mail(
-                template_prefix=template_prefix,
-                email=email,
-                context=context,
-            ).subject
-        )
+        # subject = self.format_email_subject(
+        #     self.render_mail(
+        #         template_prefix=template_prefix,
+        #         email=email,
+        #         context=context,
+        #     ).subject
+        # )
+
+        subject = self.render_mail(
+            template_prefix=template_prefix,
+            email=email,
+            context=context,
+        ).subject
 
         # Builds template name using naming convention
         # allauth expects.
-        template_name = f"{template_prefix}_message.html"
+        # template_name = f"{template_prefix}_message.txt"
+        try:
+            html_template = f"{template_prefix}_message.html"
+            get_template(html_template)
+            template_name = html_template
+        except TemplateDoesNotExist:
+            template_name = f"{template_prefix}_message.txt"
 
         # Initialise class, forwarding props
         msg = TransactionalMail(

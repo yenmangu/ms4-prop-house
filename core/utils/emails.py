@@ -23,7 +23,10 @@ class TransactionalMail(EmailMessage):
     ):
 
         # Default config fallback
-        if "from_email" not in kwargs:
+        if (
+            not kwargs.get("from_email")
+            or kwargs.get("from_email") == "webmaster@localhost"
+        ):
             kwargs["from_email"] = settings.DEFAULT_FROM_EMAIL
 
         # Render out the HTML body content using
@@ -39,6 +42,7 @@ class TransactionalMail(EmailMessage):
             subject=subject,
             body=html_body,
             to=to,
+            # from_email="django_admin@admin.com",
             *args,
             **kwargs,
         )

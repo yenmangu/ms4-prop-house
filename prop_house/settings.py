@@ -51,13 +51,11 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 if IS_HEROKU_APP:
     STRIPE_WH_SECRET = os.environ.get("STRIPE_WH")
-    EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
-    RESEND = {
-        "RESEND_API_KEY": os.environ.get("RESEND_EMAIL"),
-    }
+
 else:
     STRIPE_WH_SECRET = os.environ.get("STRIPE_LOCAL_WH")
 
+EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
 
 # Optional: Fail fast if keys are missing to avoid debugging headaches
 if not STRIPE_KEYS["stripe_sk"] or not STRIPE_KEYS["stripe_pk"]:
@@ -209,6 +207,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Anymail
+# ANYMAIL = {
+#     "RESEND_API_KEY": os.environ.get("RESEND_EMAIL"),
+# }
+
+if IS_HEROKU_APP:
+    ANYMAIL = {
+        "RESEND_API_KEY": os.environ.get("RESEND_PROD_KEY"),
+    }
+else:
+    ANYMAIL = {
+        "RESEND_API_KEY": os.environ.get("RESEND_DEV_KEY"),
+    }
+
+
+DEFAULT_FROM_EMAIL = "onboarding@resend.dev"
+
 # Override the default allauth forms
 
 ACCOUNT_FORMS = {
@@ -228,22 +243,36 @@ SITE_ID = 1
 
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-# ACCOUNT_UNIQUE_EMAIL = True
+
+# Sandbox dev settings - comment out for prod deployments
+ACCOUNT_UNIQUE_EMAIL = False
+ACCOUNT_LOGIN_METHODS = {
+    "username",
+}
+
+if IS_HEROKU_APP:
+    ACCOUNT_LOGIN_METHODS = {
+        "username",
+        "email",
+    }
+    ACCOUNT_UNIQUE_EMAIL = True
+
+
 ACCOUNT_USERNAME_MIN_LENGTH = 4
 LOGIN_URL = "/accounts/login"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-ACCOUNT_LOGIN_METHODS = {
-    "username",
-    "email",
-}
+
 ACCOUNT_SIGNUP_FIELDS = [
-    "username",
+    "username*",
     "email*",
-    "email2*",
     "password1*",
     "password2*",
 ]
+
+# Signup Email
+ACCOUNT_EMAIL_HTML_TEMPLATE_VARIABLES = True
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "PROP HOUSE // "
 
 # Cloudinary settings
 
