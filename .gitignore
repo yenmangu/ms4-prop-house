@@ -51,3 +51,5 @@ documentation/database/prop-house_with-stripe.drawio.xml
 ## allow only README.md
 /*.md
 !/README.md
+!/TESTING.md
+!/DEPLOYMENT.md
