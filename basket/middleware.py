@@ -20,27 +20,9 @@ class BasketMiddleware:
         Attach a property to request to fetch basket lazily.
         Prevents unnecessary DB queries on static/media requests.
         """
-        # print(f"DEBUG: middleware firing")
 
         request.basket = get_basket_for_request(request=request)
         return self.get_response(request)
-
-        # Deprecated in favour of unified method abovez
-
-        # # Check for session
-        # if not request.session.session_key:
-        #     request.session.create()
-
-        # # Retrieve basket
-        # request.basket = self.get_basket(request=request)
-
-        # if request.basket and request.basket.pk:
-        #     if request.session.get("basket_id") != str(request.basket.id):
-        #         request.session["basket_id"] = str(request.basket.id)
-
-        # response = self.get_response(request)
-
-        # return response
 
     # New get_basket logic
     def get_basket(self, request: HttpRequest):

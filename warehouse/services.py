@@ -1,6 +1,7 @@
 from __future__ import annotations
 from datetime import timedelta
 from typing import TYPE_CHECKING, List
+from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count, Q
 from django.utils import timezone
@@ -33,10 +34,12 @@ def fulfill_order_items(order: Order) -> bool:
         stock_units_to_update = []
 
         for item in order.items.all():
-            stock_item = StockItem.objects.filter(
-                product=item.product
-            ).first()
-            print(f"Item found: {stock_item}")
+            # DEBUG: Uncomment for stock availability debug
+            # stock_item = StockItem.objects.filter(
+            #     product=item.product
+            # ).first()
+            # print(f"Item found: {stock_item}")
+
             # Lock rows
             available_stock = list(
                 StockItem.objects.select_for_update().filter(
@@ -45,16 +48,19 @@ def fulfill_order_items(order: Order) -> bool:
                 )[: item.quantity]
             )
 
-            print(f"Available Stock: {available_stock}")
+            # DEBUG: Uncomment for stock availability debug
+            # print(f"Available Stock: {available_stock}")
 
             if len(available_stock) < item.quantity:
                 actual_phys_count = StockItem.objects.filter(
                     product=item.product,
                     status=StockItem.StockStatus.AVAILABLE,
                 ).count()
+
                 raise StockFulfillmentError(
                     f"Fulfillment failed for '{item.product.name}'. "
                     f"Requested: {item.quantity}, Available: {len(available_stock)}"
+                    f"Actual pysical count: {actual_phys_count}"
                 )
 
             for stock_unit in available_stock:
@@ -82,7 +88,6 @@ def fulfill_order_items(order: Order) -> bool:
 
         # Finalise order status
         order.status = Order.OrderStatus.PAID
-        # order.save()
 
     return True
 

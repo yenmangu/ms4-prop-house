@@ -24,31 +24,24 @@ class BasketSummaryView(BasketMixin, View):
     template_name = "basket/basket_summary.html"
 
     def get(self, request, *args, **kwargs):
-        # DEBUG: See what the session thinks the ID is BEFORE calling the mixin
-        session_id_before = request.session.get("basket_id")
-        print(f"--- SUMMARY VIEW ACCESS ---")
-        print(f"Session ID in Cookie: {session_id_before}")
+        # DEBUG: Uncomment when investigating basket session resolution -
+        # See what the session thinks the ID is BEFORE calling the mixin
+        # Uncomment below:
+        # session_id_before = request.session.get("basket_id")
+        # print(f"--- SUMMARY VIEW ACCESS ---")
+        # print(f"Session ID in Cookie: {session_id_before}")
 
         basket = self.get_basket()
 
-        print(f"Final Basket ID for Render: {basket.id}")
-        print(f"---------------------------")
+        # DEBUG: Uncomment for debug
+        # print(f"Final Basket ID for Render: {basket.id}")
+        # print(f"---------------------------")
 
         return render(
             request,
             "basket/basket_summary.html",
             {"basket": basket},
         )
-
-    # def get(self, request, *args, **kwargs):
-    #     basket = self.get_basket()
-    #     return render(
-    #         request,
-    #         "basket/basket_summary.html",
-    #         {
-    #             "basket": basket,
-    #         },
-    #     )
 
 
 class BasketAddView(BasketMixin, View):
@@ -57,7 +50,6 @@ class BasketAddView(BasketMixin, View):
     """
 
     def post(self, request: HttpRequest, *args, **kwargs):
-        print("Hit post route")
         basket = self.get_basket()
 
         try:
@@ -95,8 +87,7 @@ class BasketAddView(BasketMixin, View):
                 status=400,
             )
         except Exception as e:
-            # Keep this for now while transitioning, then move to logging
-            print(f"CRITICAL ERROR: {e}")
+
             return JsonResponse(
                 {
                     "status": "error",
@@ -110,9 +101,13 @@ class BasketRemoveView(BasketMixin, View):
 
     def post(self, request: HttpRequest, *args, **kwargs):
         current_session_basket_id = request.session.get("basket_id")
-        print(f"--- REMOVE ATTEMPT ---")
-        print(f"Session Key: {request.session.session_key}")
-        print(f"Basket ID stored in Session: {current_session_basket_id}")
+
+        # DEBUG: Uncomment to debug basket issues
+        # print(f"--- REMOVE ATTEMPT ---")
+        # print(f"Session Key: {request.session.session_key}")
+        # print(
+        #     f"Basket ID stored in Session: {current_session_basket_id}"
+        # )
 
         # This now uses the `session_key` to find the correct basket
         basket = self.get_basket()
@@ -130,7 +125,9 @@ class BasketRemoveView(BasketMixin, View):
                     status=400,
                 )
 
-            line = Line.objects.filter(basket=basket, product_id=product_id).first()
+            line = Line.objects.filter(
+                basket=basket, product_id=product_id
+            ).first()
 
             if line:
                 line.delete()
@@ -157,7 +154,9 @@ class BasketClearView(BasketMixin, View):
         # High effeciency - delete all related lines
         basket.lines.all().delete()
 
-        return JsonResponse(get_basket_state(basket, "Basket cleared"))
+        return JsonResponse(
+            get_basket_state(basket, "Basket cleared")
+        )
 
 
 class BasketUpdateView(BasketMixin, View):
@@ -177,7 +176,6 @@ class BasketUpdateView(BasketMixin, View):
 
         try:
             data = json.loads(request.body)
-            # print(f"DATA: \n {data}")
             product_id = data.get("product_id")
             action = data.get("action")
             quantity = data.get("quantity", 1)

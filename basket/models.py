@@ -80,24 +80,14 @@ class Basket(models.Model):
             "basket_id"
         )
 
-        print(
-            f"DEBUG: Signal received. Session Basket ID: {guest_basket_id}"
-        )
-
         if not guest_basket_id:
-            print(
-                "DEBUG: No basket ID found in session. Merging aborted."
-            )
+
             return
         try:
 
             guest_basket: Basket = cls.objects.get(
                 id=guest_basket_id,
                 user__isnull=True,
-            )
-
-            print(
-                f"DEBUG: Found Guest Basket {guest_basket.id} in DB."
             )
 
             user_basket: Optional[Basket] = (
@@ -123,16 +113,10 @@ class Basket(models.Model):
 
             request.session["basket_id"] = str(active_basket.id)
 
-            print(
-                f"DEBUG: Merge successful. Active Basket: {request.session['basket_id']}"
-            )
-
         except cls.DoesNotExist:
             # If the guest basket ID in session doesn't exist in DB,
             # do nothing and let the next request create a fresh one.
-            print(
-                f"DEBUG: Basket {guest_basket_id} exists in session but NOT in DB."
-            )
+
             pass
 
     def merge_into(self, target_basket: Basket):
@@ -209,7 +193,6 @@ class Basket(models.Model):
             not self._state.adding
             or not Basket.objects.filter(pk=self.pk).exists()
         ):
-            print(f"DEBUG: Basket {self.pk} not in DB. Saving now.")
             self.save()
 
         product = Product.objects.get(id=product_id)
@@ -230,15 +213,6 @@ class Basket(models.Model):
 
         line, created = self.lines.update_or_create(
             product=product,
-            # defaults={
-            #     "price_at_addition": product.price,
-            #     # Additional Hire Data
-            #     "start_date": kwargs.get("start_date"),
-            #     "end_date": kwargs.get("end_date"),
-            #     "production_name": kwargs.get("production_name", ""),
-            # },
-            #
-            # Use new defaults dict created above
             defaults=defaults,
         )
 

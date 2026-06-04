@@ -1,4 +1,5 @@
 from commerce.forms import PropHireForm
+from django.contrib import messages
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -131,5 +132,5 @@ class ProductDetailView(
         context["in_basket"] = current_basket_qty
 
         if not context:
-            print("context not found")
+            messages.ERROR(self.request, "No Context Found")
         return context

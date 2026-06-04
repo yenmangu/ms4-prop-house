@@ -183,7 +183,7 @@ class HireRecord(models.Model):
         )
 
         if status_code is None:
-            print("NO STATUS")
+
             status_code = self.HireStatus.NOMINAL
 
         return self.HireStatus(status_code).label
