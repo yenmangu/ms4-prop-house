@@ -3,7 +3,16 @@ import os
 from django.http import HttpRequest
 
 
-class HeaderDebugMiddleware:
+class LocalHeaderDebugMiddleware:
+    """
+
+    Local-only diagnostic middleware for inspecting request headers and
+    session behaviour during basket debugging.
+
+    This middleware must only be enabled when DEBUG=True because it writes
+    request headers and session identifiers to a local log file.
+    """
+
     def __init__(self, get_response):
 
         self.get_response = get_response
@@ -14,8 +23,12 @@ class HeaderDebugMiddleware:
         # Collect Headers, build to dictionary
         headers = {k: v for k, v in request.headers.items()}
 
-        session_key = getattr(request.session, "session_key", "No Session Key")
-        cookie_session_id = request.COOKIES.get("sessionid", "No Cookie Found")
+        session_key = getattr(
+            request.session, "session_key", "No Session Key"
+        )
+        cookie_session_id = request.COOKIES.get(
+            "sessionid", "No Cookie Found"
+        )
 
         # 3. Write to file
         with open(self.log_file, "a") as f:

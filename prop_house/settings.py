@@ -64,7 +64,9 @@ if not STRIPE_KEYS["stripe_sk"] or not STRIPE_KEYS["stripe_pk"]:
         "WARNING: Stripe API keys are missing from the environment."
     )
 
+
 if not STRIPE_WH_SECRET:
+    # Left for brevity
     print(
         f"WARNING: Stripe Webhook Secret missing from environment({'Production' if IS_HEROKU_APP else 'Local'}) is unconfigured"
     )
@@ -115,7 +117,6 @@ MIDDLEWARE = [
     "django_permissions_policy.PermissionsPolicyMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "prop_house.middleware.HeaderDebugMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -124,6 +125,11 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     "basket.middleware.BasketMiddleware",
 ]
+
+if DEBUG:
+    MIDDLEWARE.append(
+        "prop_house.middleware.LocalHeaderDebugMiddleware"
+    )
 
 ACCOUNT_ADAPTER = "core.adapter.PropHouseAccountAdapter"
 
