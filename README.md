@@ -1,8 +1,7 @@
 ## Live Application
 
-- **Live site:** (To be added upon deployment)
-- **Repository:** (GitHub repository link)
-- **Documentation:** (GitHub README / Pages link if applicable)
+- **Live site:** [PropHouse](https://prop-house-f6d4754d8ee5.herokuapp.com/)
+- **Repository:** [github/yenmangu/ms4-prop-house](https://github.com/yenmangu/ms4-prop-house)
 
 ---
 
@@ -424,11 +423,11 @@ Suggested fields (WishlistItem):
 
 ## Request Pipeline & State Management
 
-The application utilizes a **Single Source of Truth** architecture to manage the basket state across the entire request lifecycle. This ensures that the UI (navigation badges, totals) and the business logic (adding/removing items) are always synchronized.
+The application utilises a **Single Source of Truth** architecture to manage the basket state across the entire request lifecycle. This ensures that the UI (navigation badges, totals) and the business logic (adding/removing items) are always synchronised.
 
 ### 1. The Service Layer (`basket/services.py`)
 
-To prevent logic fragmentation, all basket retrieval and recovery logic is centralized in a dedicated service layer. This layer handles the hierarchical lookup of a basket:
+To prevent logic fragmentation, all basket retrieval and recovery logic is centralised in a dedicated service layer. This layer handles the hierarchical lookup of a basket:
 
 - **Authenticated User**: Priority check for an existing `OPEN` basket linked to the user account.
 - **Session ID**: Secondary check for a specific `basket_id` stored in the browser session.
@@ -483,7 +482,7 @@ The `basket` app manages the temporary storage of products a user intends to pur
 
 #### Logic, Mixins & Properties
 
-To maintain modularity and avoid repetitive session lookups, the app utilizes a **BasketMixin** for all Class-Based Views (CBVs) that interact with user selections.
+To maintain modularity and avoid repetitive session lookups, the app utilises a **BasketMixin** for all Class-Based Views (CBVs) that interact with user selections.
 
 - **`BasketMixin.get_basket()`**:
   - Acts as the view-level gateway to the **Service Layer**.
@@ -532,7 +531,7 @@ MIDDLEWARE = [
 
 ## Event Driven Architecture
 
-The system utilizes a declarative, event-driven pattern to manage UI state and feedback, replacing manual JavaScript orchestration with a hybrid approach using **HTMX** and **Bootstrap**.
+The system utilises a declarative, event-driven pattern to manage UI state and feedback, replacing manual JavaScript orchestration with a hybrid approach using **HTMX** and **Bootstrap**.
 
 ---
 
@@ -542,7 +541,7 @@ All basket interactions—including adding, removing, and clearing items—are i
 
 - **Transport**: HTMX interceptors handle the `POST` request and automatically inject the `X-CSRFToken` into the headers.
 - **Payload**: Data is transmitted as a JSON object using the `json-enc` extension to align with the requirements of the backend `BasketUpdateView`.
-- **Session Management**: Each request explicitly refreshes the `basket_id` in the session, ensuring the browser and server stay synchronized and preventing session mismatches.
+- **Session Management**: Each request explicitly refreshes the `basket_id` in the session, ensuring the browser and server stay synchronised and preventing session mismatches.
 
 ### 2. Signal Emission (The Backend)
 
@@ -553,7 +552,7 @@ The `BasketUpdateView` executes the business logic (updating the `Basket` and `L
 
 ### 3. Notification Bridge (The Frontend)
 
-A centralized listener in the JavaScript layer bridges the gap between server-side signals and client-side UI components.
+A centralised listener in the JavaScript layer bridges the gap between server-side signals and client-side UI components.
 
 - **Type Safety**: Custom events are handled via `JSDoc @typedef` definitions to ensure the integrity of the data payload passed from HTMX to the UI.
 - **Consolidated UI**: All notifications, including those from the global error handler (`phReportError`) and manual scripts, are routed through a unified notification bridge to a Bootstrap `Toast` instance.
@@ -586,7 +585,7 @@ To avoid adding unnecessary fields while still controlling the UI output, we ext
 
 ### 2. Global Element Override (`templates/allauth/elements/field.html`)
 
-The project utilizes Allauth's element system to create a single source of truth for field rendering.
+The project utilises Allauth's element system to create a single source of truth for field rendering.
 
 #### Template Logic:
 
@@ -688,8 +687,8 @@ Conventional Commits format used for clear and structured history.
 ## HTMX
 
 - **Declarative Interactions**: UI updates are driven by HTML attributes (`hx-post`, `hx-vals`, `hx-trigger`) rather than manual event listeners.
-- **Event-Driven Feedback**: Utilizes `HX-Trigger` response headers to communicate backend state changes to the frontend notification system.
-- **State Integrity**: All state-changing actions are routed through server-side views to ensure session and database synchronization.
+- **Event-Driven Feedback**: Utilises `HX-Trigger` response headers to communicate backend state changes to the frontend notification system.
+- **State Integrity**: All state-changing actions are routed through server-side views to ensure session and database synchronisation.
 - **Atomic Responses**: Preference for `204 No Content` or partial fragment swaps to maintain client-side DOM stability.
 - **JSON Integration**: Uses the `json-enc` extension for consistent data exchange with Python-based business logic.
 
@@ -769,6 +768,20 @@ PropHouse follows WCAG 2.1 AA guidelines, including:
 |                             |                                                                                                   |       |     |
 
 Used to perform advanced and related WHERE clause lookups on `HireRecord` model. |
+
+## External Code Attributes
+
+| Feature                           | Source / Creditation                                                          | Main Implementation                                                                                                                                  |
+| --------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Authentication System**         | [Django Allauth](https://docs.allauth.org/)                                   | Overridden registration and login forms styled with custom industrial widgets to enforce the PropHouse design system.                                |
+| **Dynamic Async Mutations**       | [HTMX](https://htmx.org/)                                                     | Drives seamless `ADD`, `REMOVE`, and `CLEAR` basket operations and asynchronous catalogue filter updates without full page reloads.                  |
+| **Responsive UI & Canvas**        | [Bootstrap 5](https://getbootstrap.com/)                                      | Provides the structural utility layout, responsive grid tracks, Toast notification layout, and the sliding mobile Offcanvas filter panel.            |
+| **Semantic Interface Navigation** | [Django View Breadcrumbs](https://github.com/mshwery/django-view-breadcrumbs) | Automatically compiles rich, structured hierarchical navigation strings across complex nested details, catalogue sections, and dashboard paths.      |
+| **Currency & Price Calculation**  | [Django Money / py-moneyed](https://github.com/django-money/django-money)     | Enforces strict localisation and type-safe financial tracking for asset costs, hire rates, and multi-tier membership calculations.                   |
+| **Automated Invoice Printing**    | [ReportLab](https://pypi.org/project/reportlab/)                              | Dynamically paints structural elements to generate immutable, professional transaction invoice PDFs directly from the Django admin workspace views.  |
+| **Cloud Asset Routing**           | [Cloudinary Django SDK](https://cloudinary.com/)                              | Decouples media storage from the core web dyno by automating optimised asset compression and serving production product media from a CDN.            |
+| **Live WSGI Server Pipeline**     | [Gunicorn](https://gunicorn.org/)                                             | Acts as the production-grade HTTP process worker pool mapped inside the system `Procfile` to handle concurrency streams under live deployment loads. |
+| **Relational Storage Engine**     | [PostgreSQL / Psycopg2](https://www.postgresql.org/)                          | Production-tier relational storage backend handling strict database constraints, data field validations, and safe operational commits.               |
 
 ## Acknowledgements
 
