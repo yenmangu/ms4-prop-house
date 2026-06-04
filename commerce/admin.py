@@ -103,7 +103,6 @@ class OrderAdmin(admin.ModelAdmin):
         Generates a direct link to the Stripe Dashboard
         for this Order's payment.
         """
-        # TODO: Add stripe test mode flag
         prefix = "test/"
         stripe_id = getattr(obj, "stripe_pid", None)
         if stripe_id:
