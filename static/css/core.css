@@ -375,7 +375,6 @@ footer {
 
 #manifest-results {
 	flex-grow: 1;
-	border: 1px solid cyan;
 }
 
 .manifest-sidebar .manifest-form label {
