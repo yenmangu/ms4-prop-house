@@ -248,18 +248,19 @@ EMAIL_BACKEND
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
-# Sandbox dev settings - comment out for prod deployments
+# Sandbox dev settings
 ACCOUNT_UNIQUE_EMAIL = False
 ACCOUNT_LOGIN_METHODS = {
     "username",
 }
+
 
 if IS_HEROKU_APP:
     ACCOUNT_LOGIN_METHODS = {
         "username",
         "email",
     }
-    ACCOUNT_UNIQUE_EMAIL = True
+    ACCOUNT_UNIQUE_EMAIL = False
 
 
 ACCOUNT_USERNAME_MIN_LENGTH = 4
