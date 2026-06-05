@@ -9,7 +9,7 @@
        href="{% url 'catalogue:product_list' %}">
       PROP<span class="text-accent">HOUSE</span>_
     </a>
-    <div class="mobile-nav-section justify-content-md-between d-lg-none gap-md-1">
+    <div class="mobile-nav-section d-lg-none">
       {% if filter %}
         <button class="btn btn-dark border border-hard text-xs py-2 px-2 font-mono d-flex align-items-center justify-content-center"
                 type="button"
@@ -59,6 +59,7 @@
         <li class="nav-item d-lg-none">
           <a href="{% url 'basket:summary' %}" class="nav-link">BASKET</a>
         </li>
+        <li class="nav-item d-none d-lg-block">{% include "basket/partials/_nav_basket_logic.html" %}</li>
       </ul>
     </div>
   </div>

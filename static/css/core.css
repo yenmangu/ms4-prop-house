@@ -146,9 +146,10 @@ a.upgrade-link {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	flex-grow: 1;
 	/* max-width: 50%;
 	width: 50%; */
-	gap: 2rem;
+	gap: 10%;
 	justify-content: flex-end;
 }
 
@@ -344,9 +345,14 @@ footer {
 
 /* ----------------- Manifest ----------------- */
 .manifest-wrapper {
-	display: grid;
-	grid-template-columns: 300px 1fr; /* Fixed sidebar, fluid grid */
-	min-height: calc(100vh - 70px); /* Subtract nav height */
+	/* XS display and above - flex */
+	display: flex;
+
+	/* Enabled when display is grid (bootstrap utility class) */
+	/* Fixed sidebar, fluid grid */
+	grid-template-columns: 300px 1fr;
+	/* Subtract nav height */
+	min-height: calc(100vh - 70px);
 }
 
 /* Sidebar Control Panel */
@@ -354,6 +360,8 @@ footer {
 .manifest-sidebar {
 	/* background-color: var(--bg-surface); */
 	/* border-right: 1px solid var(--border-hard); */
+	width: 100%;
+	max-width: 300px;
 	border-style: 1px solid var(--border-hard);
 	padding: 2rem;
 	/* height: 100%; */
@@ -363,6 +371,11 @@ footer {
 	outline: none;
 	appearance: none;
 	-webkit-appearance: none;
+}
+
+#manifest-results {
+	flex-grow: 1;
+	border: 1px solid cyan;
 }
 
 .manifest-sidebar .manifest-form label {
@@ -484,7 +497,7 @@ button[type='submit'].btn-manifest-primary:active {
 	line-height: 1;
 
 	border-bottom: 4px solid var(--clr-accent);
-	display: inline-block;
+	/* display: inline-block; */
 }
 
 .manifest-header .stats-bar {

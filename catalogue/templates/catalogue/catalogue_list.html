@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="{% static 'css/catalogue.css' %}">
 {% endblock extra_css %}
 {% block content %}
-  <div class="manifest-wrapper"
+  <div class="manifest-wrapper d-flex d-xl-grid"
        data-basket-update-url="{% url 'basket:update' %}">
     {% include "core/partials/_sidebar.html" %}
     <div class="manifest-main"id="manifest-results">{% include "catalogue/partials/_product_grid.html" %}</div>
