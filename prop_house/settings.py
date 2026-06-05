@@ -112,6 +112,9 @@ INSTALLED_APPS = [
     "warehouse",
 ]
 
+if DEBUG:
+    INSTALLED_APPS.append("django_erd_generator")
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django_permissions_policy.PermissionsPolicyMiddleware",
