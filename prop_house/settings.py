@@ -248,19 +248,22 @@ EMAIL_BACKEND
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
-# Sandbox dev settings
+# Local development allows repeated signup testing
+# against a single inbox without account cleanup.
 ACCOUNT_UNIQUE_EMAIL = False
 ACCOUNT_LOGIN_METHODS = {
     "username",
 }
 
-
+# Production uses unique emails and supports
+# login via username or email.
 if IS_HEROKU_APP:
     ACCOUNT_LOGIN_METHODS = {
         "username",
         "email",
     }
-    ACCOUNT_UNIQUE_EMAIL = False
+    ACCOUNT_UNIQUE_EMAIL = True
+    EMAIL_TIMEOUT = 10
 
 
 ACCOUNT_USERNAME_MIN_LENGTH = 4
