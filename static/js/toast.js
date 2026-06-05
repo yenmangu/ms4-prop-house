@@ -75,16 +75,7 @@ export const showPaymentToast = async (toastElements, clientSecret) => {
 				if (toast) {
 					paymentUI.toastInstance = toast;
 				}
-				resolve(
-					paymentUI
-
-					// {
-					// form: document.getElementById('payment-form'),
-					// messageContainer: document.getElementById('payment-message'),
-					// clientSecret: clientSecret,
-
-					// }
-				);
+				resolve(paymentUI);
 			},
 			{ once: true }
 		);

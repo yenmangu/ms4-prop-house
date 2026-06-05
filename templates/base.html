@@ -55,10 +55,24 @@
   </head>
   <body class="bg-main-dark">
     {% include "core/partials/_navbar.html" %}
+    {% comment %}
     {% if messages %}
       <div class="messages-container">
         {% for message in messages %}<div class="alert-industrial {{ message.tags }}">{{ message|safe }}</div>{% endfor %}
       </div>
+    {% endif %}
+    {% endcomment %}
+    {% if messages %}
+      <script id="django-messages-data" type="application/json">
+    [
+      {% for message in messages %}
+        {
+          "message":"{{message|escapejs}}",
+          "tags":"{{message.tags|default:'info'|escapejs}}"
+        }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+      </script>
     {% endif %}
     <div class="breadcrumb-wrapper ph-breadcrumbs px-4 py-2">
       {% block breadcrumbs %}
