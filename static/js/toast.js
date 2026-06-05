@@ -1,5 +1,6 @@
 // import { Toast } from 'bootstrap';
 import * as bootstrap from 'bootstrap';
+import { phReportError } from './reportError.js';
 
 /**
  *
@@ -40,7 +41,7 @@ export const showPaymentToast = async (toastElements, clientSecret) => {
 
 		// DEBUG;
 		if (!template) {
-			console.log('NO TEMPLATE');
+			phReportError(new Error('[DOM_ERROR]: No template found'), 'SYSTEM');
 		}
 
 		// Clear previous content and clone the template

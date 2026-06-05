@@ -31,7 +31,6 @@ export const initialiseHtmxListeners = () => {
 function handleToastEvent(evt) {
 	const toastEvt = /** @type {ToastEvent} */ (evt);
 	const { message, status } = toastEvt.detail;
-	console.log('SHOW TOAST');
 	const toastElements = getToastElements();
 	if (toastElements) {
 		showToast(toastElements, message, status);

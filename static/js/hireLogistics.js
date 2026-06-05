@@ -40,7 +40,6 @@ export const initialiseHireLogistics = () => {
 				'SYSTEM'
 			);
 		}
-		console.log('~~REVEALING~~');
 
 		hireGate.classList.remove('hidden');
 		triggerBtn.classList.add('hidden');

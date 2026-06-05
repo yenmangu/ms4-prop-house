@@ -87,7 +87,7 @@ export const mountStripeElements = async (pk, clientSecret, paymentUI) => {
 		await paymentElement.mount(mountPoint);
 		return { stripe, elements };
 	} catch (err) {
-		console.log('Mounting failed: ', err);
+		phReportError(new Error('[DOM_ERROR]: Mounting failed: '), 'SYSTEM');
 	}
 };
 
