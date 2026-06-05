@@ -2,231 +2,312 @@
 
 ## Overview
 
-Prop House uses a relational database schema designed to support:
+PropHouse uses a relational database schema designed to support:
 
-- A browsable product catalogue with category grouping and stock tracking
-- A persistent basket flow for authenticated and guest users
-- A Stripe-backed checkout flow where orders are created only after successful payment
-- Membership plans that define discount offers
-- User memberships that grant discount entitlements
-- Subscriptions that fund memberships
-- Customer account features such as saved addresses
+- A browsable catalogue of hireable props and equipment.
+- Membership-based pricing and customer discounts.
+- Persistent basket management for authenticated and guest users.
+- Stripe-backed checkout and payment processing.
+- Order fulfilment and hire lifecycle tracking.
+- Physical inventory management through individual stock records.
 
-The schema is intentionally split around distinct business concerns:
+The schema is intentionally separated into distinct business domains:
 
-- **catalogue data** — what can be hired or purchased
-- **basket and checkout data** — what a user is preparing to buy and what they actually bought
-- **account data** — saved addresses and membership entitlement history
-- **billing data** — Stripe identifiers and subscription lifecycle fields
+- **catalogue data** — products, categories, and pricing information.
+- **customer data** — user accounts and membership tiers.
+- **basket data** — pre-purchase selections and pricing snapshots.
+- **commerce data** — completed orders and purchased items.
+- **warehouse data** — physical inventory management and hire tracking.
+- **external integrations** — Stripe product, price, customer, and payment identifiers.
 
 ---
 
 ## Stock Integrity Policy
 
-- `Product.stock_quantity` is the authoritative stock value.
-- Basket actions do **not** decrement database stock.
-- The basket may show a user-facing “remaining after your basket” value, but this is presentation logic only.
-- Stock is decremented **only** during successful paid checkout.
-- Checkout should use an atomic transaction and row-level locking (`select_for_update`) to prevent overselling.
+`Product.stock_quantity` is the customer-facing stock value displayed throughout the application.
 
-This keeps stock handling simple, auditable, and safe under concurrent checkout conditions.
+Individual physical inventory units are represented separately through the `StockItem` model.
+
+This dual-layer approach allows PropHouse to:
+
+- Display aggregate stock availability to customers.
+- Maintain warehouse-level tracking of individual physical items.
+- Associate specific stock units with hire records.
+- Support future serialised inventory workflows.
+
+Stock is not decremented when items are added to a basket.
+
+Instead:
+
+- Basket actions only affect presentation and reservation calculations.
+- Stock validation occurs during checkout.
+- Stock allocation occurs during fulfilment.
+- Checkout uses transactional database operations to prevent overselling.
 
 ---
 
-## Entity Relationship Overview (Current Locked Schema)
+## Entity Relationship Overview
 
-### Core Relationships
+### Customer Domain
 
-- **Product ↔ Category**: Many-to-many via `ProductCategoryLink`.
-- **User → Basket**: One-to-many in storage terms, though typically only one open basket should exist per user in application logic.
-- **Basket → Line**: One-to-many.
-- **Product → Line**: One-to-many.
-- **User → Order**: One-to-many.
-- **User → Address**: One-to-many.
-- **User → Membership**: One-to-many (history preserved).
-- **Membership → MembershipPlan**: Many-to-one.
-- **Membership → Subscription**: One-to-zero/one.
+- `MembershipTier` → `User`: One-to-many.
+- `User` → `Basket`: One-to-many.
+- `User` → `Order`: One-to-many.
 
-### Important Domain Notes
+### Catalogue Domain
 
-- A basket may belong to a logged-in user **or** an anonymous session.
-- Basket lines are the mutable, pre-purchase representation of selected products.
-- Orders do **not** currently depend on live basket line relations. Instead, the order stores a purchase-time financial snapshot, including `original_basket_snapshot`.
-- Membership history is preserved rather than overwritten, which supports auditing and future reporting.
-- **External Integrations**: Specific fields (prefixed with `stripe_`) act as remote foreign keys to the Stripe API.
+- `Product` ↔ `Category`: Many-to-many via `CategoryProductJoin`.
+- `Product` → `StockItem`: One-to-many.
+
+### Basket Domain
+
+- `Basket` → `Line`: One-to-many.
+- `Product` → `Line`: One-to-many.
+
+### Commerce Domain
+
+- `Order` → `OrderItem`: One-to-many.
+- `Product` → `OrderItem`: One-to-many.
+
+### Warehouse Domain
+
+- `StockItem` → `HireRecord`: One-to-many.
+- `OrderItem` → `HireRecord`: One-to-many.
 
 ---
 
 ## ERD
 
-The current ERD uses crow's foot notation and includes the key in the diagram itself. It explicitly models the connection to the Stripe API.
+The following Entity Relationship Diagram (ERD) was generated using DBML (Database Markup Language) and rendered using dbdiagram.io.
 
-![PropHouse ERD with Stripe Integration](./prop-house_with-stripe-2.drawio.png)
+The schema was originally designed during the planning phase of the project and then refined throughout development as the understanding of the business domain evolved. Several iterations were produced as new requirements emerged, particularly around inventory management, fulfilment workflows, membership pricing, and hire tracking.
+
+The final ERD shown below reflects the completed implementation and should be considered the authoritative representation of the deployed database schema.
+
+While database design is ideally established before development begins, the iterative nature of the project meant that the schema evolved alongside the application. The final diagram therefore represents both the original design intent and the lessons learned during implementation.
+
+![PropHouse ERD](./prop-house-erd.png)
 
 ---
 
 ## Models
 
-### Product (catalogue app)
+### `MembershipTier` (`accounts` app)
 
-Represents a hireable prop or equipment item.
+Defines membership pricing and discount entitlements.
 
-**Key fields:**
+#### Key Fields
 
-- `product_id` (PK)
-- `name`, `slug`, `description`
+- `id`
+- `name`
 - `price`
-- `is_discount_eligible`
+- `discount_percentage`
+- `stripe_price_id`
+- `features`
+
+#### Notes
+
+`MembershipTier` records provide customer discount benefits and are linked directly to `User` accounts.
+
+---
+
+### `User` (`accounts` app)
+
+Custom authentication model extending Django's user system.
+
+#### Key Fields
+
+- `id`
+- `username`
+- `email`
+- `stripe_customer_id`
+- `membership_tier`
+
+#### Notes
+
+Stores Stripe customer references and active membership tier assignments.
+
+---
+
+### `Category` (`catalogue` app)
+
+Provides product grouping and catalogue organisation.
+
+#### Key Fields
+
+- `id`
+- `name`
+- `slug`
+- `description`
+- `is_active`
+
+---
+
+### `Product` (`catalogue` app)
+
+Represents a hireable or purchasable catalogue item.
+
+#### Key Fields
+
+- `id`
+- `name`
+- `slug`
+- `description`
+- `price`
+- `discount_eligible`
 - `stock_quantity`
 - `featured_image`
 - `is_active`
-- `stripe_product_id`: Stripe Product ID (`prod_...`)
-- `stripe_price_id`: Stripe Price ID (`price_...`)
-- `is_hire`: Logic flag for hire workflows
-- `created_on`, `updated_on`
+- `is_hire`
+- `is_recurring`
+- `stripe_product_id`
+- `stripe_price_id`
+
+#### Notes
+
+`Product` records represent commercial catalogue entries rather than individual physical inventory units.
 
 ---
 
-### Category (catalogue app)
+### `CategoryProductJoin` (`catalogue` app)
 
-Groups products into browsable sections.
+Join model implementing the `Product` ↔ `Category` many-to-many relationship.
 
-**Key fields:**
+#### Key Fields
 
-- `category_id` (PK)
-- `name`, `slug`, `description`, `is_active`
-
----
-
-### ProductCategoryLink (catalogue app)
-
-Join model for the Product ↔ Category many-to-many relationship.
-
-**Key fields:**
-
-- `product_category_id` (PK)
-- `product_id` (FK → Product)
-- `category_id` (FK → Category)
+- `id`
+- `product`
+- `category`
 
 ---
 
-### Basket (basket app)
+### `Basket` (`basket` app)
 
-Stores a mutable shopping basket linked either to a user or to an anonymous session.
+Represents an active shopping basket.
 
-**Key fields:**
+#### Key Fields
 
-- `id` (UUID PK)
-- `user` (nullable FK → User)
-- `status` (Open, Merged, Saved, Submitted)
-- `created_on`, `updated_on`
-- `session_key` (nullable, indexed)
-
----
-
-### Line (basket app)
-
-Represents a single product entry inside a basket.
-
-**Key fields:**
-
-- `order_item_pk` (PK)
-- `basket` (FK → Basket)
-- `product` (FK → Product)
-- `quantity`
-- `price_at_addition_amount`
-- `price_at_addition_currency`
-- `line_total`
-- `discount_applied`
-
----
-
-### Order (commerce app)
-
-Represents a completed transaction created after successful payment.
-
-**Key fields:**
-
-- `order_number` (PK)
-- `user` (FK → User)
+- `id`
+- `user`
 - `status`
-- `stripe_payment_intent_id`: Remote reference for Stripe payment confirmation
+- `session_key`
+- `created_on`
+- `updated_on`
+
+#### Notes
+
+`Basket` supports both authenticated and anonymous customer workflows.
+
+---
+
+### `Line` (`basket` app)
+
+Represents a single product within a basket.
+
+#### Key Fields
+
+- `id`
+- `basket`
+- `product`
+- `quantity`
+- `start_date`
+- `end_date`
+- `production_name`
+- `price_at_addition`
+
+#### Notes
+
+`Line` acts as a mutable pre-purchase representation of customer selections.
+
+---
+
+### `Order` (`commerce` app)
+
+Represents a completed checkout transaction.
+
+#### Key Fields
+
+- `id`
+- `user`
+- `full_name`
 - `email`
+- `stripe_pid`
+- `status`
+- `total_price`
+- `admin_notes`
 
-**Shipping snapshot fields:**
+#### Notes
 
-- `shipping_full_name`, `shipping_phone_number`, `shipping_address_line_1`, `shipping_address_line_2`, `shipping_city`, `shipping_county`, `shipping_post_code`, `shipping_country`
-
-**Financial snapshot fields:**
-
-- `original_basket_snapshot` (FK → Basket)
-- `membership_discount_at_purchase`, `subtotal`, `discount_total`, `grand_total`
-
----
-
-### Address (profiles app)
-
-A saved user address used for checkout autofill.
-
-**Key fields:**
-
-- `address_id` (PK)
-- `user` (FK → User)
-- `address_line_1`, `address_line_2`, `city`, `county`, `post_code`, `country`
+`Order` records are created after successful payment confirmation.
 
 ---
 
-### MembershipPlan (catalogue app)
+### `OrderItem` (`commerce` app)
 
-Defines a membership offer available for purchase.
+Represents a purchased product within an order.
 
-**Key fields:**
+#### Key Fields
 
-- `membership_plan_id` (PK)
-- `name`, `description`, `discount_to_apply`, `unit_cost`
+- `id`
+- `order`
+- `product`
+- `product_name`
+- `quantity`
+- `start_date`
+- `end_date`
+- `unit_price`
+- `line_total`
 
----
+#### Notes
 
-### Membership (accounts app)
-
-Represents a user’s entitlement instance.
-
-**Key fields:**
-
-- `membership_id` (PK)
-- `user` (FK → User)
-- `membership_plan_id` (FK → MembershipPlan)
-- `is_active`, `discount_percent`, `started_on`, `end_on`
+`OrderItem` stores purchase-time snapshots to preserve historical accuracy.
 
 ---
 
-### Subscription (commerce app)
+### `StockItem` (`warehouse` app)
 
-Represents the Stripe billing contract backing a membership.
+Represents an individual physical inventory unit.
 
-**Key fields:**
+#### Key Fields
 
-- `subscription_id` (PK)
-- `membership` (FK → Membership)
-- `stripe_subscription_id`: Remote reference to Stripe subscription
-- `stripe_price_id`: Remote reference to the Stripe price being billed
-- `status`, `current_period_end`, `cancel_at_period_end`
+- `id`
+- `product`
+- `serial_number`
+- `status`
+
+#### Notes
+
+`StockItem` allows warehouse operations to track physical assets independently of catalogue products.
 
 ---
 
-### User (auth/custom)
+### `HireRecord` (`warehouse` app)
 
-**Extended fields:**
+Represents the lifecycle of a hired inventory item.
 
-- `stripe_customer_id`: Unique identifier for the Stripe Customer object
+#### Key Fields
+
+- `id`
+- `order_item`
+- `stock_item`
+- `out_date`
+- `due_date`
+- `returned_date`
+- `condition_on_out`
+- `condition_on_return`
+
+#### Notes
+
+`HireRecord` links purchased `OrderItem` records to specific `StockItem` units and records hire activity throughout the fulfilment lifecycle.
 
 ---
 
 ## App Ownership Summary
 
-- **core**: Shared UI and site-wide logic.
-- **catalogue**: `Product`, `Category`, `ProductCategoryLink`, `MembershipPlan`.
-- **basket**: `Basket`, `Line`.
-- **commerce**: `Order`, `Subscription`, Stripe lifecycle handling.
-- **profiles**: `Address`.
-- **accounts**: `Membership`, custom User attributes.
+- **core**: Shared UI, static pages, site-wide templates, HTMX integrations, and general platform concerns.
+- **accounts**: `User` and `MembershipTier`.
+- **catalogue**: `Product`, `Category`, and `CategoryProductJoin`.
+- **basket**: `Basket` and `Line`.
+- **commerce**: `Order`, `OrderItem`, checkout processing, and Stripe payment handling.
+- **warehouse**: `StockItem` and `HireRecord`.
+- **profiles**: Reserved for future customer-owned profile data.
