@@ -105,7 +105,6 @@ INSTALLED_APPS = [
     "basket",
     "catalogue",
     "commerce",
-    "profiles",
     "warehouse",
 ]
 
