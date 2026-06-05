@@ -47,15 +47,12 @@ STRIPE_KEYS = {
     "stripe_pk": os.environ.get("STRIPE_PUBLIC"),
 }
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 if IS_HEROKU_APP:
     STRIPE_WH_SECRET = os.environ.get("STRIPE_WH")
 
 else:
     STRIPE_WH_SECRET = os.environ.get("STRIPE_LOCAL_WH")
-
-EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
 
 # Optional: Fail fast if keys are missing to avoid debugging headaches
 if not STRIPE_KEYS["stripe_sk"] or not STRIPE_KEYS["stripe_pk"]:
@@ -216,22 +213,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Anymail
-# ANYMAIL = {
-#     "RESEND_API_KEY": os.environ.get("RESEND_EMAIL"),
-# }
+# Gmail
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-if IS_HEROKU_APP:
-    ANYMAIL = {
-        "RESEND_API_KEY": os.environ.get("RESEND_PROD_KEY"),
-    }
-else:
-    ANYMAIL = {
-        "RESEND_API_KEY": os.environ.get("RESEND_DEV_KEY"),
-    }
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
 
+EMAIL_HOST_USER = os.environ.get("GMAIL_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("GMAIL_PASSWORD")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
-DEFAULT_FROM_EMAIL = "onboarding@resend.dev"
 
 # Override the default allauth forms
 
@@ -249,6 +243,7 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND
 
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
