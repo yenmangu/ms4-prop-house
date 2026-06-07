@@ -205,13 +205,5 @@ export const attachPaymentListener = (
 				return;
 			}
 		}
-
-		// Deprecated because above now handles subscriptions
-		// const { error } = await stripe.confirmPayment({
-		// 	elements,
-		// 	confirmParams: {
-		// 		return_url: `${window.location.origin}/checkout/checkout-success`
-		// 	}
-		// });
 	});
 };
