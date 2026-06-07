@@ -46,19 +46,6 @@ export const mountStripeElements = async (pk, clientSecret, paymentUI) => {
 
 	const elementsAppearance = getPaymentAppearance();
 
-	// /** @type {Appearance} */
-	// const appearance = {
-	// 	theme: 'night',
-	// 	inputs: 'spaced',
-	// 	labels: 'auto',
-
-	// 	variables: {
-	// 		colorPrimary: 'rgb(255,107,0)',
-	// 		colorBackground: 'rgb(18,18,18)',
-	// 		colorText: 'rgb(242,242,242)'
-	// 	}
-	// };
-
 	const elements = stripe.elements({
 		clientSecret,
 		appearance: elementsAppearance
