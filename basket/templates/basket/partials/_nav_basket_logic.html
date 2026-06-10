@@ -1,11 +1,10 @@
 {% load static %}
 <div id="nav-basket-wrapper"
      class="nav-basket-wrapper"
-     hx-get="{% url 'basket:summary' %}"
+     hx-get="{% url 'basket:nav_basket' %}"
      hx-trigger="basketUpdated from:body"
-     hx-select="#nav-basket-wrapper"
      hx-swap="outerHTML"
-     {% if request.headers.HX_Request %}hx-swap-oob="true"{% endif %}>
+     {% if oob %}hx-swap-oob="outerHTML"{% endif %}>
   <a href="{% url 'basket:summary' %}"
      class="basket-link"
      aria-label="View shopping basket">

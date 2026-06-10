@@ -9,6 +9,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 import json
 from catalogue.models import Product
+from django.views.generic import TemplateView
 from .mixins import BasketMixin
 from .models import Line
 from .utils import get_basket_state
@@ -259,3 +260,16 @@ class BasketUpdateView(BasketMixin, View):
                 ),
                 status=400,
             )
+
+
+class NavBasketPartialUpdate(BasketMixin, TemplateView):
+    template_name = "basket/partials/_nav_basket_logic.html"
+
+    def get_context_data(self, **kwargs):
+        """
+        Add basket to context
+        """
+
+        context = super().get_context_data(**kwargs)
+        context["basket"] = self.get_basket()
+        return context

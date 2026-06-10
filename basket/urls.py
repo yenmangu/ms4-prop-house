@@ -30,4 +30,9 @@ urlpatterns = [
         views.BasketUpdateView.as_view(),
         name="update",
     ),
+    path(
+        "nav-basket",
+        views.NavBasketPartialUpdate.as_view(),
+        name="nav_basket",
+    ),
 ]
