@@ -96,6 +96,7 @@ INSTALLED_APPS = [
     # "allauth.socialaccount",
     "cloudinary",
     "view_breadcrumbs",
+    "django_countries",
     "django_extensions",
     "django_filters",
     "djmoney",
