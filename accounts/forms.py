@@ -2,6 +2,28 @@ from typing import Any, Dict, TYPE_CHECKING
 
 from django import forms
 from allauth.account.forms import SignupForm, LoginForm
+from .models import Address
+
+
+class CustomerAddressForm(forms.ModelForm):
+    """
+    Customer Address Form
+    """
+
+    class Meta:
+        model = Address
+        fields = [
+            "delivery_contact_name",
+            "phone_number",
+            "house_name_or_number",
+            "address_line_1",
+            "address_line_2",
+            "town_or_city",
+            "postcode",
+            "county",
+            "country",
+            "is_default",
+        ]
 
 
 class CustomSignupForm(SignupForm):
@@ -49,12 +71,12 @@ class CustomSignupForm(SignupForm):
                 }
             )
 
-        def save(self, request: Any) -> Any:
-            """
-            Standard save logic for allauth
-            """
-            user = super().save(request)
-            return user
+    def save(self, request: Any) -> Any:
+        """
+        Standard save logic for allauth
+        """
+        user = super().save(request)
+        return user
 
 
 class CustomLoginForm(LoginForm):
