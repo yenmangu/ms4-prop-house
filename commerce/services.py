@@ -6,8 +6,12 @@ from django.conf import settings
 from decimal import Decimal
 from typing import TYPE_CHECKING
 
+from accounts.forms import CustomerAddressForm
+from accounts.services import AddressService
+
 if TYPE_CHECKING:
     from basket.models import Basket
+    from django.http import QueryDict
 
 # =========================================================================
 # EXTERNAL DEPENDENCY ATTRIBUTION
@@ -69,7 +73,7 @@ class CheckoutService:
 
     @staticmethod
     def create_payment_intent_for_basket(
-        basket: Basket, user: "User", post_data
+        basket: Basket, user: "User", post_data: QueryDict
     ):
         """
         Orchestrates:
@@ -78,13 +82,38 @@ class CheckoutService:
         3. Order Update
         """
 
-        # 1. Delegation to Model
+        # Used for AddressService
+        address_form, address_error = (
+            AddressService.validate_address_form(post_data)
+        )
+        if address_error:
+            return None, address_error
+
+        # TODO: Pass address_data into Order.create_from_basket()
+        # once delivery snapshot fields are added to Order.
+
+        # Address data will be used to populate immutable delivery
+        # snapshot fields on the Order model.
+        # Not yet implemented.
+
+        # Used for Order snapshot
+
+        address_data = address_form.cleaned_data
+
+        AddressService.save_default_address(
+            user=user,
+            address_form=address_form,
+            post_data=post_data,
+        )
+
+        # TODO: Implement address_data into Order
 
         order = Order.create_from_basket(
             basket=basket,
             user=user,
             name=post_data.get("name", "untitled"),
             email=post_data.get("email", "email@email.com"),
+            address_data=address_data,
         )
 
         try:

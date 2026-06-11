@@ -8,6 +8,7 @@ from django.conf import settings
 #          localisation protections for financial auditing tables.
 # Localisation: Enforces strict type-safety boundaries around decimal calculations.
 # =========================================================================
+from django_countries.fields import CountryField
 from djmoney.models.fields import MoneyField
 import uuid
 from typing import TYPE_CHECKING
@@ -61,6 +62,29 @@ class Order(models.Model):
     full_name = models.CharField(max_length=255)
     email = models.EmailField()
 
+    # Immutable delivery fields
+    delivery_contact_name = models.CharField(
+        max_length=255, default=""
+    )
+    delivery_phone_number = models.CharField(
+        max_length=30, default=""
+    )
+    delivery_house_name_or_number = models.CharField(
+        max_length=255, default=""
+    )
+    delivery_address_line_1 = models.CharField(
+        max_length=255, default=""
+    )
+    delivery_address_line_2 = models.CharField(
+        max_length=255, blank=True, default=""
+    )
+    delivery_town_or_city = models.CharField(
+        max_length=255, default=""
+    )
+    delivery_county = models.CharField(max_length=255, default="")
+    delivery_postcode = models.CharField(max_length=20, default="")
+    delivery_country = CountryField(default="GB")
+
     # Stripe
     stripe_pid = models.CharField(
         max_length=255,
@@ -87,7 +111,12 @@ class Order(models.Model):
 
     @classmethod
     def create_from_basket(
-        cls, basket: "Basket", user: "User", name: str, email: str
+        cls,
+        basket: "Basket",
+        user: "User",
+        name: str,
+        email: str,
+        address_data,
     ) -> "Order":
         """
         Factory method to create an Order and its items from a Basket
@@ -99,6 +128,23 @@ class Order(models.Model):
                 user=user if user.is_authenticated else None,
                 full_name=name,
                 email=email,
+                delivery_contact_name=address_data[
+                    "delivery_contact_name"
+                ],
+                delivery_phone_number=address_data["phone_number"],
+                delivery_house_name_or_number=address_data[
+                    "house_name_or_number"
+                ],
+                delivery_address_line_1=address_data[
+                    "address_line_1"
+                ],
+                delivery_address_line_2=address_data.get(
+                    "address_line_2", ""
+                ),
+                delivery_town_or_city=address_data["town_or_city"],
+                delivery_county=address_data["county"],
+                delivery_postcode=address_data["postcode"],
+                delivery_country=address_data["country"],
                 total_price=basket.total_price,
                 stripe_pid=f"pending_{uuid.uuid4()}",
             )
