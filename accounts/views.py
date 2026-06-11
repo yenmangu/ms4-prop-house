@@ -14,8 +14,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
-from django.utils import timezone
-from django.utils.functional import classproperty
+
 from django.views import View
 from django.views.generic import ListView
 import stripe
