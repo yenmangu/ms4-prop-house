@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Order
 from warehouse.services import (
-    StockfulfilmentError,
+    StockFulfilmentError,
     fulfil_order_items,
 )
 
@@ -27,7 +27,7 @@ def trigger_warehouse_fulfilment(
         def safe_fulfilment_wrapper():
             try:
                 fulfil_order_items(instance)
-            except StockfulfilmentError as e:
+            except StockFulfilmentError as e:
                 instance.status = Order.OrderStatus.FAILED
 
                 instance.admin_notes = (
