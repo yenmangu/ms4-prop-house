@@ -453,7 +453,7 @@ This section documents the asynchronous, event-driven subscription lifecycle eng
 
 ### 1. Architectural Workflow
 
-The membership modification and tracking architecture relies on out-of-band fulfillment to guarantee system resilience and prevent browser-side manipulation.
+The membership modification and tracking architecture relies on out-of-band fulfilment to guarantee system resilience and prevent browser-side manipulation.
 
 ```
 +------------------+       POST /membership/checkout/<id>/       +----------------------+
@@ -496,7 +496,7 @@ During session creation:
 
 The browser executes a native client-side redirect to Stripe's hosted billing interface. This offloads the entire PCI-DSS compliance scope, card validation, and authentication loops (such as 3D Secure verification) completely to Stripe.
 
-#### 1.3 Webhook Fulfillment
+#### 1.3 Webhook fulfilment
 
 Upon successful payment, Stripe broadcasts an out-of-band `checkout.session.completed` event to the platform's public webhook route (`/checkout/webhook/`). Account access rights are modified asynchronously using the verified database primary keys contained within the metadata payload.
 
@@ -518,7 +518,7 @@ This guarantees that standard, non-crashing Python dictionary methods work relia
 
 #### 2.2 Isolated Exception Frameworks
 
-When executing test runs via automated local tooling, mock data structures push non-numeric placeholder strings (e.g., `"prod_123"`) inside metadata payload dictionaries. The fulfillment logic handles this cleanly by separating database errors from formatting casting anomalies into distinct, explicit exception blocks:
+When executing test runs via automated local tooling, mock data structures push non-numeric placeholder strings (e.g., `"prod_123"`) inside metadata payload dictionaries. The fulfilment logic handles this cleanly by separating database errors from formatting casting anomalies into distinct, explicit exception blocks:
 
 ```python
 try:

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from catalogue.models import Product
 
 
-class StockFulfillmentError(ValueError):
+class StockfulfilmentError(ValueError):
     """
     Raised when an orderr tries to claim stock that is no longer available.
     """
@@ -57,8 +57,8 @@ def fulfill_order_items(order: Order) -> bool:
                     status=StockItem.StockStatus.AVAILABLE,
                 ).count()
 
-                raise StockFulfillmentError(
-                    f"Fulfillment failed for '{item.product.name}'. "
+                raise StockfulfilmentError(
+                    f"fulfilment failed for '{item.product.name}'. "
                     f"Requested: {item.quantity}, Available: {len(available_stock)}"
                     f"Actual pysical count: {actual_phys_count}"
                 )

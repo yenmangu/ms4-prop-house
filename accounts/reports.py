@@ -120,7 +120,7 @@ class UserInventoryPDF(BasePDFGenerator):
         )
         story.append(
             Paragraph(
-                "This document is an automatic live snapshot of assets in your possession. For modifications, please contact fulfillment directly.",
+                "This document is an automatic live snapshot of assets in your possession. For modifications, please contact fulfilment directly.",
                 tc_style,
             )
         )

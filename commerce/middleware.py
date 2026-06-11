@@ -5,7 +5,7 @@ from django.http import HttpRequest
 
 class StockAlertMiddleware:
     """
-    Checks for unacknowledged fulfillment errors and injects safely into native django.messages framework for Toast rendering.
+    Checks for unacknowledged fulfilment errors and injects safely into native django.messages framework for Toast rendering.
     """
 
     def __init__(self, get_response):

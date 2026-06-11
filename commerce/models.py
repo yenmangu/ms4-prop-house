@@ -41,7 +41,7 @@ class Order(models.Model):
     - Credit Notes
     - Customer Loyalty points
 
-    without ever having to touch warehouse fulfillment logic.
+    without ever having to touch warehouse fulfilment logic.
     """
 
     class OrderStatus(models.TextChoices):

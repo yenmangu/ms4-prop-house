@@ -3,13 +3,13 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Order
 from warehouse.services import (
-    StockFulfillmentError,
+    StockfulfilmentError,
     fulfill_order_items,
 )
 
 
 @receiver(post_save, sender=Order)
-def trigger_warehouse_fulfillment(
+def trigger_warehouse_fulfilment(
     sender, instance: Order, created: bool, **kwargs
 ):
     """
@@ -24,10 +24,10 @@ def trigger_warehouse_fulfillment(
     # Only trigger if status has moved to 'PAID'
     if instance.status == Order.OrderStatus.PAID:
 
-        def safe_fulfillment_wrapper():
+        def safe_fulfilment_wrapper():
             try:
                 fulfill_order_items(instance)
-            except StockFulfillmentError as e:
+            except StockfulfilmentError as e:
                 instance.status = Order.OrderStatus.FAILED
 
                 instance.admin_notes = (
@@ -36,4 +36,4 @@ def trigger_warehouse_fulfillment(
 
                 instance.save(update_fields=["status", "admin_notes"])
 
-        transaction.on_commit(safe_fulfillment_wrapper)
+        transaction.on_commit(safe_fulfilment_wrapper)

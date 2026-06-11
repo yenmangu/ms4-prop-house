@@ -19,16 +19,16 @@ Unit tests were written to thoroughly automate testing of model, view and servic
 
 #### Service Layer Business Rules
 
-| Service                       | Business Rule                                    | Tested |
-| ----------------------------- | ------------------------------------------------ | ------ |
-| BasketService                 | Basket remains associated with user session      | Pass   |
-| AddressService                | Invalid addresses are rejected                   | Pass   |
-| AddressService                | Only one default address may exist per user      |        |
-| MembershipService             | Discounts applied to active members              | Pass   |
-| CheckoutService               | Store delivery address snapshot                  | Pass   |
-| CheckoutService               | Empty baskets cannot enter checkout              | Pass   |
-| Warehouse FulFillment Service | Stock updated only after payment                 |        |
-| Warehouse FulFillment Service | Insufficient stock results in failed fulfillment |        |
+| Service                      | Business Rule                                   | Tested |
+| ---------------------------- | ----------------------------------------------- | ------ |
+| BasketService                | Basket remains associated with user session     | Pass   |
+| AddressService               | Invalid addresses are rejected                  | Pass   |
+| AddressService               | Only one default address may exist per user     |        |
+| MembershipService            | Discounts applied to active members             | Pass   |
+| CheckoutService              | Store delivery address snapshot                 | Pass   |
+| CheckoutService              | Empty baskets cannot enter checkout             | Pass   |
+| Warehouse fulfilment Service | Stock updated only after payment                |        |
+| Warehouse fulfilment Service | Insufficient stock results in failed fulfilment |        |
 
 Service-layer tests were used to verify business rules independently from views and templates.
 

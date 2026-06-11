@@ -115,7 +115,7 @@ class HireRecordQuerySet(models.QuerySet):
 
 class HireRecord(models.Model):
     """
-    _Domain:_ Logistics / Fulfillment
+    _Domain:_ Logistics / fulfilment
 
     The 'bridge' entity that links the commercial order (`commerce.Order`) to a physical asset (warehouse.StockItem).
 
@@ -133,7 +133,7 @@ class HireRecord(models.Model):
     no record that represents a physical movement of stock can be deleted.
 
     If customer order is cancelled or physical item is destroyed, the `HireRecord` must remain
-    as a permanent audit trail of asset's history and company's fulfillment activity.
+    as a permanent audit trail of asset's history and company's fulfilment activity.
     """
 
     class HireStatus(models.TextChoices):

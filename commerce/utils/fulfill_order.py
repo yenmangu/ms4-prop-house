@@ -5,7 +5,7 @@ from basket.models import Basket
 
 def fulfill_order(stripe_intent_id, basket_id=None) -> bool:
     """
-    Extracted utility for order fulfillment.
+    Extracted utility for order fulfilment.
     Marks order as PAID and clears associated basket.
     Returns True when marked as PAID and False if order not found.
     """
