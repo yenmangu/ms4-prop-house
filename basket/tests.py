@@ -28,8 +28,8 @@ class BasketSessionTest(TestCase):
             price=10.00,
             stock_quantity=5,
         )
-        self.add_url = reverse("basket:add")
-        self.remove_url = reverse("basket:remove")
+
+        self.update_url = reverse("basket:update")
 
     def test_basket_session_persistence(self):
         """
@@ -38,11 +38,14 @@ class BasketSessionTest(TestCase):
         # 1st Request: ADD item
         payload = {
             "product_id": self.product.id,
+            "quantity": 1,
+            "action": "add",
         }
         response = self.client.post(
-            self.add_url,
+            self.update_url,
             data=json.dumps(payload),
             content_type="application/json",
+            HTTP_HX_REQUEST="true",
         )
 
         self.assertEqual(response.status_code, 200)
@@ -50,35 +53,30 @@ class BasketSessionTest(TestCase):
         # Check if session has ID immediately after ADD
 
         session = self.client.session
-        basket_id = session.get("basket_id")
         session_key = session.session_key
 
-        print(f"\n[TEST_ADD] Session Key: {session_key}")
-        print(f"[TEST_ADD] Basket ID in Session: {basket_id}")
+        basket = Basket.objects.filter(
+            session_key=session_key,
+        ).first()
 
         self.assertIsNotNone(
-            basket_id, "basket_id should be in session after ADD"
+            basket, "basket should be in session after ADD"
         )
 
-        # 2nd Request: REMOVE the item
-        # Client maintains cookies, so should send sessionid back
+        # # 2nd Request: REMOVE the item
+        # # Client maintains cookies, so should send sessionid back
 
         response = self.client.post(
-            self.remove_url,
+            self.update_url,
             data=json.dumps(payload),
             content_type="application/json",
+            HTTP_HX_REQUEST="true",
         )
 
         self.assertEqual(response.status_code, 200)
 
-        # Inspect session after REMOVE
+        # # Inspect session after REMOVE
         session_after = self.client.session
-        print(
-            f"[TEST_REMOVE] Session Key: {session_after.session_key}"
-        )
-        print(
-            f"[TEST_REMOVE] Basket ID in Session: {session_after.get('basket_id')}"
-        )
 
         self.assertEqual(
             session_key,

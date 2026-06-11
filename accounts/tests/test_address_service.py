@@ -76,3 +76,43 @@ class AddressServiceTests(TestCase):
         self.assertEqual(
             saved_address.delivery_contact_name, self.test_name
         )
+
+    def test_save_default_replaces_existing_default_address(self):
+        old_address = Address.objects.create(
+            user=self.user,
+            label="Old Default",
+            delivery_contact_name="Old Contact",
+            phone_number="07000000000",
+            house_name_or_number="1",
+            address_line_1="Old Street",
+            town_or_city="Reading",
+            county="Berkshire",
+            postcode="RG1 1AA",
+            country="GB",
+            is_default=True,
+        )
+
+        address_form, error = AddressService.validate_address_form(
+            self.post_data
+        )
+
+        self.assertIsNone(error)
+
+        new_address = AddressService.save_default_address(
+            user=self.user,
+            address_form=address_form,
+            post_data=self.post_data,
+        )
+
+        old_address.refresh_from_db()
+        new_address.refresh_from_db()
+
+        self.assertFalse(old_address.is_default)
+        self.assertTrue(new_address.is_default)
+
+        default_count = Address.objects.filter(
+            user=self.user,
+            is_default=True,
+        ).count()
+
+        self.assertEqual(default_count, 1)

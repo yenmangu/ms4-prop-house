@@ -23,30 +23,34 @@ Unit tests were written to thoroughly automate testing of model, view and servic
 | ---------------------------- | ----------------------------------------------- | ------ |
 | BasketService                | Basket remains associated with user session     | Pass   |
 | AddressService               | Invalid addresses are rejected                  | Pass   |
-| AddressService               | Only one default address may exist per user     |        |
+| AddressService               | Only one default address may exist per user     | Pass   |
 | MembershipService            | Discounts applied to active members             | Pass   |
 | CheckoutService              | Store delivery address snapshot                 | Pass   |
 | CheckoutService              | Empty baskets cannot enter checkout             | Pass   |
-| Warehouse fulfilment Service | Stock updated only after payment                | Pass   |
-| Warehouse fulfilment Service | Insufficient stock results in failed fulfilment | Pass   |
+| Warehouse Fulfilment Service | Stock updated only after payment                | Pass   |
+| Warehouse Fulfilment Service | Insufficient stock results in failed fulfilment | Pass   |
 
-Service-layer tests were used to verify business rules independently from views and templates.
+Service-layer tests were used to verify business rules independently from views and templates. This approach allowed complex checkout, basket, membership and fulfilment behaviour to be tested in isolation without requiring full HTTP request cycles.
+
+```bash
+[12/06/26 12:17:48] .venv ❯ python manage.py test
+Found 10 test(s).
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 1.073s
+
+OK
+Destroying test database for alias 'default'...
+```
 
 ### Basket Session Persistence
 
-During development, a defect was identified where basket operations appeared to lose the user's basket between requests.
-
-A dedicated test was written to verify that:
-
-- A basket is created correctly when an item is added.
-- The `basket_id` is stored in the user's session.
-- The session persists between requests.
-- Removing an item does not create a new session.
-
-This test was used to diagnose and resolve session-management issues within the basket workflow.
-
-_These tests ensure that a customer's basket remains associated with
-their session throughout the shopping and checkout process._
+During automated testing, a basket session persistence test revealed
+that guest baskets could be created before a session key existed,
+preventing reliable basket recovery. The issue was resolved by
+ensuring a session was created before basket lookup and creation.
 
 ### Address Service
 
@@ -70,13 +74,15 @@ python manage.py test accounts.tests.test_address_service
 Result:
 
 ```text
-Found 2 test(s).
+Found 3 test(s).
+Creating test database for alias 'default'...
 System check identified no issues (0 silenced).
-..
+...
 ----------------------------------------------------------------------
-Ran 2 tests in 0.225s
+Ran 3 tests in 0.341s
 
 OK
+Destroying test database for alias 'default'...
 ```
 
 _These tests provide confidence that address validation and persistence
