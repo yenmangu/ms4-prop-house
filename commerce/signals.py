@@ -36,4 +36,4 @@ def trigger_warehouse_fulfillment(
 
                 instance.save(update_fields=["status", "admin_notes"])
 
-        transaction.on_commit(safe_fulfillment_wrapper(instance))
+        transaction.on_commit(safe_fulfillment_wrapper)
