@@ -3,7 +3,7 @@ from warehouse import services as warehouse
 from basket.models import Basket
 
 
-def fulfill_order(stripe_intent_id, basket_id=None) -> bool:
+def fulfil_order(stripe_intent_id, basket_id=None) -> bool:
     """
     Extracted utility for order fulfilment.
     Marks order as PAID and clears associated basket.
@@ -15,7 +15,7 @@ def fulfill_order(stripe_intent_id, basket_id=None) -> bool:
         return
 
     # Trigger warehouse allocation
-    # Updating to PAID triggers the signal to call `warehouse.fulfill_order`
+    # Updating to PAID triggers the signal to call `warehouse.fulfil_order`
     order.status = Order.OrderStatus.PAID
     order.save()
 

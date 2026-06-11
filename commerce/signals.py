@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from .models import Order
 from warehouse.services import (
     StockfulfilmentError,
-    fulfill_order_items,
+    fulfil_order_items,
 )
 
 
@@ -26,7 +26,7 @@ def trigger_warehouse_fulfilment(
 
         def safe_fulfilment_wrapper():
             try:
-                fulfill_order_items(instance)
+                fulfil_order_items(instance)
             except StockfulfilmentError as e:
                 instance.status = Order.OrderStatus.FAILED
 

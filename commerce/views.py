@@ -14,7 +14,7 @@ from django.http import JsonResponse
 from .mixins import StripeMixin
 from basket.mixins import BasketMixin
 from .models import Order, OrderItem
-from .utils import fulfill_order
+from .utils import fulfil_order
 from basket.models import Basket
 from accounts.models import User
 import stripe
@@ -131,9 +131,9 @@ class CheckoutSuccessView(
                 context["payment_intent"] = intent
                 if intent.status == "succeeded":
 
-                    # Use utility to fulfill order
+                    # Use utility to fulfil order
                     basket = self.get_basket()
-                    fulfill_order(
+                    fulfil_order(
                         intent_id, basket.id if basket else None
                     )
 
@@ -183,7 +183,7 @@ def stripe_webhook(request: HttpRequest):
 
             # Keep safe from mock data crashes
             try:
-                fulfill_order(intent_id, basket_id=basket_id)
+                fulfil_order(intent_id, basket_id=basket_id)
             except Exception:
                 pass
 

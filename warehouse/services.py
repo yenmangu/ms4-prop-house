@@ -20,7 +20,7 @@ class StockfulfilmentError(ValueError):
     pass
 
 
-def fulfill_order_items(order: Order) -> bool:
+def fulfil_order_items(order: Order) -> bool:
     """
     Service Layer: Translate a 'paid' order into a physical warehouse task.
 
@@ -95,7 +95,7 @@ def fulfill_order_items(order: Order) -> bool:
 def get_stock_availability(product: Product) -> dict:
     """
     Service Layer: Calculate the physical health of a product line.
-    Aggregate based on status field, which is updated in  `fulfill_order_items`
+    Aggregate based on status field, which is updated in  `fulfil_order_items`
 
     Returns:
         dict: {
