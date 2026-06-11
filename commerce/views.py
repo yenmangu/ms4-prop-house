@@ -1,4 +1,5 @@
 from typing import Optional
+from accounts.forms import CustomerAddressForm
 from accounts.models import User
 from accounts.services import MembershipService
 from commerce.services import CheckoutService
@@ -15,6 +16,7 @@ from basket.mixins import BasketMixin
 from .models import Order, OrderItem
 from .utils import fulfill_order
 from basket.models import Basket
+from accounts.models import User
 import stripe
 import uuid
 
@@ -27,6 +29,35 @@ class CheckoutDetailsView(BasketMixin, generic.TemplateView):
     """
 
     template_name = "commerce/includes/_customer_details_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request: HttpRequest = self.request
+        default_address = None
+        user = request.user
+
+        if request.user.is_authenticated and isinstance(user, User):
+            default_address = user.addresses.filter(
+                is_default=True
+            ).first()
+
+        context["address_form"] = CustomerAddressForm()
+        context["default_address"] = default_address
+
+        if default_address:
+            context["default_address_payload"] = {
+                "deliveryContactName": default_address.delivery_contact_name,
+                "phoneNumber": default_address.phone_number,
+                "houseNameOrNumber": default_address.house_name_or_number,
+                "addressLine1": default_address.address_line_1,
+                "addressLine2": default_address.address_line_2,
+                "townOrCity": default_address.town_or_city,
+                "county": default_address.county,
+                "postcode": default_address.postcode,
+                "country": str(default_address.country),
+            }
+
+        return context
 
 
 class paymentIntentView(StripeMixin, BasketMixin, View):
