@@ -1,3 +1,4 @@
+from accounts.models import User
 from django.http import HttpRequest
 from .models import Basket
 
@@ -14,16 +15,21 @@ def get_basket_for_request(request: HttpRequest):
     4. Ghost Instance (Unsaved fallback to prevent 0-count display issues)
     """
 
+    user: User = request.user
+    # Create session on no auth
+    if not user.is_authenticated and not request.session.session_key:
+        request.session.create()
+
     # Check auth user
-    if request.user.is_authenticated:
+    if user.is_authenticated:
         basket = Basket.objects.filter(
-            user=request.user,
+            user=user,
             status=Basket.Status.OPEN,
         ).last()
 
         if not basket:
             basket = Basket.objects.create(
-                user=request.user,
+                user=user,
                 status=Basket.Status.OPEN,
             )
         return basket
@@ -58,7 +64,9 @@ def get_basket_for_request(request: HttpRequest):
     return Basket(session_key=request.session.session_key)
 
 
-def perform_merge_basket(sender, request: HttpRequest, user, **kwargs):
+def perform_merge_basket(
+    sender, request: HttpRequest, user, **kwargs
+):
     """
     When a User logs in, check if they have a guest basket in session.
     If they do, link to their user account.
@@ -71,7 +79,9 @@ def perform_merge_basket(sender, request: HttpRequest, user, **kwargs):
     guest_basket_id = request.session.get("basket_id")
     if guest_basket_id:
         try:
-            guest_basket = Basket.objects.get(id=guest_basket_id, user__isnull=True)
+            guest_basket = Basket.objects.get(
+                id=guest_basket_id, user__isnull=True
+            )
 
             existing_user_basket = (
                 Basket.objects.filter(
@@ -85,7 +95,9 @@ def perform_merge_basket(sender, request: HttpRequest, user, **kwargs):
             if existing_user_basket:
                 # Merge and associate basket with user
                 guest_basket.merge_into(existing_user_basket)
-                request.session["basket_id"] = str(existing_user_basket.id)
+                request.session["basket_id"] = str(
+                    existing_user_basket.id
+                )
             else:
                 guest_basket.user = user
                 guest_basket.save()

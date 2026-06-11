@@ -190,9 +190,10 @@ class Basket(models.Model):
         # Check if basket has been updated during current lifecycle
 
         if (
-            not self._state.adding
+            self._state.adding
             or not Basket.objects.filter(pk=self.pk).exists()
         ):
+
             self.save()
 
         product = Product.objects.get(id=product_id)
