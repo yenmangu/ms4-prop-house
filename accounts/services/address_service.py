@@ -55,8 +55,6 @@ class AddressService:
         if not should_save_default:
             return None
 
-        address_form = CustomerAddressForm(post_data)
-
         Address.objects.filter(user=user, is_default=True).update(
             is_default=False
         )
