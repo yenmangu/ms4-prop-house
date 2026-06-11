@@ -45,121 +45,6 @@ class BasketSummaryView(BasketMixin, View):
         )
 
 
-class BasketAddView(BasketMixin, View):
-    """
-    Handles adding a product to user's basket
-    """
-
-    def post(self, request: HttpRequest, *args, **kwargs):
-        basket = self.get_basket()
-
-        try:
-
-            data = json.loads(request.body)
-            product_id = data["product_id"]
-
-            if not product_id:
-                return JsonResponse(
-                    {
-                        "error": "No product_id provided",
-                    },
-                    status=400,
-                )
-            product = get_object_or_404(Product, pk=product_id)
-
-            line, created = Line.objects.get_or_create(
-                basket=basket,
-                product=product,
-                defaults={"price_at_addition": product.price},
-            )
-
-            if not created:
-                line.quantity += 1
-                line.save()
-
-            message = f"Unit '{product.name}' secured in basket."
-            return JsonResponse(get_basket_state(basket, message))
-
-        except json.JSONDecodeError:
-            return JsonResponse(
-                {
-                    "error": "Invalid JSON",
-                },
-                status=400,
-            )
-        except Exception as e:
-
-            return JsonResponse(
-                {
-                    "status": "error",
-                    "message": "Internal server error",
-                },
-                status=500,
-            )
-
-
-class BasketRemoveView(BasketMixin, View):
-
-    def post(self, request: HttpRequest, *args, **kwargs):
-        current_session_basket_id = request.session.get("basket_id")
-
-        # DEBUG: Uncomment to debug basket issues
-        # print(f"--- REMOVE ATTEMPT ---")
-        # print(f"Session Key: {request.session.session_key}")
-        # print(
-        #     f"Basket ID stored in Session: {current_session_basket_id}"
-        # )
-
-        # This now uses the `session_key` to find the correct basket
-        basket = self.get_basket()
-
-        try:
-            data = json.loads(request.body)
-            product_id = data.get("product_id")
-
-            if not product_id:
-                return JsonResponse(
-                    {
-                        "status": "error",
-                        "message": "Product ID required",
-                    },
-                    status=400,
-                )
-
-            line = Line.objects.filter(
-                basket=basket, product_id=product_id
-            ).first()
-
-            if line:
-                line.delete()
-                return JsonResponse(
-                    get_basket_state(basket, "Unit removed"),
-                )
-            return JsonResponse(
-                {
-                    "status": "error",
-                    "message": "Item not found in basket",
-                },
-                status=404,
-            )
-
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON"}, status=400)
-
-
-class BasketClearView(BasketMixin, View):
-
-    def post(self, request, *args, **kwargs):
-        basket = self.get_basket()
-
-        # High effeciency - delete all related lines
-        basket.lines.all().delete()
-
-        return JsonResponse(
-            get_basket_state(basket, "Basket cleared")
-        )
-
-
 class BasketUpdateView(BasketMixin, View):
     """
     BasketUpdateView handles all basket modfiications.
@@ -243,14 +128,6 @@ class BasketUpdateView(BasketMixin, View):
             # Fallback for non-HTMX
             return redirect("basket:summary")
 
-            # Deprecated in favour of new HTMX method above
-            return JsonResponse(
-                get_basket_state(
-                    basket,
-                    message=message,
-                    status=status,
-                )
-            )
         except Exception as e:
             return JsonResponse(
                 get_basket_state(
