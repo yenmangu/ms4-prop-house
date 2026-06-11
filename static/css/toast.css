@@ -1,15 +1,15 @@
 /* toast.css */
 
 #liveToast {
-	background-color: var(--bg-surface); /* Industrial Grey 'Concrete' */
-	border: 1px solid var(--clr-accent); /* Safety Orange 'Hazard' */
+	background-color: var(--bg-surface); /* Industrial Grey "Concrete" */
+	border: 1px solid var(--clr-accent); /* Safety Orange "Hazard" */
 	border-radius: var(--radius-sharp); /* Brutalist default */
 	box-shadow: 0 0 var(--glow-spread) var(--clr-accent-glow); /* Hazard glow */
 	color: var(--txt-primary); /* Stark White */
 }
 
 .toast-header {
-	background-color: var(--bg-main); /* Deep Slate 'Asphalt' */
+	background-color: var(--bg-main); /* Deep Slate "Asphalt" */
 	border-bottom: 1px solid var(--border-glow); /* Subtle orange glow */
 	color: var(--clr-accent); /* Safety Orange */
 	text-transform: uppercase;
@@ -17,14 +17,36 @@
 	padding: 0.75rem 1rem;
 }
 
-/* Override Bootstrap close button to match the 'Stark White' */
+#liveToast.toast--checkout .toast-body {
+	max-height: 60vh;
+	overflow-y: auto;
+	scrollbar-gutter: stable;
+}
+/* Override Bootstrap close button to match the "Stark White" */
 .btn-close {
 	filter: invert(1) grayscale(100%) brightness(200%);
 }
 
+/* Override bootstrap variables based on class */
+#liveToast.toast--checkout {
+	--bs-toast-max-width: clamp(20rem, 92vw, 42rem);
+	width: var(--bs-toast-max-width);
+}
+
+#liveToast.toast--checkout .industrial-input-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+#liveToast.toast--checkout input,
+#liveToast.toast--checkout select {
+	width: 100%;
+}
+
 .toast-body {
 	padding: 1.5rem;
-	background-image: var(--texture-scanline); /* Apply the 'Grit' texture */
+	background-image: var(--texture-scanline); /* Apply the "Grit" texture */
 }
 
 /* Match the input fields inside the toast to the manifest style */
@@ -45,6 +67,27 @@
 
 .industrial-input {
 	cursor: unset;
+}
+#liveToast .industrial-checkbox-wrapper {
+	padding-left: 0.5rem;
+}
+
+#liveToast .industrial-checkbox-wrapper label,
+#liveToast .industrial-checkbox-wrapper input {
+	display: inline-block;
+}
+
+#liveToast.toast--checkout input:not([type='checkbox']) {
+	width: 100%;
+}
+
+#liveToast.toast--checkout input[type='checkbox'] {
+	width: auto;
+}
+
+#liveToast.toast--checkout .industrial-checkbox-wrapper label {
+	width: auto;
+	margin-left: 0.5rem;
 }
 
 .industrial-input.is-locked {

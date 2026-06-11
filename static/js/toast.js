@@ -91,6 +91,7 @@ export const showPaymentToast = async (toastElements, clientSecret) => {
 export const showCustomerDetailsToast = async toastElements => {
 	if (!toastElements) return;
 	const { toastElement, bodyElement, titleElement } = toastElements;
+	toastElement.classList.add('toast--checkout');
 	titleElement.innerText = 'Step _01: Contact Information';
 	titleElement.style.color = 'var(--clr-primary)';
 

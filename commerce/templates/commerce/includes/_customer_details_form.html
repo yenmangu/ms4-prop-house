@@ -5,6 +5,13 @@
   {% if user.is_authenticated %}
     {{ user.get_full_name|default:user.username|json_script:"user-name-data" }}
     {{ user.email|json_script:"user-email-data" }}
+    {% if default_address %}{{ default_address_payload|json_script:"user-address-data" }}{% endif %}
+  {% endif %}
+  {% if default_address %}
+    <div>HAS DEFAULT ADDRESS</div>
+    {{ default_address }}
+  {% else %}
+    <div>NO DEFAULT ADDRESS</div>
   {% endif %}
   <div class="form-section sliding-panel">
     <header class="section-header">
@@ -18,6 +25,21 @@
                checked>
         <label for="use_account_details" class="industrial-label-inline">Use existing account details</label>
       </div>
+      {% if default_address %}
+        <div class="industrial-checkbox-wrapper">
+          <input type="checkbox"
+                 name="use_saved_address"
+                 id="use_saved_address"
+                 checked>
+          <label for="use_saved_address" class="industrial-label-inline">Use saved address</label>
+        </div>
+        {% if default_address.delivery_contact_name %}
+          <div class="industrial-checkbox-wrapper">
+            <input type="checkbox" name="use_account_name" id="use_account_name" checked>
+            <label for="use_account_name" class="industrial-label-inline">Use account holder name for delivery</label>
+          </div>
+        {% endif %}
+      {% endif %}
     {% endif %}
     <div class="field-group">
       <div class="industrial-input-wrapper">
@@ -43,6 +65,28 @@
                required>
       </div>
     </div>
+    <div class="field-group">
+      {% for field in address_form %}
+        {% if field.name != "label" and field.name != "is_default" %}
+          <div class="industrial-input-wrapper">
+            {{ field.label_tag }}
+            {{ field }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <div class="form-section sliding-panel">
+    {% if user.is_authenticated %}
+      <div class="industrial-checkbox-wrapper">
+        <input type="checkbox"
+               name="save_as_default_address"
+               id="save_as_default_address">
+        <label for="save_as_default_address" class="industrial-label-inline">
+          Save this address as my default for future checkouts
+        </label>
+      </div>
+    {% endif %}
   </div>
   <div class="form-section sliding-panel">
     <header class="section-header">
