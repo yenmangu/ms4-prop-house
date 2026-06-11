@@ -48,8 +48,18 @@ rubric.*
 documentation/database/prop-house_with-stripe.drawio.xml
 *_context.md
 
-## allow only README.md
+# allow only README.md
 /*.md
 !/README.md
 !/TESTING.md
 !/DEPLOYMENT.md
+
+# Compressed
+*.zip
+
+# w3c-nu-validator
+urls.txt
+report.txt
+
+# Misc
+*.dbml
