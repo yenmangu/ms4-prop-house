@@ -6,7 +6,6 @@
  * @typedef {import('@stripe/stripe-js').SetupIntent} SetupIntent
  */
 
-import { getStandardHeaders } from '../../static/js/apiConfig.js';
 import { phReportError } from './reportError.js';
 import { getPaymentAppearance } from './stripeAppearance.js';
 

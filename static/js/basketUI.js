@@ -54,19 +54,3 @@ export const performAnimation = (element, className) => {
 		element.classList.add(className);
 	});
 };
-
-/**
- *
- * @param {BasketState} state
- */
-export const updateBasketDOM = state => {
-	const { total_items, total_price } = state;
-	const totalDisplay = document.querySelector('.basket-total-value');
-	if (totalDisplay instanceof HTMLElement) {
-		totalDisplay.innerText = total_price;
-	}
-
-	if (total_items === 0) {
-		window.location.reload();
-	}
-};
