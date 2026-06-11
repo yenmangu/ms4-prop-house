@@ -27,8 +27,8 @@ Unit tests were written to thoroughly automate testing of model, view and servic
 | MembershipService            | Discounts applied to active members             | Pass   |
 | CheckoutService              | Store delivery address snapshot                 | Pass   |
 | CheckoutService              | Empty baskets cannot enter checkout             | Pass   |
-| Warehouse fulfilment Service | Stock updated only after payment                |        |
-| Warehouse fulfilment Service | Insufficient stock results in failed fulfilment |        |
+| Warehouse fulfilment Service | Stock updated only after payment                | Pass   |
+| Warehouse fulfilment Service | Insufficient stock results in failed fulfilment | Pass   |
 
 Service-layer tests were used to verify business rules independently from views and templates.
 

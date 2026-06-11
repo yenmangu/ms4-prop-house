@@ -12,12 +12,27 @@ if TYPE_CHECKING:
     from catalogue.models import Product
 
 
-class StockfulfilmentError(ValueError):
+class StockFulfilmentError(ValueError):
     """
     Raised when an orderr tries to claim stock that is no longer available.
     """
 
     pass
+
+
+def get_available_stock_units_for_update(
+    product: Product, quantity: int
+) -> list[StockItem]:
+    """
+    Return available stock units for fulfilment, locked for update
+    """
+
+    return list(
+        StockItem.objects.select_for_update().filter(
+            product=product,
+            status=StockItem.StockStatus.AVAILABLE,
+        )[:quantity]
+    )
 
 
 def fulfil_order_items(order: Order) -> bool:
@@ -41,26 +56,29 @@ def fulfil_order_items(order: Order) -> bool:
             # print(f"Item found: {stock_item}")
 
             # Lock rows
-            available_stock = list(
-                StockItem.objects.select_for_update().filter(
-                    product=item.product,
-                    status=StockItem.StockStatus.AVAILABLE,
-                )[: item.quantity]
+
+            available_stock = get_available_stock_units_for_update(
+                product=item.product,
+                quantity=item.quantity,
             )
 
             # DEBUG: Uncomment for stock availability debug
             # print(f"Available Stock: {available_stock}")
 
             if len(available_stock) < item.quantity:
-                actual_phys_count = StockItem.objects.filter(
-                    product=item.product,
-                    status=StockItem.StockStatus.AVAILABLE,
-                ).count()
+                # actual_phys_count = StockItem.objects.filter(
+                #     product=item.product,
+                #     status=StockItem.StockStatus.AVAILABLE,
+                # ).count()
+                stock_availability = get_stock_availability(
+                    item.quantity
+                )
 
-                raise StockfulfilmentError(
-                    f"fulfilment failed for '{item.product.name}'. "
-                    f"Requested: {item.quantity}, Available: {len(available_stock)}"
-                    f"Actual pysical count: {actual_phys_count}"
+                raise StockFulfilmentError(
+                    f"Fulfilment failed for '{item.product.name}'. "
+                    f"Requested: {item.quantity}, "
+                    f"Available: {stock_availability['available']}, "
+                    f"Actual physical count: {stock_availability['total']}."
                 )
 
             for stock_unit in available_stock:
