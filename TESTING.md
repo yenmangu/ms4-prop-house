@@ -23,9 +23,10 @@ Unit tests were written to thoroughly automate testing of model, view and servic
 | ----------------------------- | ------------------------------------------------ | ------ |
 | BasketService                 | Basket remains associated with user session      | Pass   |
 | AddressService                | Invalid addresses are rejected                   | Pass   |
-| AddressService                | Only one dewfault address may exist per user     |        |
+| AddressService                | Only one default address may exist per user      |        |
 | MembershipService             | Discounts applied to active members              | Pass   |
-| CheckoutService               | Empty baskets cannot enter checkout              |        |
+| CheckoutService               | Store delivery address snapshot                  | Pass   |
+| CheckoutService               | Empty baskets cannot enter checkout              | Pass   |
 | Warehouse FulFillment Service | Stock updated only after payment                 |        |
 | Warehouse FulFillment Service | Insufficient stock results in failed fulfillment |        |
 
