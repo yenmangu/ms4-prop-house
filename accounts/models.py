@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from django.contrib.auth.models import AbstractUser
+from django_countries.fields import CountryField
 from django.db import models
 
 # =========================================================================
@@ -88,6 +89,34 @@ class User(AbstractUser):
 
     if TYPE_CHECKING:
         orders: RelatedManager["Order"]
+        addresses: RelatedManager["Address"]
 
     def __str__(self):
         return self.email
+
+
+class Address(models.Model):
+    """
+    Represent the saved address for a customer
+    """
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="addresses",
+    )
+    label = models.CharField(max_length=80, default="Default")
+    delivery_contact_name = models.CharField(
+        max_length=255, blank=True
+    )
+    phone_number = models.CharField(max_length=30)
+    house_name_or_number = models.CharField(max_length=255)
+    address_line_1 = models.CharField(max_length=255, blank=True)
+    address_line_2 = models.CharField(max_length=255, blank=True)
+    town_or_city = models.CharField(max_length=255)
+    county = models.CharField(max_length=255)
+    postcode = models.CharField(max_length=20)
+    country = CountryField(default="GB")
+    is_default = models.BooleanField(default=False)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
