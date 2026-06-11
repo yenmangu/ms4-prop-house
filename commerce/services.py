@@ -82,6 +82,10 @@ class CheckoutService:
         3. Order Update
         """
 
+        # Empty basket guard
+        if basket.lines.count() == 0:
+            return None, "Your basket is empty."
+
         # Used for AddressService
         address_form, address_error = (
             AddressService.validate_address_form(post_data)
