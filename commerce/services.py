@@ -89,15 +89,6 @@ class CheckoutService:
         if address_error:
             return None, address_error
 
-        # TODO: Pass address_data into Order.create_from_basket()
-        # once delivery snapshot fields are added to Order.
-
-        # Address data will be used to populate immutable delivery
-        # snapshot fields on the Order model.
-        # Not yet implemented.
-
-        # Used for Order snapshot
-
         address_data = address_form.cleaned_data
 
         AddressService.save_default_address(
@@ -105,8 +96,6 @@ class CheckoutService:
             address_form=address_form,
             post_data=post_data,
         )
-
-        # TODO: Implement address_data into Order
 
         order = Order.create_from_basket(
             basket=basket,
