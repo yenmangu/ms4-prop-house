@@ -6,6 +6,9 @@
 			"path": "."
 		}
 	],
+	"python.envFile": "${workspaceFolder}/.env",
+	"python.testing.unittestEnabled": true,
+	"python.testing.pytestEnabled": false,
 	"python.analysis.indexing": true,
 	"python.analysis.autoImportCompletions": true,
 	"python.analysis.extraPaths": ["./.venv/lib/python3.14/site-packages"],
