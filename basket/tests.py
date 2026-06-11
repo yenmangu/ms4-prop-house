@@ -1,9 +1,14 @@
-import os
-import django
+# Start Setup
+# This section is needed for the tests to show up in VSCode testing panel.
+# It is not needed for `python manage.py test basket.tests`
+# Uncomment below to enable.
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "prop_house.settings")
+# import os
+# import django
 
-django.setup()
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "prop_house.settings")
+
+# django.setup()
 
 # End Setup
 
