@@ -9,7 +9,7 @@
     </span>
   {% endif %}
 </div>
-<form id="{% if mobile %} sidebar-form-mobile {% else %} sidebar-form-desktop {% endif %}"
+<form id="{% if mobile %}sidebar-form-mobile{% else %}sidebar-form-desktop{% endif %}"
       method="get"
       class="manifest-form"
       hx-get="{{ request.path }}"
