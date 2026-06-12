@@ -635,9 +635,13 @@ Conventional Commits format used for clear and structured history.
 
 # Testing
 
-See **TESTING.md** for full testing documentation.
+See **[TESTING.md](TESTING.md)** for full testing documentation.
 
 ---
+
+# Bugs
+
+See **[BUG_REPORT.md](documentation/bugs/BUG_REPORT.md)** for a breakdown of bugs encountered during development and testing
 
 # Deployment
 
@@ -667,15 +671,17 @@ PropHouse follows WCAG 2.1 AA guidelines, including:
 
 ## Feature Credits
 
-| Feature                                                            | Source                                                                                                           | Notes                                                         |
-| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Stripe Integration                                                 | Stripe Documentation                                                                                             | Test mode implementation                                      |
-| Authentication                                                     | Django Auth                                                                                                      | Standard auth system                                          |
-| Event Driven Architecture                                          | [HTMX](https://htmx.org/docs/)                                                                                   |                                                               |
-| [HTMX Responsive Form](core/templates/core/partials/_sidebar.html) | [HTMX - Active Search](https://htmx.org/examples/active-search)                                                  | Show live filter results without full page reload             |
-| Hire status alert queries                                          | [Field lookups](https://docs.djangoproject.com/en/6.0/ref/models/querysets/#field-lookups)                       |                                                               |
-|                                                                    |
-| Reverse Admin URL Patterns                                         | [Django Docs: Reverse admin URLs](https://docs.djangoproject.com/en/6.0/ref/contrib/admin/#reversing-admin-urls) | Used to provide links between the various models within admin |
+| Feature                                                            | Source                                                                                                           | Notes                                                                  |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Stripe Integration                                                 | Stripe Documentation                                                                                             | Test mode implementation                                               |
+| Authentication                                                     | Django Auth                                                                                                      | Standard auth system                                                   |
+| Event Driven Architecture                                          | [HTMX](https://htmx.org/docs/)                                                                                   |                                                                        |
+| [HTMX Responsive Form](core/templates/core/partials/_sidebar.html) | [HTMX - Active Search](https://htmx.org/examples/active-search)                                                  | Show live filter results without full page reload                      |
+| Hire status alert queries                                          | [Field lookups](https://docs.djangoproject.com/en/6.0/ref/models/querysets/#field-lookups)                       |                                                                        |
+| Reverse Admin URL Patterns                                         | [Django Docs: Reverse admin URLs](https://docs.djangoproject.com/en/6.0/ref/contrib/admin/#reversing-admin-urls) | Used to provide links between the various models within admin          |
+| Bootstrap Offcanvas                                                | [Bootstrap Docs: Offcanvas](https://getbootstrap.com/docs/5.3/components/offcanvas/)                             | Dynamically create `offcanvas` instance and hook into lifecycle events |
+
+---
 
 ## Development Credits
 
@@ -685,12 +691,14 @@ PropHouse follows WCAG 2.1 AA guidelines, including:
 | Cloudinary SDK              | [Python Image & Video Upload](https://cloudinary.com/documentation/django_image_and_video_upload) | Used along with management commands to automate database seeding                 |
 | Django Query Expressions    | [Django Docs](https://docs.djangoproject.com/en/6.0/ref/models/expressions/#query-expressions)    | Used to perform advanced and related WHERE clause lookups on `HireRecord` model. |
 
+---
+
 ## Acknowledgements
 
 - Code Institute Level 5 Full Stack Development programme.
 
 ---
 
-**Result:**
+## **Result:**
 
-PropHouse is a relational database-backed Django application implementing secure e-commerce hire functionality with optional membership discounts, designed for a real-world production hire context.
+_PropHouse is a relational database-backed Django application implementing secure e-commerce hire functionality with optional membership discounts, designed for a real-world production hire context._
