@@ -1,7 +1,3 @@
-// /**
-//  * @typedef {import('bootstrap').Offcanvas}  OffCanvas
-//  */
-
 import * as bootstrap from 'bootstrap';
 import { phReportError } from './reportError.js';
 
