@@ -352,4 +352,3 @@ Represents the lifecycle of a hired inventory item.
 - **basket**: `Basket` and `Line`.
 - **commerce**: `Order`, `OrderItem`, checkout processing, and Stripe payment handling.
 - **warehouse**: `StockItem` and `HireRecord`.
-- **profiles**: Reserved for future customer-owned profile data not currently covered by `accounts`.
