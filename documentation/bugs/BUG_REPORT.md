@@ -111,10 +111,12 @@ id="{% if mobile %}sidebar-form-mobile{% else %}sidebar-form-desktop{% endif %}"
 ### 4. Technical References
 
 - Affected Components:
-  - Catalogue filter forms
+  - Core filter forms
   - HTMX search integration
   - Responsive sidebar/off-canvas filters
   - `syncForms.js`
+
+- **Fix Commit:** `8ccaa268bb419801aaa0334000ae752815983eec`
 
 ---
 
