@@ -125,3 +125,9 @@ id="{% if mobile %}sidebar-form-mobile{% else %}sidebar-form-desktop{% endif %}"
 This fix improved the reliability of the catalogue search experience and reinforced the responsive architecture used by the filtering system.
 
 The incident also highlighted the importance of validating template-generated identifiers when JavaScript behaviour depends on DOM element lookup. Although the rendered markup appeared visually correct in DevTools, leading and trailing whitespace within the ID attribute prevented CSS selectors and DOM queries from matching the expected elements.
+
+#### Further Reading
+
+While the bug itself was relatively small, the investigation resulted in a more robust responsive form architecture. The full design process, including the abstraction layers used to model filter ownership and synchronisation, is documented separately:
+
+- [Filter State Synchronisation](./filter_state.md)
