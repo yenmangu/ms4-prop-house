@@ -14,7 +14,7 @@ PropHouse uses a relational database schema designed to support:
 The schema is intentionally separated into distinct business domains:
 
 - **catalogue data** — products, categories, and pricing information.
-- **customer data** — user accounts and membership tiers.
+- **customer data** — user accounts, membership tiers, and saved delivery addresses.
 - **basket data** — pre-purchase selections and pricing snapshots.
 - **commerce data** — completed orders and purchased items.
 - **warehouse data** — physical inventory management and hire tracking.
@@ -50,29 +50,30 @@ Instead:
 
 ### Customer Domain
 
-- `MembershipTier` → `User`: One-to-many.
-- `User` → `Basket`: One-to-many.
-- `User` → `Order`: One-to-many.
+- `MembershipTier` > `User`: One-to-many.
+- `User` > `Address`: One-to-many.
+- `User` > `Basket`: One-to-many.
+- `User` > `Order`: One-to-many.
 
 ### Catalogue Domain
 
-- `Product` ↔ `Category`: Many-to-many via `CategoryProductJoin`.
-- `Product` → `StockItem`: One-to-many.
+- `Product` <> `Category`: Many-to-many via `CategoryProductJoin`.
+- `Product` > `StockItem`: One-to-many.
 
 ### Basket Domain
 
-- `Basket` → `Line`: One-to-many.
-- `Product` → `Line`: One-to-many.
+- `Basket` > `Line`: One-to-many.
+- `Product` > `Line`: One-to-many.
 
 ### Commerce Domain
 
-- `Order` → `OrderItem`: One-to-many.
-- `Product` → `OrderItem`: One-to-many.
+- `Order` > `OrderItem`: One-to-many.
+- `Product` > `OrderItem`: One-to-many.
 
 ### Warehouse Domain
 
-- `StockItem` → `HireRecord`: One-to-many.
-- `OrderItem` → `HireRecord`: One-to-many.
+- `StockItem` > `HireRecord`: One-to-many.
+- `OrderItem` > `HireRecord`: One-to-many.
 
 ---
 
@@ -129,6 +130,36 @@ Stores Stripe customer references and active membership tier assignments.
 
 ---
 
+### `Address` (`accounts` app)
+
+Stores reusable customer delivery address details for authenticated users.
+
+#### Key Fields
+
+- `id`
+- `user`
+- `label`
+- `delivery_contact_name`
+- `phone_number`
+- `house_name_or_number`
+- `address_line_1`
+- `address_line_2`
+- `town_or_city`
+- `county`
+- `postcode`
+- `country`
+- `is_default`
+- `created_on`
+- `updated_on`
+
+#### Notes
+
+`Address` records allow authenticated customers to save reusable delivery details for checkout.
+
+A user may have multiple saved addresses, but application business logic ensures that only one address is treated as the default address at a time. This supports faster repeat checkout while keeping delivery details customer-owned and separate from completed order records.
+
+---
+
 ### `Category` (`catalogue` app)
 
 Provides product grouping and catalogue organisation.
@@ -171,7 +202,7 @@ Represents a hireable or purchasable catalogue item.
 
 ### `CategoryProductJoin` (`catalogue` app)
 
-Join model implementing the `Product` ↔ `Category` many-to-many relationship.
+Join model implementing the `Product` <> `Category` many-to-many relationship.
 
 #### Key Fields
 
@@ -231,6 +262,15 @@ Represents a completed checkout transaction.
 - `user`
 - `full_name`
 - `email`
+- `delivery_contact_name`
+- `delivery_phone_number`
+- `delivery_house_name_or_number`
+- `delivery_address_line_1`
+- `delivery_address_line_2`
+- `delivery_town_or_city`
+- `delivery_county`
+- `delivery_postcode`
+- `delivery_country`
 - `stripe_pid`
 - `status`
 - `total_price`
@@ -239,6 +279,8 @@ Represents a completed checkout transaction.
 #### Notes
 
 `Order` records are created after successful payment confirmation.
+
+Delivery details are stored directly on the order as purchase-time snapshots. This preserves the exact address used for fulfilment even if the customer later edits or deletes their saved address.
 
 ---
 
@@ -305,9 +347,9 @@ Represents the lifecycle of a hired inventory item.
 ## App Ownership Summary
 
 - **core**: Shared UI, static pages, site-wide templates, HTMX integrations, and general platform concerns.
-- **accounts**: `User` and `MembershipTier`.
+- **accounts**: `User`, `MembershipTier`, and `Address`.
 - **catalogue**: `Product`, `Category`, and `CategoryProductJoin`.
 - **basket**: `Basket` and `Line`.
 - **commerce**: `Order`, `OrderItem`, checkout processing, and Stripe payment handling.
 - **warehouse**: `StockItem` and `HireRecord`.
-- **profiles**: Reserved for future customer-owned profile data.
+- **profiles**: Reserved for future customer-owned profile data not currently covered by `accounts`.
