@@ -55,13 +55,6 @@
   </head>
   <body class="bg-main-dark">
     {% include "core/partials/_navbar.html" %}
-    {% comment %}
-    {% if messages %}
-      <div class="messages-container">
-        {% for message in messages %}<div class="alert-industrial {{ message.tags }}">{{ message|safe }}</div>{% endfor %}
-      </div>
-    {% endif %}
-    {% endcomment %}
     {% if messages %}
       <script id="django-messages-data" type="application/json">
     [
@@ -81,6 +74,7 @@
         <!-- End breadcrumbs  -->
       {% endblock breadcrumbs %}
     </div>
+    {% if render_drawer %}{{ render_drawer|json_script:"drawer-render-state" }}{% endif %}
     <main>
       {% block content %}
       {% endblock content %}

@@ -1,5 +1,6 @@
 import * as bootstrap from 'bootstrap';
 import { phReportError } from './reportError.js';
+import { getRenderDrawerState } from './util.js';
 
 /**
  *
@@ -15,12 +16,18 @@ const domError = message => {
  */
 export const handleSidebar = evt => {
 	const element = /** @type {HTMLElement} */ (evt.target);
+
+	const renderDrawer = getRenderDrawerState();
+
+	if (!renderDrawer) {
+		return;
+	}
 	if (element && element.closest('.manifest-form')) {
 		const drawerEl = /** @type {HTMLElement} */ (
 			document.getElementById('mobileFilterDrawer')
 		);
 		if (!drawerEl) {
-			domError('Drawer element not found in current DOM');
+			domError('[sidebarOffcanvas]: Drawer element not found in current DOM');
 			return;
 		}
 		try {

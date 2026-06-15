@@ -1,4 +1,5 @@
 import { phReportError } from './reportError.js';
+import { getRenderDrawerState } from './util.js';
 
 const DESKTOP_FORM_ID = 'sidebar-form-desktop';
 const MOBILE_FORM_ID = 'sidebar-form-mobile';
@@ -179,10 +180,14 @@ const syncSidebarForms = mobileIsActive => {
 };
 
 export const initialiseSidebarFormSync = () => {
+	const renderDrawer = getRenderDrawerState();
+	if (!renderDrawer) {
+		return;
+	}
 	const drawerEl = document.getElementById(DRAWER_ID);
 
 	if (!drawerEl) {
-		domError('Drawer element not found in current DOM');
+		domError('[syncForm.js]: Drawer element not found in current DOM');
 		return;
 	}
 
