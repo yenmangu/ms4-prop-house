@@ -2,67 +2,55 @@
 
 ### Initial Problem
 
-The catalogue filter UI exists in two places:
+The catalogue filter UI exists in two locations:
 
 - Desktop sidebar
 - Mobile offcanvas drawer
 
-Both forms were configured with HTMX live search.
+Both forms were configured with HTMX-powered live search.
 
-When typing into the desktop search box, two requests were being generated:
+Intermittently, filtering would appear to fail despite requests being successfully sent to the server. Search results would sometimes update only after a second user interaction, such as clicking elsewhere on the page.
 
-```text
-GET /?q=oil
-GET /?q=
-```
-
-This caused:
-
-- URL flickering (`?q=oil` → `?q=`)
-- Search results appearing not to update
-- Race conditions between desktop and mobile forms
+This created the impression that filter state was becoming out of sync between desktop and mobile views.
 
 ### Investigation
 
-Request headers revealed:
+Initial debugging focused on form synchronisation.
 
-```text
-HX-Trigger: sidebar-form-desktop
-HX-Trigger: sidebar-form-mobile
-```
+Network inspection revealed multiple HTMX requests being generated during filtering, suggesting that both filter forms were participating in the interaction despite only one being visible.
 
-Both forms were active simultaneously despite only one being visible.
-
-Further debugging exposed an unrelated template bug:
+Additional debugging uncovered a separate template issue:
 
 ```html
 id="{% if mobile %} sidebar-form-mobile {% else %} sidebar-form-desktop {% endif
 %}"
 ```
 
-Whitespace inside the template expression resulted in invalid IDs:
+Whitespace inside the template expression produced invalid IDs:
 
 ```html
 id=" sidebar-form-mobile "
 ```
 
-which prevented DOM queries from locating the forms correctly.
+which prevented reliable DOM lookups and complicated debugging.
+
+While investigating the synchronisation layer, a multi-layer architecture was developed to maintain a single filter state across desktop and mobile views.
 
 ### Design Goal
 
-The desired outcome was not merely:
+The objective was not simply:
 
 ```text
-"Prevent duplicate HTMX requests"
+Prevent duplicate requests
 ```
 
 but:
 
 ```text
-"Ensure the user experiences a single filter state regardless of viewport"
+Provide a single filter state regardless of viewport
 ```
 
-This became the primary architectural concern.
+The user should experience one coherent filtering system whether interacting with the desktop sidebar or the mobile drawer.
 
 ### Pyramid of Concerns
 
@@ -90,9 +78,9 @@ syncSidebarForms(mobileIsActive);
 
 Responsible for:
 
-- determining active form
+- determining the active form
 - synchronising state
-- enabling/disabling forms
+- enabling and disabling forms
 
 #### Layer 2 — Synchronisation Direction
 
@@ -100,7 +88,7 @@ Responsible for:
 syncCorrectSourceToTarget(...)
 ```
 
-Determines:
+Determines synchronisation ownership:
 
 ```text
 desktop → mobile
@@ -108,7 +96,7 @@ or
 mobile → desktop
 ```
 
-based on active viewport state.
+based on the active viewport.
 
 #### Layer 3 — Form Orchestration
 
@@ -120,29 +108,29 @@ Responsible for:
 
 - iterating controls
 - locating matching controls
-- delegating sync behaviour
+- delegating synchronisation behaviour
 
-#### Layer 4 — Matching
+#### Layer 4 — Control Matching
 
 ```js
 getMatchingControl(...)
 ```
 
-Handles:
+Handles control lookup rules:
 
 ```text
-checkbox/radio -> name + value
-other controls -> name
+checkbox/radio → name + value
+other controls → name
 ```
 
-### Layer 5 — Control Behaviour
+#### Layer 5 — Control Behaviour
 
 ```js
 syncValueControl(...)
 syncCheckedControl(...)
 ```
 
-Separate handling for:
+Provides specialised handling for:
 
 ```text
 .value
@@ -151,21 +139,45 @@ Separate handling for:
 
 state.
 
+### Root Cause
+
+The synchronisation architecture was ultimately not the cause of the bug.
+
+The actual issue was an HTMX trigger configuration:
+
+```html
+hx-trigger="keyup changed delay:300ms from:input, change"
+```
+
+The `from:input` modifier broadened event handling beyond the current form, allowing multiple filter forms to react to the same input events.
+
+As a result:
+
+- both filter forms could issue requests
+- stale form state could overwrite valid results
+- responses appeared inconsistent despite the server returning correct data
+
+Removing the modifier resolved the issue:
+
+```html
+hx-trigger="keyup changed delay:300ms, change"
+```
+
+This restricted event handling to controls within the form itself and eliminated the competing requests.
+
 ### Outcome
 
-The final solution provides:
+The final implementation provides:
 
-- Single source of truth for filter state
-- No duplicate HTMX requests
-- No URL flicker
-- Consistent desktop/mobile behaviour
-- Automatic support for future form controls
-- Minimal coupling to HTMX
+- a single source of truth for filter state
+- consistent desktop and mobile behaviour
+- no duplicate HTMX requests
+- no URL flicker
+- support for future filter controls
+- clear separation of responsibilities within the synchronisation layer
 
 ### Key Lesson
 
-The most valuable insight was that the bug was not really an HTMX problem.
-
-The real problem was maintaining a single conceptual filter state across multiple responsive UIs.
-
-Once the problem was reframed at that level, the implementation naturally emerged as a set of increasingly focused layers with clear responsibilities.
+The most valuable insight from this investigation was that the visible symptom and the root cause were not the same problem.
+The application genuinely benefited from a robust synchronisation architecture, but the bug itself originated from an overly broad HTMX event trigger.
+The debugging process reinforced the importance of validating assumptions at each layer of abstraction before attributing issues to higher-level architectural concerns.
