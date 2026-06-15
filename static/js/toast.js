@@ -3,6 +3,8 @@ import * as bootstrap from 'bootstrap';
 import { phReportError } from './reportError.js';
 
 /**
+ * Wrapper to build and expose the Bootstrap toast, and programatically
+ * determine `autohide` and `delay` config based on status type.
  *
  * @param {ToastElements} toastElements
  * @param {string} message
@@ -21,7 +23,13 @@ export const showToast = (toastElements, message, status = 'success') => {
 
 	titleElement.style.color = 'var(--clr-success)';
 
-	const toast = new bootstrap.Toast(toastElement, { autohide: false });
+	const autohide = status === 'success';
+
+	const toast = new bootstrap.Toast(toastElement, {
+		autohide: autohide,
+		delay: 3000
+	});
+
 	toast.show();
 };
 

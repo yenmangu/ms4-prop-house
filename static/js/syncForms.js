@@ -192,6 +192,10 @@ export const initialiseSidebarFormSync = () => {
 	}
 
 	syncSidebarForms(false);
+	document.body.addEventListener('htmx:configRequest', () => {
+		const mobileIsActive = drawerEl.classList.contains('shown');
+		syncSidebarForms(mobileIsActive);
+	});
 
 	drawerEl.addEventListener('shown.bs.offcanvas', () => {
 		syncSidebarForms(true);
