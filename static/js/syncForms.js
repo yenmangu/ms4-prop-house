@@ -151,7 +151,7 @@ const syncForms = (sourceForm, targetForm) => {
 const syncCorrectSourceToTarget = (desktopForm, mobileForm, mobileIsActive) => {
 	let source = desktopForm;
 	let target = mobileForm;
-	if (!mobileIsActive) {
+	if (mobileIsActive) {
 		source = mobileForm;
 		target = desktopForm;
 	}
