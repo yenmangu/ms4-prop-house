@@ -160,7 +160,9 @@ class InitiateMembershipCheckoutView(
         """
 
         if self.request.headers.get("HX-Request"):
-            login_url = f"{reverse('account_login')}?next={self.request.path})"
+            login_url = (
+                f"{reverse('account_login')}?next={self.request.path}"
+            )
 
             response = JsonResponse(
                 {

@@ -4,6 +4,8 @@ from accounts.models import User
 from accounts.services import MembershipService
 from commerce.services import CheckoutService
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import redirect_to_login
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
@@ -29,6 +31,17 @@ class CheckoutDetailsView(BasketMixin, generic.TemplateView):
     """
 
     template_name = "commerce/includes/_customer_details_form.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            if request.headers.get("HX-Request") == "true":
+                return HttpResponse(
+                    "Authentication required", status=401
+                )
+
+            return redirect_to_login(request.get_full_path())
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

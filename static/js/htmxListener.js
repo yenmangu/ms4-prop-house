@@ -8,6 +8,7 @@ import { intialiseCustomerForm } from './customerForm.js';
 import { getToastElements } from './domElements.js';
 import { phReportError } from './reportError.js';
 import { handleSidebar } from './sidebarOffcanvas.js';
+import { getStatusHandlerResult } from './statusHandler.js';
 import {
 	showToast,
 	showPaymentToast,
@@ -38,6 +39,30 @@ function handleToastEvent(evt) {
 }
 
 /**
+ *
+ * @param {number} statusCode
+ * @param {ToastElements} toastUI
+ * @param {boolean}[successful = true]
+ * @returns {boolean}
+ */
+const handleStatus = (statusCode, toastUI, successful = true) => {
+	const statusHandlerResult = getStatusHandlerResult(statusCode);
+	if (statusHandlerResult) {
+		showToast(toastUI, statusHandlerResult.message, statusHandlerResult.status);
+		return true;
+	}
+	if (!successful) {
+		showToast(
+			toastUI,
+			'Please try again. Contact support if this persists.',
+			'danger'
+		);
+		return true;
+	}
+	return false;
+};
+
+/**
  * Handles multi-stage checkout flow within the toast
  *
  * @param {Event} evt
@@ -52,13 +77,11 @@ async function checkoutListener(evt) {
 		return;
 	}
 
-	// Success check
-	if (!detail.successful) {
-		showToast(
-			toastUI,
-			'Please try again. Contact supports if this persists.',
-			'danger'
-		);
+	// Status check
+	const responseCode = detail.xhr.status;
+
+	const statusHandled = handleStatus(responseCode, toastUI, detail.successful);
+	if (statusHandled) {
 		return;
 	}
 
@@ -111,6 +134,7 @@ async function checkoutListener(evt) {
 		}
 
 		const response = JSON.parse(detail.xhr.responseText);
+
 		const { clientSecret, stripePk } = response;
 		try {
 			const paymentUI = await showPaymentToast(toastUI, clientSecret);
