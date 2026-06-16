@@ -216,6 +216,34 @@ Transactional emails are delivered via Gmail SMTP using Django's
 standard email backend. Email credentials are stored securely using
 environment variables and are not committed to source control.
 
+### Basket
+
+PropHouse supports both anonymous and authenticated shopping sessions.
+
+Anonymous users may browse products and add items to a session-based basket without creating an account. This allows users to begin building an order immediately with minimal friction.
+
+When an anonymous user later signs in, any items stored in their session basket are automatically merged into their authenticated basket. This ensures that products selected before authentication are not lost during the login process.
+
+Basket ownership is intentionally separated between anonymous and authenticated sessions:
+
+- Anonymous baskets are stored against the current browser session.
+- Authenticated baskets are associated with the user’s account.
+- Logging out detaches the authenticated basket from the current session.
+- New items added while logged out are stored in a new anonymous basket.
+- Upon logging in again, anonymous basket items are merged into the user’s existing basket.
+
+This behaviour provides a seamless shopping experience while preserving basket data across authentication events.
+
+Additional basket functionality includes:
+
+- Add products to basket
+- Update basket quantities
+- Remove individual basket items
+- Clear basket contents
+- Live basket totals
+- Stock-aware quantity validation
+- Session persistence between page requests
+
 ---
 
 # Database Design
