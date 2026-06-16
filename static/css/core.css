@@ -357,11 +357,15 @@ footer {
 
 /* Sidebar Control Panel */
 
+.offcanvas {
+	--bs-border-color: var(--clr-accent);
+}
+
 .manifest-sidebar {
 	/* background-color: var(--bg-surface); */
 	/* border-right: 1px solid var(--border-hard); */
 	width: 100%;
-	max-width: 300px;
+	max-width: 100%;
 	border-style: 1px solid var(--border-hard);
 	padding: 2rem;
 	/* height: 100%; */
