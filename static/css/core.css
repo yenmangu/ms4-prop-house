@@ -365,7 +365,7 @@ footer {
 	/* background-color: var(--bg-surface); */
 	/* border-right: 1px solid var(--border-hard); */
 	width: 100%;
-	max-width: 100%;
+	max-width: 300px;
 	border-style: 1px solid var(--border-hard);
 	padding: 2rem;
 	/* height: 100%; */
@@ -375,6 +375,10 @@ footer {
 	outline: none;
 	appearance: none;
 	-webkit-appearance: none;
+}
+
+.offcanvas .manifest-sidebar {
+	max-width: 100%;
 }
 
 #manifest-results {

@@ -63,6 +63,15 @@ const isCheckableInput = element => {
 
 /**
  *
+ * @param {Element|null} element
+ * @returns {element is HTMLSelectElement}
+ */
+const isSelectableInput = element => {
+	return element instanceof HTMLSelectElement;
+};
+
+/**
+ *
  * @param {ValueControl} sourceInput
  * @param {ValueControl} targetInput
  */
@@ -77,6 +86,21 @@ const syncValueControl = (sourceInput, targetInput) => {
  */
 const syncCheckedControl = (sourceControl, targetControl) => {
 	targetControl.checked = sourceControl.checked;
+};
+
+/**
+ *
+ * @param {HTMLSelectElement} sourceControl
+ * @param {HTMLSelectElement} targetControl
+ */
+const syncSelectControl = (sourceControl, targetControl) => {
+	const selectedValues = Array.from(sourceControl.selectedOptions).map(
+		option => option.value
+	);
+
+	Array.from(targetControl.options).forEach(option => {
+		option.selected = selectedValues.includes(option.value);
+	});
 };
 
 /**
@@ -138,6 +162,11 @@ const syncForms = (sourceForm, targetForm) => {
 			continue;
 		}
 
+		if (isSelectableInput(sourceControl) && isSelectableInput(targetControl)) {
+			syncSelectControl(sourceControl, targetControl);
+			continue;
+		}
+
 		syncValueControl(sourceControl, targetControl);
 	}
 };
@@ -155,6 +184,8 @@ const syncCorrectSourceToTarget = (desktopForm, mobileForm, mobileIsActive) => {
 		source = mobileForm;
 		target = desktopForm;
 	}
+	console.log(`Syncing forms: source: ${source.id} | target: ${target.id}`);
+
 	syncForms(source, target);
 };
 
@@ -193,7 +224,7 @@ export const initialiseSidebarFormSync = () => {
 
 	syncSidebarForms(false);
 	document.body.addEventListener('htmx:configRequest', () => {
-		const mobileIsActive = drawerEl.classList.contains('shown');
+		const mobileIsActive = drawerEl.classList.contains('show');
 		syncSidebarForms(mobileIsActive);
 	});
 
