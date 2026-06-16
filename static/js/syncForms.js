@@ -184,7 +184,6 @@ const syncCorrectSourceToTarget = (desktopForm, mobileForm, mobileIsActive) => {
 		source = mobileForm;
 		target = desktopForm;
 	}
-	console.log(`Syncing forms: source: ${source.id} | target: ${target.id}`);
 
 	syncForms(source, target);
 };
