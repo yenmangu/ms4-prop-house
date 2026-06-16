@@ -62,13 +62,15 @@ class ProductFilter(df.FilterSet):
         if not selected_categories:
             return queryset
 
-        # selected_categories_ids = [category.id for category in selected_categories]
+        selected_categories_ids = [
+            category.id for category in selected_categories
+        ]
 
-        selected_categories_ids: QuerySet[int] = (
-            selected_categories.values_list("id", flat=True)
-        )
+        # selected_categories_ids: QuerySet[int] = (
+        #     selected_categories.values_list("id", flat=True)
+        # )
 
-        selected_count = selected_categories.count()
+        selected_count = len(selected_categories_ids)
 
         # 1) Keep products that have at least the selected categories
         # 2) Count how many of the selected categories each product matches
