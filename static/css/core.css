@@ -267,6 +267,11 @@ footer {
 	box-shadow: 4px 4px 0px var(--clr-accent); /* Safety Orange offset */
 }
 
+.btn--membership {
+	width: 100%;
+	padding: 0.4rem 1rem;
+}
+
 /* ---------------- Form Fields, Actions & Buttons --------------- */
 
 .form-fields.form-fields--industrial {

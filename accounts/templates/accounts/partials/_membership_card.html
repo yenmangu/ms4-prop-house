@@ -29,8 +29,8 @@
   </ul>
   <div class="membership-action-portal">
     {% if tier == current_tier %}
-      <button class="btn btn--industrial btn--success w-100 py-2 text-uppercase"
-              disabled>CURRENT_PLAN</button>
+      <button class="btn btn--industrial btn--success btn--membership text-uppercase"
+              disabled>CURRENT&#8203;_PLAN</button>
     {% else %}
       <form hx-post="{% url 'accounts:initiate_membership' tier.pk %}"
             hx-swap="none"
@@ -38,7 +38,9 @@
             data-tier="{{ tier.pk }}">
         {% csrf_token %}
         <button type="submit"
-                class="btn btn--industrial btn--accent w-100 py-2 text-uppercase">INITIALISE_UPGRADE</button>
+                class="btn btn--industrial btn--accent btn--membership text-uppercase">
+          INITIALISE&#8203;_UPGRADE
+        </button>
       </form>
     {% endif %}
   </div>

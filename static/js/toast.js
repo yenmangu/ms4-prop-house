@@ -47,6 +47,8 @@ export const showPaymentToast = async (toastElements, clientSecret) => {
 			document.getElementById('stripe-form-template')
 		);
 
+		toastElement.classList.add('toast--checkout');
+
 		// DEBUG;
 		if (!template) {
 			phReportError(new Error('[DOM_ERROR]: No template found'), 'SYSTEM');
