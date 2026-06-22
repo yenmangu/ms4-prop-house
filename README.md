@@ -115,21 +115,50 @@ PropHouse exists to provide a streamlined digital experience for hiring props an
 
 ### 4. Skeleton Plane
 
-Wireframes were created to plan layout and interaction patterns before development, focusing on:
+Wireframes were created during the planning phase to establish the overall layout, information hierarchy, and user journeys for PropHouse.
 
-- Clear product imagery hierarchy.
-- Transparent pricing display.
-- Distinct basket summary section.
-- Clear separation between membership pricing and standard pricing.
-- Minimal friction checkout process.
+The wireframes focused on the core customer experience across mobile, tablet, and desktop devices, including:
 
-| Page           | Wireframe    |
-| -------------- | ------------ |
-| Home           | (Figma link) |
-| Product List   | (Figma link) |
-| Product Detail | (Figma link) |
-| Basket         | (Figma link) |
-| Checkout       | (Figma link) |
+- Product browsing
+- Product detail pages
+- Category filtering
+- Basket and checkout interactions
+- Payment feedback and confirmation
+
+The final implementation evolved throughout development as features were refined and usability improvements were identified. As a result, some visual details differ from the original wireframes, however the underlying user journeys and layout structure remain consistent with the original design intentions.
+
+#### Mobile
+
+| Page             |                                                                         |
+| ---------------- | ----------------------------------------------------------------------- |
+| Product List     | ![Product List](./documentation/ux/mobile/product_list-mobile.png)      |
+| Product Detail   | ![Product Detail](./documentation/ux/mobile/product_detail-mobile.png)  |
+| Filter Drawer    | ![Filter Drawer](./documentation/ux/mobile/filter_drawer-mobile.png)    |
+| Payment Feedback | ![Payment Feedback](./documentation/ux/mobile/payment_toast-mobile.png) |
+
+#### Tablet
+
+| Page             |                                                                         |
+| ---------------- | ----------------------------------------------------------------------- |
+| Product Grid     | ![Product List](./documentation/ux/tablet/product_list-tablet.png)      |
+| Product Detail   | ![Product Detail](./documentation/ux/tablet/product_detail-tablet.png)  |
+| Payment Feedback | ![Payment Feedback](./documentation/ux/tablet/payment_toast-tablet.png) |
+
+#### Desktop
+
+| Page             |                                                                           |
+| ---------------- | ------------------------------------------------------------------------- |
+| Product Grid     | ![Product List](./documentation/ux/desktop/product_list-desktop.png)      |
+| Product Detail   | ![Product Detail](./documentation/ux/desktop/product_detail-desktop.png)  |
+| Payment Feedback | ![Payment Feedback](./documentation/ux/desktop/payment_toast-desktop.png) |
+
+#### UX Considerations
+
+The product catalogue was designed to prioritise browsing and discovery. Filters are positioned in a persistent sidebar on larger screens and within a slide-out drawer on mobile devices to maximise available screen space.
+
+Product detail pages prioritise imagery, product information, and the primary call-to-action (Add to Basket).
+
+Feedback is provided immediately after basket and checkout actions through toast notifications and payment confirmation screens, ensuring users remain informed of the outcome of their actions.
 
 ---
 
@@ -182,39 +211,89 @@ The interface prioritises clarity, professional presentation, and usability. Vis
 
 ## User Stories
 
-| ID  | User Story              | MoSCoW Priority | File |
-| --- | ----------------------- | --------------- | ---- |
-| 01  | Browse products         | Must            |      |
-| 02  | View product detail     | Must            |      |
-| 03  | Add to basket           | Must            |      |
-| 04  | Checkout with Stripe    | Must            |      |
-| 05  | Register / Login        | Must            |      |
-| 06  | Manage saved addresses  | Should          |      |
-| 07  | Subscribe to membership | Should          |      |
+| Issue No/ Story ID | User Story                                  | MoSCoW Priority |
+| ------------------ | ------------------------------------------- | --------------- |
+| #1                 | Browse available props and equipment        | Must Have       |
+| #2                 | View prop equipment detail                  | Must Have       |
+| #3                 | Search catalogue                            | Must Have       |
+| #4                 | Filter items by category                    | Must Have       |
+| #5                 | Add items to basket                         | Must Have       |
+| #6                 | Manage basket                               | Must Have       |
+| #7                 | Register and login                          | Must Have       |
+| #8                 | Complete checkout securely                  | Must Have       |
+| #9                 | View hire order history                     | Must Have       |
+| #10                | Receive membership discount                 | Must Have       |
+| #11                | Manage inventory                            | Must Have       |
+| #12                | Manage orders and stock                     | Must Have       |
+| #13                | Save multiple delivery addresses            | Won't Have      |
+| #14                | View estimated availability before checkout | Could Have      |
+| #15                | Leave product review                        | Won't Have      |
+| #16                | View related props                          | Won't Have      |
+| #17                | Generate downloadable invoice               | Could Have      |
+| #18                | Admin dashboard with hire metrics           | Won't Have      |
 
 ---
 
 # Features
 
-## Existing Features
+## Customer Features
 
-| Feature                 | User Story ID | MoSCoW Priority | Implemented |
-| ----------------------- | ------------- | --------------- | ----------- |
-| Product Catalogue       | 01            | Must            | Y           |
-| Product Detail          | 02            | Must            | Y           |
-| Basket                  | 03            | Must            | Y           |
-| Stripe Checkout         | 04            | Must            | Y           |
-| Authentication          | 05            | Must            | Y           |
-| Address Management      | 06            | Should          | Y           |
-| Membership Subscription | 07            | Should          | Y           |
+| Feature                     | User Story ID | MoSCoW Priority              | Implemented  |
+| --------------------------- | ------------- | ---------------------------- | ------------ |
+| Product Catalogue           | #1            | Must Have                    | Y            |
+| Product Detail              | #2            | Must Have                    | Y            |
+| Search Catalogue            | #3            | Must Have                    | Y            |
+| Filter by Category          | #4            | Must Have                    | Y            |
+| Add Items to Basket         | #5            | Must Have                    | Y            |
+| Manage Basket               | #6            | Must Have                    | Y            |
+| Authentication              | #7            | Must Have                    | Y            |
+| Stripe Checkout             | #8            | Must Have                    | Y            |
+| User Hire Dashboard         | #9            | Must Have                    | Y            |
+| Membership Subscription     | #10           | Must Have                    | Y            |
+| Default Address Management  | N/A           | Delivered during development | Y            |
+| Multiple Address Management | #13           | Won't Have                   | Future Scope |
+| Availability Estimates      | #14           | Could Have                   | Y            |
+| Downloadable Invoices       | #17           | Could Have                   | Y            |
 
-### Authentication & Email Verification
+> [!NOTE]
+> User Story #13 ("Save Multiple Delivery Addresses") was not completed
+> in its originally planned form and remains outside the scope of the
+> current release.
+>
+> During development, a simplified Address Management feature was
+> introduced to support the checkout workflow. Users may save a default
+> delivery address and reuse it during future purchases.
+>
+> The underlying data model was intentionally designed to support
+> multiple saved addresses through the `Address` model and address
+> labelling system. However, the user interface required to manage
+> multiple addresses was deferred to a future iteration.
 
-PropHouse uses Django Allauth to provide user registration,
-authentication, password management, and email verification.
-Transactional emails are delivered via Gmail SMTP using Django's
-standard email backend. Email credentials are stored securely using
-environment variables and are not committed to source control.
+## Administrative Features
+
+| Feature                  | User Story ID | MoSCoW Priority | Implemented |
+| ------------------------ | ------------- | --------------- | ----------- |
+| Inventory Management     | #11           | Must Have       | Y           |
+| Order & Stock Management | #12           | Must Have       | Y           |
+
+### Authentication & Account Management
+
+PropHouse provides a secure account system allowing customers to register, authenticate, and manage their activity on the platform.
+
+Account functionality includes:
+
+- User registration.
+- Login and logout.
+- Email verification.
+- Password reset and recovery.
+- Protected account dashboard access.
+- Membership status management.
+- Saved address management.
+- Order history access.
+
+Authentication and account management are implemented using Django Allauth, providing industry-standard security practices and account workflows.
+
+Transactional emails, including account verification and password recovery emails, are delivered via Gmail SMTP through Django's email framework. Email credentials are managed using environment variables and are never stored within the source code repository.
 
 ### Basket
 
@@ -244,7 +323,114 @@ Additional basket functionality includes:
 - Stock-aware quantity validation
 - Session persistence between page requests
 
----
+### Product Catalogue
+
+The catalogue provides the primary browsing experience for PropHouse. Products are organised into categories and presented using a responsive grid layout designed to support both desktop and mobile users.
+
+Catalogue functionality includes:
+
+- Product search by keyword.
+- Category-based filtering.
+- Responsive filter sidebar with desktop and mobile support.
+- Product availability indicators.
+- Membership pricing visibility where applicable.
+- Pagination for large result sets.
+
+Each product acts as the entry point into the hire workflow, allowing users to progress from discovery through to checkout.
+
+### Product Detail
+
+Each product includes a dedicated detail page designed to provide sufficient information before hire.
+
+Product detail functionality includes:
+
+- Product imagery.
+- Product description and specifications.
+- Pricing information.
+- Membership discount visibility.
+- Stock availability information.
+- Direct add-to-basket actions.
+
+This allows customers to make informed hiring decisions without leaving the product workflow.
+
+### Stripe Checkout
+
+PropHouse implements a multi-stage checkout process using HTMX and Stripe Elements.
+
+The checkout workflow consists of:
+
+1. Customer details collection.
+2. Delivery information validation.
+3. Secure payment initialisation.
+4. Stripe payment confirmation.
+5. Order creation and fulfilment processing.
+
+Key checkout features include:
+
+- Secure payment processing through Stripe.
+- PCI-compliant card handling.
+- Membership discount integration.
+- Address selection and autofill.
+- Validation before payment submission.
+- Atomic order creation after successful payment.
+
+Sensitive payment information is never processed or stored directly by the application.
+
+### User Hire Dashboard
+
+Authenticated users have access to a dedicated account dashboard where they can manage their activity on the platform.
+
+Dashboard functionality includes:
+
+- View previous orders.
+- View current hire history.
+- Access downloadable invoices.
+- Manage saved delivery addresses.
+- View membership status and benefits.
+
+The dashboard acts as the central location for ongoing customer account management.
+
+### Membership Subscription
+
+PropHouse offers an optional membership programme designed for repeat customers.
+
+Membership functionality includes:
+
+- Multiple membership tiers.
+- Percentage-based product discounts.
+- Stripe-managed subscription billing.
+- Automatic membership provisioning via webhooks.
+- Membership status visibility within the dashboard.
+
+Membership benefits apply through discounted pricing rather than restricting access to products, ensuring all catalogue items remain available to all users.
+
+### Address Management
+
+Authenticated users may save and manage delivery addresses for future orders.
+
+Address functionality includes:
+
+- Multiple saved addresses.
+- Default address selection.
+- Checkout form autofill.
+- Address editing and removal.
+- Delivery contact information storage.
+
+Saved addresses reduce checkout friction and improve the experience for returning customers.
+
+### Inventory & Order Management
+
+Administrative users have access to inventory and fulfilment management tools.
+
+Administrative functionality includes:
+
+- Stock level tracking.
+- Order fulfilment workflows.
+- Hire record management.
+- Inventory visibility.
+- Administrative order oversight.
+
+## These features support the operational side of the platform and help ensure accurate stock control throughout the hire lifecycle.
 
 # Database Design
 
