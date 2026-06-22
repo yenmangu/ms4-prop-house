@@ -7,12 +7,6 @@
     {{ user.email|json_script:"user-email-data" }}
     {% if default_address %}{{ default_address_payload|json_script:"user-address-data" }}{% endif %}
   {% endif %}
-  {% if default_address %}
-    <div>HAS DEFAULT ADDRESS</div>
-    {{ default_address }}
-  {% else %}
-    <div>NO DEFAULT ADDRESS</div>
-  {% endif %}
   <div class="form-section sliding-panel">
     <header class="section-header">
       <h2 class="industrial-title">Contact Information</h2>
