@@ -273,6 +273,7 @@ footer {
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
+	margin-bottom: 2rem;
 }
 
 .form-actions {
@@ -325,7 +326,10 @@ footer {
 }
 
 .btn--product-list {
+	display: block;
 	width: 100%;
+	max-width: 200px;
+	margin: auto;
 	padding: 0.2rem;
 	margin-top: 0.4rem;
 }

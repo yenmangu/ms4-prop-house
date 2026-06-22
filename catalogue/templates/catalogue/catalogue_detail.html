@@ -8,17 +8,17 @@
     <nav class="breadcrumb-industrial">
       <a href="{% url 'catalogue:product_list' %}">← BACK_TO_MANIFEST</a>
     </nav>
-    <div class="prop-spec-container">
-      <section class="spec-visual-unit">
+    <div class="prop-spec-container row g-4 align-items-start">
+      <section class="spec-visual-unit col-12 col-lg-5">
         <div class="crate-visual detail-view">
           <img src="{{ product.featured_image }}" alt="{{ product.name }}">
           <div class="scanline-overlay"></div>
         </div>
       </section>
-      <section class="spec-data-unit">
+      <section class="spec-data-unit col-12 col-lg-7">
         <header class="spec-header">
           <span class="id-tag">UNIT_ID: #{{ product.id|stringformat:"04d" }}</span>
-          <h1>{{ product.name|upper }}</h1>
+          <h1 class="product-title">{{ product.name|upper }}</h1>
         </header>
         <dl class="spec-ledger">
           <div class="ledger-row">
@@ -42,52 +42,53 @@
             </dd>
           </div>
           <div class="ledger-row">
-            <dt>TECHNICAL_NOTES</dt>
+            <dt>DETAILS</dt>
             <dd class="description-text">
               {{ product.description }}
             </dd>
           </div>
         </dl>
-      </div>
-      <div class="action-zone"
-           data-zone="logistics"
-           data-available="{% if out_of_stock %} false {% else %} true {% endif %}">
-        {% if available_count > 0 %}
-          <button data-action="reveal-hire"
-                  class="btn btn--industrial btn--product-list">Check Availability</button>
-        {% else %}
-          <div class="stock-alert industrial-alert mt-4 d-flex justify-content-center">
-            <span class="alert-icon me-2">⚠️</span>
-            <span class="alert-text">All units currently reserved!</span>
-          </div>
-        {% endif %}
-        <div data-unit="hire-logistics-gate" class="hidden gate-reveal">
-          <form hx-post="{% url 'basket:update' %}"
-                hx-ext="json-enc"
-                hx-swap="none"
-                class="industrial-form">
-            {% csrf_token %}
-            <input type="hidden" name="product_id" value="{{ product.id }}">
-            <input type="hidden" name="action" value="add">
-            <div class="form-fields form-fields--industrial">
-              {% include "commerce/partials/_hire_form_fields.html" with form=hire_form %}
-            </div>
-            <div class="form-actions mt-2">
-              <button type="submit"
-                      class="btn btn--industrial btn--sidebar"
-                      {% if available_count <= 0 %}disabled{% endif %}>CONFIRM HIRE</button>
-              <button type="button"
-                      data-action="cancel-hire"
-                      class="btn btn--sidebar btn--ghost">CANCEL</button>
-            </div>
-          </form>
+      </section>
+    </div>
+    <div class="action-zone"
+         data-zone="logistics"
+         data-available="{% if out_of_stock %}false{% else %}true{% endif %}">
+      {% if available_count > 0 %}
+        <button data-action="reveal-hire"
+                class="btn btn--industrial btn--product-list">Check Availability</button>
+      {% else %}
+        <div class="stock-alert industrial-alert mt-4 d-flex justify-content-center">
+          <span class="alert-icon me-2">⚠️</span>
+          <span class="alert-text">All units currently reserved!</span>
         </div>
-        {% comment %} LEGACY BELOW {% endcomment %}
-        {% comment %}
+      {% endif %}
+      <div data-unit="hire-logistics-gate"
+           class="hidden gate-reveal hire-logistics-form">
+        <form hx-post="{% url 'basket:update' %}"
+              hx-ext="json-enc"
+              hx-swap="none"
+              class="industrial-form">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <input type="hidden" name="action" value="add">
+          <div class="form-fields form-fields--industrial">
+            {% include "commerce/partials/_hire_form_fields.html" with form=hire_form %}
+          </div>
+          <div class="form-actions mt-2">
+            <button type="submit"
+                    class="btn btn--industrial btn--sidebar"
+                    {% if available_count <= 0 %}disabled{% endif %}>CONFIRM HIRE</button>
+            <button type="button"
+                    data-action="cancel-hire"
+                    class="btn btn--sidebar btn--ghost">CANCEL</button>
+          </div>
+        </form>
+      </div>
+      {% comment %} LEGACY BELOW {% endcomment %}
+      {% comment %}
         <button hx-post="{% url 'basket:update' %}" hx-trigger="click" hx-ext="json-enc" hx-vals='{"product_id": "{{ product.id }}","action":"add"}' class="btn btn--industrial btn--product-list add-to-basket" hx-swap="none" data-product-id="{{ product.id }}">LEGACY ADD_TO_CART</button>
 
-        {% endcomment %}
-      </div>
-    </section>
+      {% endcomment %}
+    </div>
   </div>
 {% endblock content %}
