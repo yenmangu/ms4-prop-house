@@ -1,4 +1,7 @@
 /* dashboard.css */
+.manifest-main--dashboard {
+	padding: 0;
+}
 
 .btn.btn--accent-txt {
 	color: var(--clr-accent);
