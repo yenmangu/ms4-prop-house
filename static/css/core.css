@@ -696,11 +696,13 @@ body #liveToast.industrial-toast.show {
 
 .offcanvas-body.sidebar {
 	padding: 0;
+	display: flex;
+	flex-direction: column;
 }
-.mobile-sidebar-override .manifest-sidebar {
+.mobile-sidebar-override.manifest-sidebar {
 	display: block !important;
 	width: 100% !important;
 	border: none !important;
 	box-shadow: none !important;
-	padding: 0 !important;
+	padding: 2rem !important;
 }
