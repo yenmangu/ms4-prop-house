@@ -1,6 +1,6 @@
-<aside class="manifest-sidebar d-none d-md-block"
+<aside class="manifest-sidebar d-none d-md-block {% if zone == 'catalogue' %}catalogue{% endif %}"
        data-zone="{% if zone %}{{ zone }}{% else %}'default'{% endif %}">
-  {% include "core/partials/_sidebar_content.html" %}
+  {% include "core/partials/_sidebar_content.html" with filter=desktop_filter zone="catalogue" %}
 </aside>
 <div class="offcanvas offcanvas-start d-md-none bg-surface border-end border-hard text-txt-primary"
      tabindex="-1"
@@ -8,14 +8,6 @@
      data-bs-backdrop="true"
      aria-labelledby="mobileFilterDrawerLabel"
      style="background-image: var(--texture-scanline)">
-  {% comment %}
-  <div class="offcanvas-header border-bottom border-hard">
-    <h5 class="offcanvas-title font-mono text-xs text-muted text-uppercase" id="mobileFilterDrawerLabel">SYSTEM_FILTERS //</h5>
-
-
-    <button type="button" class="btn-close text-reset btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-</div>
-  {% endcomment %}
   <div class="offcanvas-body sidebar">
     <div class="mobile-sidebar-override manifest-sidebar">
       {% include "core/partials/_sidebar_content.html" with mobile=True zone="catalogue" %}

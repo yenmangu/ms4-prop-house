@@ -29,8 +29,8 @@ body.bg-main-dark {
 
 main {
 	flex: 1 0 auto;
-	padding-left: 5%;
-	padding-right: 5%;
+	padding-left: 3%;
+	padding-right: 3%;
 }
 
 h1,
@@ -356,12 +356,15 @@ footer {
 .manifest-wrapper {
 	/* XS display and above - flex */
 	display: flex;
-
 	/* Enabled when display is grid (bootstrap utility class) */
 	/* Fixed sidebar, fluid grid */
 	grid-template-columns: 300px 1fr;
 	/* Subtract nav height */
 	min-height: calc(100vh - 70px);
+}
+
+.manifest-wrapper.catalogue {
+	gap: 2rem;
 }
 
 /* Sidebar Control Panel */
@@ -374,13 +377,16 @@ footer {
 	width: 100%;
 	max-width: 300px;
 	border-style: 1px solid var(--border-hard);
-
 	height: 100%;
 	min-height: 160px;
 	background-color: #000;
 	outline: none;
 	appearance: none;
 	-webkit-appearance: none;
+}
+
+.manifest-sidebar.catalogue {
+	padding: 2rem;
 }
 
 .offcanvas .manifest-sidebar {
