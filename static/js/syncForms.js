@@ -105,6 +105,68 @@ const syncSelectControl = (sourceControl, targetControl) => {
 
 /**
  *
+ * @param {HTMLSelectElement} selectControl
+ * @returns
+ */
+const getSelectedOptionValues = selectControl => {
+	return Array.from(selectControl.selectedOptions).map(option => option.value);
+};
+
+/**
+ *
+ * @param {NodeListOf<HTMLInputElement>} checkboxControls
+ * @returns {string[]}
+ */
+const getCheckedValues = checkboxControls => {
+	const checkedValues = [];
+	for (const checkboxControl of checkboxControls) {
+		if (!checkboxControl.checked) {
+			continue;
+		}
+		checkedValues.push(checkboxControl.value);
+	}
+	return checkedValues;
+};
+
+/**
+ *
+ * @param {HTMLFormElement} form
+ * @param {string} controlName
+ * @returns {NodeListOf<HTMLInputElement>}
+ */
+const getCheckboxGroup = (form, controlName) => {
+	return form.querySelectorAll(
+		`input[type="checkbox"][name="${CSS.escape(controlName)}"]`
+	);
+};
+
+/**
+ *
+ * @param {HTMLSelectElement} sourceSelect
+ * @param {NodeListOf<HTMLInputElement>} targetCheckboxes
+ */
+
+const syncSelectToCheckboxGroup = (sourceSelect, targetCheckboxes) => {
+	const selectedValues = getSelectedOptionValues(sourceSelect);
+	for (const checkboxControl of targetCheckboxes) {
+		checkboxControl.checked = selectedValues.includes(checkboxControl.value);
+	}
+};
+
+/**
+ *
+ * @param {NodeListOf<HTMLInputElement>} sourceCheckboxes
+ * @param {HTMLSelectElement} targetSelect
+ */
+const syncCheckboxGroupToSelect = (sourceCheckboxes, targetSelect) => {
+	const checkedValues = getCheckedValues(sourceCheckboxes);
+	for (const option of targetSelect.options) {
+		option.selected = checkedValues.includes(option.value);
+	}
+};
+
+/**
+ *
  * @param {ValueControl} sourceControl
  * @param {HTMLFormElement} targetForm
  * @returns {Element|null}
@@ -139,6 +201,27 @@ const syncForms = (sourceForm, targetForm) => {
 		if (!isValueControl(sourceControl)) {
 			// Continue to next source control
 			continue;
+		}
+
+		if (isSelectableInput(sourceControl) && sourceControl.multiple) {
+			const targetCheckboxes = getCheckboxGroup(targetForm, sourceControl.name);
+			if (targetCheckboxes.length > 0) {
+				syncSelectToCheckboxGroup(sourceControl, targetCheckboxes);
+				continue;
+			}
+		}
+		if (isCheckableInput(sourceControl)) {
+			const sourceCheckboxes = getCheckboxGroup(sourceForm, sourceControl.name);
+			const targetSelect = targetForm.querySelector(
+				`select[name="${CSS.escape(sourceControl.name)}"]`
+			);
+			if (
+				sourceCheckboxes.length > 0 &&
+				targetSelect instanceof HTMLSelectElement
+			) {
+				syncCheckboxGroupToSelect(sourceCheckboxes, targetSelect);
+				continue;
+			}
 		}
 		const targetControl = getMatchingControl(sourceControl, targetForm);
 

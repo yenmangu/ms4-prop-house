@@ -7,6 +7,7 @@ from typing import Optional
 #          to seamlessly connect client requests to parameterized database queries.
 # Localisation: Evaluates query filters for the client-facing product catalog.
 # =========================================================================
+from django.forms import widgets
 import django_filters as df
 from django.db.models import Q, Count, QuerySet
 
@@ -27,6 +28,19 @@ class ProductFilter(df.FilterSet):
         queryset=Category.objects.order_by("name"),
         method="filter_category_and",
     )
+
+    # categories_mobile = df.ModelMultipleChoiceFilter(
+    #     queryset=Category.objects.order_by("name"),
+    #     method="filter_category_and",
+    #     widget=forms.CheckboxSelectMultiple,
+    # )
+
+    def __init__(self, *args, mobile=False, **kwargs):
+        super().__init__(*args, **kwargs)
+        if mobile:
+            categories_field = self.form.fields["categories"]
+            categories_field.widget = forms.CheckboxSelectMultiple()
+            categories_field.widget.choices = categories_field.choices
 
     def filter_search(self, queryset: QuerySet, name, value):
         """
@@ -90,4 +104,8 @@ class ProductFilter(df.FilterSet):
 
     class Meta:
         model = Product
+        fields = [
+            "q",
+            "categories",
+        ]
         exclude = ["featured_image"]

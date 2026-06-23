@@ -42,10 +42,16 @@ class ProductListView(
         # Use new filter_search:
         qs = super().get_queryset().prefetch_related("categories")
 
-        # Initialise the filter with GET params
+        # Initialise the filters with GET params
         self.filterset = ProductFilter(
             self.request.GET,
             queryset=qs,
+        )
+
+        self.mobile_filterset = ProductFilter(
+            self.request.GET,
+            queryset=qs,
+            mobile=True,
         )
 
         # Return filtered queryset
@@ -58,7 +64,9 @@ class ProductListView(
         context["zone"] = "catalogue"
 
         # Add filterset to context
-        context["filter"] = self.filterset
+        context["filter"] = self.mobile_filterset
+        context["mobile_filter"] = self.mobile_filterset
+        context["desktop_filter"] = self.filterset
 
         return context
 
