@@ -118,3 +118,20 @@ export const hideToast = toast => {
 		toast.hide();
 	}
 };
+
+/**
+ *
+ * @param {HTMLElement} toastEl
+ * @returns {Promise<boolean>}
+ */
+export const listenForClose = toastEl => {
+	return new Promise(resolve => {
+		toastEl.addEventListener(
+			'hidden.bs.toast',
+			() => {
+				return resolve(true);
+			},
+			{ once: true }
+		);
+	});
+};

@@ -12,7 +12,8 @@ import { getStatusHandlerResult } from './statusHandler.js';
 import {
 	showToast,
 	showPaymentToast,
-	showCustomerDetailsToast
+	showCustomerDetailsToast,
+	listenForClose
 } from './toast.js';
 
 /**
@@ -128,7 +129,10 @@ async function checkoutListener(evt) {
 		);
 
 		// Lock button and provide UX
+
+		let originalSubmitContent = '';
 		if (submitBtn) {
+			originalSubmitContent = submitBtn.innerHTML.trim();
 			submitBtn.disabled = true;
 			submitBtn.innerHTML = 'Initialising secure payment portal...';
 		}
@@ -137,7 +141,10 @@ async function checkoutListener(evt) {
 
 		const { clientSecret, stripePk } = response;
 		try {
+			const closePromise = listenForClose(toastUI.toastElement);
+
 			const paymentUI = await showPaymentToast(toastUI, clientSecret);
+
 			if (!paymentUI) return;
 
 			const stripeInstance = await mountStripeElements(
@@ -172,7 +179,19 @@ async function checkoutListener(evt) {
 					metadata
 				);
 			}
+
+			closePromise.then(isClosed => {
+				if (!isClosed || !submitBtn) {
+					return;
+				}
+				submitBtn.disabled = false;
+				submitBtn.innerHTML = originalSubmitContent;
+			});
 		} catch (err) {
+			if (submitBtn) {
+				submitBtn.innerHTML = originalSubmitContent;
+				submitBtn.disabled = false;
+			}
 			const msg = err instanceof Error ? err.message : 'Handshake failed.';
 			if (err instanceof Error) {
 				console.error(err);
