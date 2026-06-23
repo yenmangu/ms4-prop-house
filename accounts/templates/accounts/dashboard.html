@@ -5,7 +5,7 @@
 {% endblock extra_css %}
 {% block content %}
   <div class="manifest-wrapper">
-    {% include "core/partials/_sidebar.html" %}
+    {% include "core/partials/_sidebar.html" with zone="dashboard" %}
     <div class="manifest-main manifest-main--dashboard" id="manifest-results">
       {% include "accounts/partials/_user_hire_data.html" %}
     </div>
