@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="container my-5 text-center" data-zone="basket-refresh">
+  <div class="container my-5 px-0 text-center" data-zone="basket-refresh">
     <div class="industrial-card p-5 border shadow-sm">
       {% if payment_intent.status == 'succeeded' %}
-        <h1 class="text-success mb-4">TRANSACTION&#8203;_COMPLETE</h1>
+        <h3 class="text-success mb-4">TRANSACTION&#8203;_COMPLETE</h3>
         <p class="lead">Thank you for your purchase. Your order is being processed.</p>
         <div class="mt-4">
           <p class="text-muted small">Payment ID: {{ payment_intent.id }}</p>
@@ -12,7 +12,7 @@
         <a href="{% url 'accounts:dashboard' %}"
            class="btn--industrial btn--sidebar mt-4">VISIT HIRE DASHBOARD</a>
       {% else %}
-        <h1 class="text-warning">PENDING_VERIFICATION</h1>
+        <h3 class="text-warning">PENDING_VERIFICATION</h3>
         <p>We are currently verifying your payment status. Please check back shortly.</p>
       {% endif %}
     </div>
