@@ -1,6 +1,6 @@
 <aside class="manifest-sidebar d-none d-md-block {% if zone == 'catalogue' %}catalogue{% endif %}"
        data-zone="{% if zone %}{{ zone }}{% else %}'default'{% endif %}">
-  {% include "core/partials/_sidebar_content.html" with filter=desktop_filter zone="catalogue" %}
+  {% include "core/partials/_sidebar_content.html" with filter=desktop_filter zone=zone %}
 </aside>
 <div class="offcanvas offcanvas-start d-md-none bg-surface border-end border-hard text-txt-primary"
      tabindex="-1"
@@ -10,7 +10,7 @@
      style="background-image: var(--texture-scanline)">
   <div class="offcanvas-body sidebar">
     <div class="mobile-sidebar-override manifest-sidebar">
-      {% include "core/partials/_sidebar_content.html" with mobile=True zone="catalogue" %}
+      {% include "core/partials/_sidebar_content.html" with mobile=True filter=mobile_filter zone=zone %}
     </div>
   </div>
 </div>

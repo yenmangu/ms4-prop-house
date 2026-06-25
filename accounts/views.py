@@ -92,11 +92,19 @@ class UserDashboardHireView(LoginRequiredMixin, ListView):
         context["zone"] = "dashboard"
 
         # Initialise qs
-        base_qs = self.get_queryset()
+        # base_qs = self.get_queryset()
         # base_qs = self.filterset.qs
+        base_qs = self.object_list
 
         # Assign context
+        context["mobile_filter"] = self.filterset
+        context["desktop_filter"] = self.filterset
+
+        # Seems redundant but needed for navbar
         context["filter"] = self.filterset
+
+        # context["filter"] = self.filterset
+
         context["active_hires"] = base_qs.filter(
             returned_date__isnull=True,
             out_date__isnull=False,

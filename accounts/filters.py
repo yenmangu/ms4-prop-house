@@ -56,10 +56,6 @@ class UserOrderFilter(df.FilterSet):
         empty_label="ALL_RECORDS",
     )
 
-    class Meta:
-        model = HireRecord
-        fields = []
-
     def filter_search(self, queryset: QuerySet, name, value):
 
         return queryset.filter(
@@ -83,3 +79,11 @@ class UserOrderFilter(df.FilterSet):
         if value:
             return queryset.filter(calculated_alert=value)
         return queryset
+
+    class Meta:
+        model = HireRecord
+        fields = [
+            "q",
+            "state",
+            "alert_level",
+        ]

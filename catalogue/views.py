@@ -64,9 +64,13 @@ class ProductListView(
         context["zone"] = "catalogue"
 
         # Add filterset to context
-        context["filter"] = self.mobile_filterset
+        # context["filter"] = self.mobile_filterset
+
         context["mobile_filter"] = self.mobile_filterset
         context["desktop_filter"] = self.filterset
+
+        # Seems redundant but needed for navbar
+        context["filter"] = self.filterset
 
         return context
 
