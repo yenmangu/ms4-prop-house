@@ -361,11 +361,12 @@ footer {
 	grid-template-columns: 300px 1fr;
 	/* Subtract nav height */
 	min-height: calc(100vh - 70px);
-}
-
-.manifest-wrapper.catalogue {
 	gap: 2rem;
 }
+
+/* .manifest-wrapper.catalogue {
+	gap: 2rem;
+} */
 
 /* Sidebar Control Panel */
 
