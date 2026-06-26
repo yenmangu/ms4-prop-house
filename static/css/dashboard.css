@@ -3,6 +3,10 @@
 	padding: 0;
 }
 
+.table-wrapper {
+	overflow: scroll;
+}
+
 .btn.btn--accent-txt {
 	color: var(--clr-accent);
 }
