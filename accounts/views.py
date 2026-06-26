@@ -22,15 +22,22 @@ from view_breadcrumbs import ListBreadcrumbMixin
 from warehouse.models import HireRecord
 
 
-class UserDashboardHireView(LoginRequiredMixin, ListView):
+class UserDashboardHireView(
+    LoginRequiredMixin, ListBreadcrumbMixin, ListView
+):
     """
     Displays active hre records derived from completed orders
     UPDATE: supports raw binary PDF rendering.
     """
 
     model = HireRecord
+    app_name = "accounts"
     template_name = "accounts/dashboard.html"
     context_object_name = "hire_records"
+
+    crumbs = [
+        ("My Bookings", None),
+    ]
 
     def get_queryset(self):
         """
