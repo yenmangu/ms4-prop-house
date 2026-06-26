@@ -1,0 +1,41 @@
+{% load static %}
+{% load cloudinary %}
+{% with image=product.featured_image %}
+  {% if image.public_id == "placeholder" %}
+    <picture>
+      <source type="image/avif"
+              srcset="{% static 'images/default-360.avif' %} 360w,
+                      {% static 'images/default-540.avif' %} 540w,
+                      {% static 'images/default-720.avif' %} 720w"
+              sizes="(max-width: 576px) 100vw,
+                     (max-width: 992px) 50vw,
+                     360px">
+      <source type="image/webp"
+              srcset="{% static 'images/default-360.webp' %} 360w,
+                      {% static 'images/default-540.webp' %} 540w,
+                      {% static 'images/default-720.webp' %} 720w"
+              sizes="(max-width: 576px) 100vw,
+                     (max-width: 992px) 50vw,
+                     360px">
+      <img src="{% static 'images/default-540.jpg' %}"
+           alt="{{ product.name }}"
+           class="img-fluid product-card__image"
+           width="540"
+           height="360"
+           loading="lazy"
+           decoding="async">
+    </picture>
+  {% else %}
+    <img src="{% cloudinary_url image width=333 height=250 crop='fill' gravity='auto' fetch_format='auto' quality='auto' %}"
+         srcset="{% cloudinary_url image width=333 height=250 crop='fill' gravity='auto' fetch_format='auto' quality='auto' %} 333w,
+                 {% cloudinary_url image width=500 height=375 crop='fill' gravity='auto' fetch_format='auto' quality='auto' %} 500w,
+                 {% cloudinary_url image width=666 height=500 crop='fill' gravity='auto' fetch_format='auto' quality='auto' %} 666w"
+         sizes="(max-width: 575px) calc(100vw - 2rem),  (max-width: 991px) calc(50vw - 2rem),  333px"
+         alt="{{ product.name }}"
+         class="img-fluid product-card__image"
+         width="333"
+         height="250"
+         loading="lazy"
+         decoding="async">
+  {% endif %}
+{% endwith %}
