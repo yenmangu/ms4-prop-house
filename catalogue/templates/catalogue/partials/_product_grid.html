@@ -48,6 +48,7 @@
       <a hx-get="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}"
          hx-target="#manifest-results"
          hx-push-url="true"
+         href="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}"
          class="nav-btn">PREV</a>
     {% endif %}
     <span class="page-count">{{ page_obj.number }} / {{ paginator.num_pages }}</span>
@@ -55,6 +56,7 @@
       <a hx-get="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}"
          hx-target="#manifest-results"
          hx-push-url="true"
+         href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}"
          class="nav-btn">NEXT</a>
     {% endif %}
   </nav>
