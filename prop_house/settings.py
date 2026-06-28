@@ -69,7 +69,8 @@ if not STRIPE_WH_SECRET:
     )
 
 
-DEBUG = not IS_HEROKU_APP
+# DEBUG = not IS_HEROKU_APP
+DEBUG = True
 
 
 ALLOWED_HOSTS = [
