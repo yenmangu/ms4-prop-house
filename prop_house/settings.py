@@ -69,6 +69,7 @@ if not STRIPE_WH_SECRET:
     )
 
 
+# DEBUGGING TEMPORARILY
 # DEBUG = not IS_HEROKU_APP
 DEBUG = True
 
@@ -292,10 +293,6 @@ CLOUDINARY_STORAGE = {
     "API_SECRET": os.environ.get("CLOUDINARY_SECRET"),
 }
 
-# This ensures uploaded files go to Cloudinary
-DEFAULT_FILE_STORAGE = (
-    "cloudinary_storage.storage.MediaCloudinaryStorage"
-)
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
@@ -323,6 +320,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Caching
 STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
