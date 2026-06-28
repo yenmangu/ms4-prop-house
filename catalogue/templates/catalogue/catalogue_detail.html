@@ -11,7 +11,7 @@
     <div class="prop-spec-container row g-4 align-items-start">
       <section class="spec-visual-unit col-12 col-lg-5">
         <div class="crate-visual detail-view">
-          <img src="{{ product.featured_image }}" alt="{{ product.name }}">
+          {% include "catalogue/partials/_detail_image.html" %}
           <div class="scanline-overlay"></div>
         </div>
       </section>

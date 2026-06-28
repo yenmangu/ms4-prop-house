@@ -9,9 +9,7 @@
   {% for product in object_list %}
     <article class="prop-crate">
       <div class="crate-visual">
-        <img src="{{ product.featured_image }}"
-             alt="{{ product.name }}"
-             loading="lazy" />
+        {% include "catalogue/partials/_list_image.html" %}
         <div class="crate-overlay">
           <span class="crate-status">READY_FOR_USE</span>
         </div>
@@ -23,7 +21,6 @@
         </div>
         <h3 class="product-name">
           <a href="{% url 'catalogue:product_detail' slug=product.slug %}">{{ product.name|upper }}</a>
-          {% comment %} <a href="{% url 'product_detail' product.slug %}">{{ product.name|upper }}</a> {% endcomment %}
         </h3>
         <div class="category-pills">
           {% for cat in product.categories.all %}<span class="pill">{{ cat.name }}</span>{% endfor %}
