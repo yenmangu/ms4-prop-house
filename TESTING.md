@@ -68,6 +68,8 @@ Python code quality was assessed through:
 
 All custom Python files follow consistent naming, indentation, and descriptive variable conventions.
 
+![Black validation](./documentation/validation/black-valdiation.png)
+
 ---
 
 ## Automated Testing
