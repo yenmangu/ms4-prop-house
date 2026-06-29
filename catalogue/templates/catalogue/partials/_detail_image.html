@@ -28,7 +28,7 @@
                 </picture>
         {% else %}
                 <img src="{% cloudinary_url image width=1200 height=800 crop='fill' gravity='auto' fetch_format='auto' quality='auto' %}"
-                     srcset="{% cloudinary_url width=420 height=200 crop='fill' gravity='auto' fetch_format='auto' quality='auto' %} 420w,
+                     srcset="{% cloudinary_url image width=420 height=200 crop='fill' gravity='auto' fetch_format='auto' quality='auto' %} 420w,
                              {% cloudinary_url image width=768 height=512 crop='fill' gravity='auto' fetch_format='auto' quality='auto' %} 768w,
                              {% cloudinary_url image width=1200 height=800 crop='fill' gravity='auto' fetch_format='auto' quality='auto' %} 1200w,
                              {% cloudinary_url image width=1600 height=1067 crop='fill' gravity='auto' fetch_format='auto' quality='auto' %} 1600w"
