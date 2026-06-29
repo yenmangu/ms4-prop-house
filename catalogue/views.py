@@ -1,5 +1,6 @@
 from commerce.forms import PropHireForm
 from django.contrib import messages
+from django.db.models import Q, Count
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -17,6 +18,7 @@ from view_breadcrumbs import (
     ListBreadcrumbMixin,
     DetailBreadcrumbMixin,
 )
+from warehouse.models import StockItem
 from warehouse.services import get_stock_availability
 from .models import Product
 from .filters import ProductFilter
@@ -41,6 +43,15 @@ class ProductListView(
         # NEW
         # Use new filter_search:
         qs = super().get_queryset().prefetch_related("categories")
+
+        qs = qs.annotate(
+            available_stock=Count(
+                "stock_items",
+                filter=Q(
+                    stock_items__status=StockItem.StockStatus.AVAILABLE
+                ),
+            )
+        )
 
         # Initialise the filters with GET params
         self.filterset = ProductFilter(
