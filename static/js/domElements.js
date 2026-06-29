@@ -3,10 +3,11 @@ import { phReportError } from './reportError.js';
 /**
  * Centralised DOM query for 'toast' elements
  *
+ * @param {string} [id='liveToast']
  * @returns {ToastElements|void}
  */
-export const getToastElements = () => {
-	const toastElement = document.getElementById('liveToast');
+export const getToastElements = (id = 'liveToast') => {
+	const toastElement = document.getElementById(id);
 	const bodyElement = document.getElementById('toastBody');
 	const titleElement = document.getElementById('toastTitle');
 
