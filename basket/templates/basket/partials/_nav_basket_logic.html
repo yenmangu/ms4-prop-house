@@ -8,13 +8,17 @@
   <a href="{% url 'basket:summary' %}"
      class="basket-link"
      aria-label="View shopping basket">
-    <div class="basket-icon-wrapper" id="basketIconWrapper">
+    <div class="basket-icon-wrapper"
+         id="basketIconWrapper{% if mobile %}_mobile{% endif %}">
       {% include "core/icons/icon_cart.svg" %}
       <span id="nav-basket-count"
             class="basket badge {% if not basket.total_items %}hidden{% endif %}">
         {{ basket.total_items|default:0 }}
       </span>
     </div>
-    <span id="nav-basket-total" data-basket="total" class="nav-basket-total">{{ basket.total_price|default:"0.00" }}</span>
+    <span id="nav-basket-total{% if mobile %}_mobile{% endif %}"
+          data-basket="total"
+          class="nav-basket-total"
+          aria-hidden="true">{{ basket.total_price|default:"0.00" }}</span>
   </a>
 </div>
