@@ -11,7 +11,7 @@
     <div class="basket-icon-wrapper"
          id="basketIconWrapper{% if mobile %}_mobile{% endif %}">
       {% include "core/icons/icon_cart.svg" %}
-      <span id="nav-basket-count{% if mobile %}_mobile{% endif %} "
+      <span id="nav-basket-count{% if mobile %}_mobile{% endif %}"
             class="basket badge {% if not basket.total_items %}hidden{% endif %}">
         {{ basket.total_items|default:0 }}
       </span>
