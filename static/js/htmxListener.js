@@ -13,7 +13,10 @@ import {
 	showToast,
 	showPaymentToast,
 	showCustomerDetailsToast,
-	listenForClose
+	listenForClose,
+	showHireFormToast,
+	destroyToast,
+	resetToast
 } from './toast.js';
 
 /**
@@ -64,6 +67,27 @@ const handleStatus = (statusCode, toastUI, successful = true) => {
 };
 
 /**
+ *
+ * @param {string} idString
+ */
+const checkShouldTriggerBasketRefresh = idString => {
+	const REFRESH_STRINGS = ['clear-basket', 'remove-basket'];
+	for (const string of REFRESH_STRINGS) {
+		if (idString.startsWith(string)) {
+			triggerBasketRefresh();
+		}
+	}
+};
+
+const triggerBasketRefresh = () => {
+	// @ts-ignore
+	if (window.htmx) {
+		// @ts-ignore
+		window.htmx.trigger(document.body, 'basketUpdated');
+	}
+};
+
+/**
  * Handles multi-stage checkout flow within the toast
  *
  * @param {Event} evt
@@ -71,6 +95,8 @@ const handleStatus = (statusCode, toastUI, successful = true) => {
 async function checkoutListener(evt) {
 	const event = /** @type {AfterRequestEvent} */ (evt);
 	const { detail } = event;
+	console.log('afterRequest fired:', detail.elt.id, detail.elt);
+
 	const toastUI = getToastElements();
 
 	if (!toastUI) {
@@ -81,14 +107,41 @@ async function checkoutListener(evt) {
 	// Status check
 	const responseCode = detail.xhr.status;
 
+	// console.log(detail.xhr);
+
 	const statusHandled = handleStatus(responseCode, toastUI, detail.successful);
 	if (statusHandled) {
+		return;
+	}
+
+	// Always check for basket refresh — covers hire-form-toast, remove-basket-*, clear-basket
+	if (detail.elt.id) {
+		checkShouldTriggerBasketRefresh(detail.elt.id);
+	}
+
+	if (detail.elt.id && detail.elt.id.startsWith('hire-form-trigger-')) {
+		destroyToast();
+		resetToast();
+		toastUI.bodyElement.innerHTML = detail.xhr.responseText;
+		// @ts-ignore
+		if (window.htmx) {
+			// @ts-ignore
+			window.htmx.process(toastUI.bodyElement);
+		}
+		showHireFormToast(toastUI);
+		return;
+	}
+
+	if (detail.elt.id === 'toastBody') {
+		triggerBasketRefresh();
 		return;
 	}
 
 	// Stage 1
 	// Contact form injection
 	if (detail.elt.id === 'open-checkout') {
+		destroyToast();
+		resetToast();
 		const checkoutBtn = /** @type {HTMLButtonElement} */ (detail.elt);
 
 		// Disable the checkout button
@@ -124,6 +177,8 @@ async function checkoutListener(evt) {
 	// Stage 2
 	// Stripe Handshake (from create-intent)
 	if (detail.elt.id && detail.elt.id.startsWith('create-intent')) {
+		destroyToast();
+		resetToast();
 		const submitBtn = /** @type {HTMLButtonElement} */ (
 			detail.elt.querySelector('button[type="submit"]')
 		);

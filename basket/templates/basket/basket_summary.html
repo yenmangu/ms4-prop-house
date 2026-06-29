@@ -5,7 +5,8 @@
 {% endblock extra_css %}
 {% block content %}
   <div class="container manifest-wrapper manifest-wrapper--basket"
-       data-basket-update-url="{% url 'basket:update' %}">
+       data-basket-update-url="{% url 'basket:update' %}"
+       data-basket-refresh="true">
     <h1>Your Basket</h1>
     <div id="summary-content">{% include "basket/partials/_basket_summary_content.html" %}</div>
   </div>

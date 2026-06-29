@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="container my-5 px-0 text-center" data-zone="basket-refresh">
+  <div class="container my-5 px-0 text-center" data-basket-refresh="true">
     <div class="industrial-card p-5 border shadow-sm">
       {% if payment_intent.status == 'succeeded' %}
         <h3 class="text-success mb-4">TRANSACTION&#8203;_COMPLETE</h3>

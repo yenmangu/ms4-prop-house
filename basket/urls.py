@@ -20,4 +20,9 @@ urlpatterns = [
         views.NavBasketPartialUpdate.as_view(),
         name="nav_basket",
     ),
+    path(
+        "hire-form-toast/<int:product_id>/",
+        views.HireFormToastView.as_view(),
+        name="hire_form_toast",
+    ),
 ]

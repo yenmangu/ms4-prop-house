@@ -26,11 +26,10 @@
           {% for cat in product.categories.all %}<span class="pill">{{ cat.name }}</span>{% endfor %}
         </div>
         <div class="product-actions">
-          <button hx-post="{% url 'basket:update' %}"
-                  hx-trigger="click"
-                  hx-ext="json-enc"
-                  hx-vals='{"product_id": "{{ product.id }}","action":"add"}'
-                  hx-swap="none"
+          <button id="hire-form-trigger-{{ product.id }}"
+                  hx-get="{% url 'basket:hire_form_toast' product_id=product.id %}"
+                  hx-target="#toastBody"
+                  hx-swap="innerHTML"
                   {% if product.available_stock <= 0 %}disabled{% endif %}
                   class="btn btn--industrial btn--product-list add-to-basket"
                   data-product-id="{{ product.id }}">

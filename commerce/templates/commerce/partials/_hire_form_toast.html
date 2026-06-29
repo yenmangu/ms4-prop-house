@@ -1,0 +1,16 @@
+<form id="hire-form-toast"
+      hx-post="{% url 'basket:update' %}"
+      hx-ext="json-enc"
+      hx-swap="none">
+  <input type="hidden" name="product_id" value="{{ product_id }}">
+  <input type="hidden" name="action" value="add">
+  <div class="form-fields form-fields--industrial">
+    {% include "commerce/partials/_hire_form_fields.html" with form=hire_form %}
+  </div>
+  <div class="form-actions mt-2 d-flex gap-2">
+    <button type="submit" class="btn btn--industrial btn--sidebar">CONFIRM_HIRE</button>
+    <button type="button"
+            class="btn btn--ghost btn--sidebar"
+            data-bs-dismiss="toast">CANCEL</button>
+  </div>
+</form>

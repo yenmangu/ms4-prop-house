@@ -17,6 +17,8 @@ from django.conf import settings
 from django.db import models
 from typing import TYPE_CHECKING, Optional, Union
 
+from warehouse.services import get_stock_availability
+
 if TYPE_CHECKING:
     from django.db.models.manager import RelatedManager
 
@@ -197,6 +199,17 @@ class Basket(models.Model):
             self.save()
 
         product = Product.objects.get(id=product_id)
+
+        # Stock Gate
+        stock = get_stock_availability(product)
+        existing_line = self.lines.filter(product=product).first()
+        current_qty = existing_line.quantity if existing_line else 0
+        net_available = stock["available"] - current_qty
+
+        if net_available <= 0:
+            raise ValueError(
+                f"Insufficient stock for '{product.name}'"
+            )
 
         defaults = {
             "price_at_addition": product.price,

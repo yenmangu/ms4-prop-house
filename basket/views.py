@@ -1,3 +1,6 @@
+from math import prod
+
+from commerce.forms import PropHireForm
 from django.contrib import messages
 from django.shortcuts import render
 from django.views import View
@@ -10,6 +13,7 @@ from django.template.loader import render_to_string
 import json
 from catalogue.models import Product
 from django.views.generic import TemplateView
+from warehouse.services import get_stock_availability
 from .mixins import BasketMixin
 from .models import Line
 from .utils import get_basket_state
@@ -120,12 +124,28 @@ class BasketUpdateView(BasketMixin, View):
                             "message": message,
                             "status": status,
                         },
+                        "basketUpdated": True,
                     }
                 )
 
                 return response
 
             # Fallback for non-HTMX
+            return redirect("basket:summary")
+
+        except ValueError as e:
+            if request.headers.get("HX-Request"):
+                response = HttpResponse(status=200)
+                response["HX-Trigger"] = json.dumps(
+                    {
+                        "showToast": {
+                            "message": str(e),
+                            "status": "danger",
+                        },
+                        "basketUpdated": True,
+                    }
+                )
+                return response
             return redirect("basket:summary")
 
         except Exception as e:
@@ -149,4 +169,41 @@ class NavBasketPartialUpdate(BasketMixin, TemplateView):
 
         context = super().get_context_data(**kwargs)
         context["basket"] = self.get_basket()
+        context["mobile"] = self.request.GET.get("mobile") == "1"
         return context
+
+
+class HireFormToastView(BasketMixin, View):
+    """
+    Serves the hire details form partial into the toast when ADD_TO_CART is clicked from product grid.
+    """
+
+    def get(
+        self, request: HttpRequest, product_id: int, *args, **kwargs
+    ):
+        product = get_object_or_404(Product, id=product_id)
+        basket = self.get_basket()
+        basket_line = basket.lines.filter(product=product).first()
+
+        form = PropHireForm(
+            initial={
+                "quantity": (
+                    basket_line.quantity if basket_line else 1
+                ),
+                "start_date": (
+                    basket_line.start_date if basket_line else None
+                ),
+                "end_date": (
+                    basket_line.end_date if basket_line else None
+                ),
+            }
+        )
+
+        return render(
+            request,
+            "commerce/partials/_hire_form_toast.html",
+            {
+                "hire_form": form,
+                "product_id": product_id,
+            },
+        )

@@ -1,7 +1,7 @@
 {% load static %}
 <div id="nav-basket-wrapper{% if mobile %}_mobile{% endif %}"
      class="nav-basket-wrapper"
-     hx-get="{% url 'basket:nav_basket' %}"
+     hx-get="{% url 'basket:nav_basket' %}{% if mobile %}?mobile=1{% endif %}"
      hx-trigger="basketUpdated from:body"
      hx-swap="outerHTML"
      {% if oob %}hx-swap-oob="outerHTML"{% endif %}>

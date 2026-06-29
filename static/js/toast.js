@@ -135,3 +135,51 @@ export const listenForClose = toastEl => {
 		);
 	});
 };
+
+/**
+ *
+ * @param {ToastElements} toastElements
+ */
+export const showHireFormToast = toastElements => {
+	const { toastElement, titleElement } = toastElements;
+
+	toastElement.classList.add('toast--checkout');
+	titleElement.innerText = 'HIRE_DETAILS';
+	titleElement.style.color = 'var(--clr-primary)';
+
+	const toast = new bootstrap.Toast(toastElement, { autohide: false });
+	if (toast) {
+		toast.show();
+	}
+};
+
+/**
+ *
+ * @param {string} [toastId='liveToast']
+ */
+export const destroyToast = (toastId = 'liveToast') => {
+	const toastEl = document.getElementById(toastId);
+	if (toastEl) {
+		const toastInstance = bootstrap.Toast.getInstance(toastEl);
+		if (toastInstance) {
+			toastInstance.hide();
+			toastInstance.dispose();
+		}
+	}
+};
+
+export const resetToast = () => {
+	const toastEl = document.getElementById('liveToast');
+	if (!toastEl) return;
+	toastEl.className = 'toast industrial-toast';
+	const titleEl = document.getElementById('toastTitle');
+	const bodyEl = document.getElementById('toastBody');
+	if (titleEl) {
+		titleEl.className = 'me-auto';
+		titleEl.style.color = '';
+		titleEl.innerText = 'Notification';
+	}
+	if (bodyEl) {
+		bodyEl.innerHTML = '';
+	}
+};
