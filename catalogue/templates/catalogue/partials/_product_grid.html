@@ -19,9 +19,9 @@
           <span class="id-tag">#{{ product.id|stringformat:"04d" }}</span>
           <span class="price-tag">{{ product.price }} / DAY</span>
         </div>
-        <h3 class="product-name">
+        <h2 class="product-name h3">
           <a href="{% url 'catalogue:product_detail' slug=product.slug %}">{{ product.name|upper }}</a>
-        </h3>
+        </h2>
         <div class="category-pills">
           {% for cat in product.categories.all %}<span class="pill">{{ cat.name }}</span>{% endfor %}
         </div>
