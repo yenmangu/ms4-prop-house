@@ -166,13 +166,17 @@ Feedback is provided immediately after basket and checkout actions through toast
 
 #### Colour Scheme
 
-| Purpose | Colour | Usage                         |
-| ------- | ------ | ----------------------------- |
-| Primary |        | Headings, navigation          |
-| Accent  |        | Primary actions, buttons      |
-| Success |        | Order confirmation messages   |
-| Warning |        | Important notices             |
-| Error   |        | Validation and payment errors |
+| Purpose | Colour    | Usage                                |
+| ------- | --------- | ------------------------------------ |
+| Primary | `#121212` | Headings, navigation                 |
+| Surface | `#1E1E1E` | Card backgrounds, secondary surfaces |
+| Accent  | `#FF6B00` | Primary actions, buttons             |
+| Text    | `#F2F2F2` | Body text, labels                    |
+| Success | `#388E3C` | Order confirmation messages          |
+| Warning | `#FFB300` | Important notices                    |
+| Error   | `#DC3545` | Validation and payment errors        |
+
+![Colour Scheme](documentation/ux/prop_house_colours.png)
 
 #### Typography
 
@@ -849,13 +853,13 @@ Conventional Commits format used for clear and structured history.
 
 # Testing
 
-See **[TESTING.md](TESTING.md)** for full testing documentation.
+See **[TESTING.md](./TESTING.md)** for full testing documentation.
 
 ---
 
 # Bugs
 
-See **[BUG_REPORT.md](documentation/bugs/BUG_REPORT.md)** for a breakdown of bugs encountered during development and testing
+See **[BUG_REPORT.md](./documentation/bugs/BUG_REPORT.md)** for a breakdown of bugs encountered during development and testing
 
 # Deployment
 
@@ -866,7 +870,7 @@ See **[BUG_REPORT.md](documentation/bugs/BUG_REPORT.md)** for a breakdown of bug
 
 ---
 
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for full deployment instructions.
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for full deployment instructions.
 
 ---
 
