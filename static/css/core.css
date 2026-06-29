@@ -85,11 +85,19 @@ a.upgrade-link {
 	color: var(--clr-accent) !important;
 }
 
+legend {
+	font-size: 0.8rem;
+}
+
 .field-group {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
 	margin: 1rem 0;
+}
+
+.input-group {
+	margin-bottom: 1rem;
 }
 
 .count {
