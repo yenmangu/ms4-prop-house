@@ -47,6 +47,10 @@ header#header {
 	color: var(--clr-secondary);
 }
 
+.module a.section:link,
+.module a.section:visited {
+	color: var(--clr-accent);
+}
 #branding h1 {
 	color: var(--clr-accent) !important;
 	font-weight: 900;
