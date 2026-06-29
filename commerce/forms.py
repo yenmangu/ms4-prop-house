@@ -58,5 +58,7 @@ class PropHireForm(forms.Form):
         end = cleaned_data.get("end_date")
 
         if start and end and end <= start:
-            raise forms.ValidationError("The return date must be after the start date.")
+            raise forms.ValidationError(
+                "The return date must be after the start date."
+            )
         return cleaned_data

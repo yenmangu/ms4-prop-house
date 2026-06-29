@@ -59,8 +59,19 @@ class Command(BaseCommand):
         text = re.sub(r"[^a-zA-Z\s]", "", text)
 
         # Remove 'noisy' terms that ruin image search
-        noise_words = {"v1", "v2", "pro", "edition", "mnodel", "series"}
-        words = [w for w in text.split() if w.lower() not in noise_words and len(w) > 2]
+        noise_words = {
+            "v1",
+            "v2",
+            "pro",
+            "edition",
+            "mnodel",
+            "series",
+        }
+        words = [
+            w
+            for w in text.split()
+            if w.lower() not in noise_words and len(w) > 2
+        ]
 
         # Join it back together and URL encode it
         clean_name = " ".join(words)
@@ -87,7 +98,10 @@ class Command(BaseCommand):
             )
 
             is_ok = response.status_code == 200
-            is_image = "image" in response.headers.get("Content-Type", "").lower()
+            is_image = (
+                "image"
+                in response.headers.get("Content-Type", "").lower()
+            )
 
             return is_ok and is_image
         except Exception:
@@ -155,7 +169,9 @@ class Command(BaseCommand):
 
         pbar = tqdm(products, desc="Seeding products", unit="product")
 
-        self.stdout.write(f"Found {products.count()} items to process.")
+        self.stdout.write(
+            f"Found {products.count()} items to process."
+        )
 
         # The loop
         for product in pbar:
@@ -169,7 +185,9 @@ class Command(BaseCommand):
 
                     # Mode A - 'Lazy' automated search
                     clean_name = self.clean_search_term(product.name)
-                    search_attempts = self.optimise_search_term(clean_name=clean_name)
+                    search_attempts = self.optimise_search_term(
+                        clean_name=clean_name
+                    )
 
                     success = False
 
@@ -214,7 +232,9 @@ class Command(BaseCommand):
 
                 if success and source:
                     pbar.set_postfix({"item": product.name[:15]})
-                    clean_filename = f"{slugify(product.name)}-{product.id}"
+                    clean_filename = (
+                        f"{slugify(product.name)}-{product.id}"
+                    )
 
                     # 1. Prepare upload
                     upload_data = cloudinary.uploader.upload(
@@ -234,6 +254,10 @@ class Command(BaseCommand):
                     product.save()
 
             except Exception as e:
-                pbar.write(self.style.ERROR(f"Failed to upload {product.name}: {e}"))
+                pbar.write(
+                    self.style.ERROR(
+                        f"Failed to upload {product.name}: {e}"
+                    )
+                )
 
         self.stdout.write(self.style.SUCCESS("Seeding complete!"))

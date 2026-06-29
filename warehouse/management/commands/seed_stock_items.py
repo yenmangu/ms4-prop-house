@@ -47,11 +47,15 @@ class Command(BaseCommand):
 
             if needed <= 0:
                 self.stdout.write(
-                    success_style(f"Skipping {product.name}: Stock already satisfied")
+                    success_style(
+                        f"Skipping {product.name}: Stock already satisfied"
+                    )
                 )
                 continue
             self.stdout.write(
-                success_style(f"Seeding {needed} units for {product.name}...")
+                success_style(
+                    f"Seeding {needed} units for {product.name}..."
+                )
             )
 
             new_items: List[StockItem] = []
@@ -77,5 +81,7 @@ class Command(BaseCommand):
                 )
             )
         self.stdout.write(
-            success_style(f"Task complete. Total StockItems created: {total_created}")
+            success_style(
+                f"Task complete. Total StockItems created: {total_created}"
+            )
         )

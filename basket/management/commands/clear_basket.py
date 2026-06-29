@@ -18,4 +18,6 @@ class Command(BaseCommand):
         Line.objects.all().delete()
         Basket.objects.all().delete()
 
-        self.stdout.write(self.style.SUCCESS("Successfully cleared manifest data."))
+        self.stdout.write(
+            self.style.SUCCESS("Successfully cleared manifest data.")
+        )
