@@ -95,7 +95,6 @@ const triggerBasketRefresh = () => {
 async function checkoutListener(evt) {
 	const event = /** @type {AfterRequestEvent} */ (evt);
 	const { detail } = event;
-	console.log('afterRequest fired:', detail.elt.id, detail.elt);
 
 	const toastUI = getToastElements();
 
@@ -106,8 +105,6 @@ async function checkoutListener(evt) {
 
 	// Status check
 	const responseCode = detail.xhr.status;
-
-	// console.log(detail.xhr);
 
 	const statusHandled = handleStatus(responseCode, toastUI, detail.successful);
 	if (statusHandled) {

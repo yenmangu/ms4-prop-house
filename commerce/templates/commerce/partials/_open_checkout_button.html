@@ -1,4 +1,3 @@
-<script src="https://js.stripe.com/dahlia/stripe.js"></script>
 <div class="col my-4">
   <button hx-get="{% url 'commerce:checkout_details' %}"
           hx-trigger="click"
@@ -6,3 +5,10 @@
           id="open-checkout"
           class="btn--industrial btn--sidebar">Checkout</button>
 </div>
+<script>
+  if (!window.Stripe) {
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/dahlia/stripe.js';
+    document.head.appendChild(script);
+  }
+</script>
