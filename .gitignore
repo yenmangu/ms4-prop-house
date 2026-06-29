@@ -19,12 +19,8 @@ node_modules/
 cloudinary_python.txt
 
 #S Static patterns
-/static/js/tests/*.js
-/staticfiles
-staticfiles
-staticfiles/css/
-staticfiles/js/
-staticfiles/
+staticfiles/*
+!staticfiles/staticfiles.json
 
 # Dot File & DS Patterns
 **/._*
@@ -60,6 +56,7 @@ documentation/database/prop-house_with-stripe.drawio.xml
 # w3c-nu-validator
 urls.txt
 report.txt
+report_*.txt
 
 # Misc
 *.dbml

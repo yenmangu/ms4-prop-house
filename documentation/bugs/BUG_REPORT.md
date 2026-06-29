@@ -1,6 +1,81 @@
 > [!NOTE]
 > Return back to the [README.md](/README.md) file.
 
+## Incident Report: Basket Session Persistence
+
+**Date:** 2026-05-01
+**Project Phase:** Basket & Session Development
+**Status:** Resolved
+
+### 1. The Problem
+
+During automated testing, a basket session persistence test revealed that guest baskets could be created before a session key existed, preventing reliable basket recovery on subsequent requests.
+
+### 2. Root Cause Analysis
+
+The basket lookup and creation logic was executing before the Django session had been initialised, meaning no session key was available to associate with the basket. This caused the basket to be orphaned and unrecoverable for the remainder of the session.
+
+### 3. Resolution Steps
+
+The fix ensured that a session was explicitly created and a session key generated before any basket lookup or creation was attempted. This guaranteed that the basket was always associated with a valid, persistent session key.
+
+### 4. Impact
+
+Resolved unreliable basket recovery for guest users and provided confidence that session-basket association behaves correctly across requests.
+
+---
+
+## Incident Report: Address Model Import in Service Layer
+
+**Date:** 2026-05-15
+**Project Phase:** Saved Address Feature Development
+**Status:** Resolved
+
+### 1. The Problem
+
+During implementation of the saved-address feature, address service tests exposed a runtime error where the `Address` model was not imported correctly within the service layer, causing failures when attempting to validate or persist address data.
+
+### 2. Root Cause Analysis
+
+The `Address` model import was missing or incorrectly referenced within the address service module. The error was not immediately visible from the view layer but surfaced as soon as the service was exercised directly through unit tests.
+
+### 3. Resolution Steps
+
+Tests were written to validate:
+
+- Valid address data passes form validation.
+- Invalid address data returns validation errors.
+- Default addresses can be saved successfully.
+- Existing default addresses are replaced correctly.
+
+The failing test identified the defect immediately. The import was corrected in the service layer before integration into the checkout workflow.
+
+Example test execution:
+
+```bash
+python manage.py test accounts.tests.test_address_service
+```
+
+Result:
+
+```text
+Found 3 test(s).
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.341s
+
+OK
+Destroying test database for alias 'default'...
+```
+
+### 4. Impact
+
+The failing test identified the defect before it could propagate into the checkout workflow. This reinforced the value of service-layer testing as an early warning system for integration issues.
+
+---
+
 ## Incident Report: Database Migration & Schema Desync
 
 **Date:** 2026-05-11

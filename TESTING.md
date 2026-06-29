@@ -9,6 +9,36 @@ Testing has been carried out throughout development using a combination of **aut
 
 ## Code Validation
 
+### HTML
+
+> [!NOTE]
+> HTML validation was carried out using a [**custom Python CLI tool**](https://github.com/yenmangu/w3c-command-line-validator) that consumes the **W3C Nu HTML Checker HTTP API**.
+>
+> Validation was performed **against deployed URLs**, ensuring that the results reflect the fully rendered production state of the application rather than local templates.
+>
+> The tool was run against all major routes in the application, including authenticated pages and querystring-based routes, with one exception: `/accounts/dashboard` cannot be automatically validated as it requires authorisation. A separate evidence for this is linked in the table.
+>
+> **Full validation output is provided as evidence** in the following report:
+>
+> [Validation Report](documentation/validation/w3c_validation_report_2026-06-29.txt)
+
+| Page / Template  | URL (Deployed)                                                     | Errors | Evidence                                                                        |
+| ---------------- | ------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------- |
+| Home / Catalogue | https://prop-house-f6d4754d8ee5.herokuapp.com/                     | 0\*    | See full report                                                                 |
+| Basket           | https://prop-house-f6d4754d8ee5.herokuapp.com/basket/              | 0\*    | See full report                                                                 |
+| Membership       | https://prop-house-f6d4754d8ee5.herokuapp.com/accounts/membership/ | 0\*    | See full report                                                                 |
+| Dashboard        | https://prop-house-f6d4754d8ee5.herokuapp.com/accounts/dashboard/  | 0\*    | [dashboard_validation.pdf](./documentation/validation/dashboard_validation.pdf) |
+| Signup           | https://prop-house-f6d4754d8ee5.herokuapp.com/accounts/signup/     | 0\*    | See full report                                                                 |
+
+\*All reported errors are HTMX attributes — see note below.
+
+> [!NOTE]
+> HTMX attributes such as `hx-get`, `hx-post`, `hx-target`, and `hx-swap` will
+> appear as W3C validation errors since they are non-standard HTML attributes.
+> This is expected — HTMX is valid in practice but not in the HTML5 spec. To
+> suppress these errors, HTMX supports `data-*` equivalents (`data-hx-get` etc.)
+> which are spec-compliant, though most projects simply accept the warnings.
+
 ### CSS
 
 All custom CSS files were validated using the **W3C Jigsaw CSS Validator**.
@@ -114,27 +144,27 @@ The application was tested across multiple viewport sizes using browser develope
 | Product Detail   | ![Mobile Screenshot](documentation/responsiveness/mobile/detail.png)     | ![Tablet Screenshot](documentation/responsiveness/tablet/detail.png)     | ![Desktop Screnshot](documentation/responsiveness/desktop/detail.png)     |
 | Basket           | ![Mobile Screenshot](documentation/responsiveness/mobile/basket.png)     | ![Tablet Screenshot](documentation/responsiveness/tablet/basket.png)     | ![Desktop Screnshot](documentation/responsiveness/desktop/basket.png)     |
 | Checkout         | ![Mobile Screenshot](documentation/responsiveness/mobile/checkout.png)   | ![Tablet Screenshot](documentation/responsiveness/tablet/checkout.png)   | ![Desktop Screnshot](documentation/responsiveness/desktop/checkout.png)   |
-| Dashbaord        | ![Mobile Screenshot](documentation/responsiveness/mobile/dashboard.png)  | ![Tablet Screenshot](documentation/responsiveness/tablet/dashboard.png)  | ![Desktop Screnshot](documentation/responsiveness/desktop/dashboard.png)  |
+| Dashboard        | ![Mobile Screenshot](documentation/responsiveness/mobile/dashboard.png)  | ![Tablet Screenshot](documentation/responsiveness/tablet/dashboard.png)  | ![Desktop Screnshot](documentation/responsiveness/desktop/dashboard.png)  |
 | Membership       | ![Mobile Screenshot](documentation/responsiveness/mobile/membership.png) | ![Tablet Screenshot](documentation/responsiveness/tablet/membership.png) | ![Desktop Screnshot](documentation/responsiveness/desktop/membership.png) |
 
 ### Browser Compatibility Breakdown
 
 Each core feature was manually tested across multiple browsers and devices to ensure consistent behaviour and layout.
 
-| Feature                       | Chrome                                                                | Opera                                                               | Safari                                                                | iOS (Safari)                                         |
-| ----------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------- |
-| Catalogue                     | ![Chrome Report](documentation/browser/chrome/home.png)               | ![Opera Report](documentation/browser/opera/home.png)               | ![Safari Report](documentation/browser/safari/home.png)               | ![iOS Report](documentation/browser/chrome/home.png) |
-| Catalogue - Search            | ![Chrome Report](documentation/browser/chrome/search.png)             | ![Opera Report](documentation/browser/opera/search.png)             | ![Safari Report](documentation/browser/safari/search.png)             | ![iOS Report](documentation/browser/chrome/home.png) |
-| Product Detail                | ![Chrome Report](documentation/browser/chrome/detail.png)             | ![Opera Report](documentation/browser/opera/detail.png)             | ![Safari Report](documentation/browser/safari/detail.png)             | ![iOS Report](documentation/browser/chrome/home.png) |
-| Product Detail - Availability | ![Chrome Report](documentation/browser/chrome/check-availability.png) | ![Opera Report](documentation/browser/opera/check-availability.png) | ![Safari Report](documentation/browser/safari/check-availability.png) | ![iOS Report](documentation/browser/chrome/home.png) |
-| Basket-add                    | ![Chrome Report](documentation/browser/chrome/add-basket.png)         | ![Opera Report](documentation/browser/opera/add-basket.png)         | ![Safari Report](documentation/browser/safari/add-basket.png)         | ![iOS Report](documentation/browser/chrome/home.png) |
-| Basket                        | ![Chrome Report](documentation/browser/chrome/basket.png)             | ![Opera Report](documentation/browser/opera/basket.png)             | ![Safari Report](documentation/browser/safari/basket.png)             | ![iOS Report](documentation/browser/chrome/home.png) |
-| Checkout flow - contact info  | ![Chrome Report](documentation/browser/chrome/checkout-contact.png)   | ![Opera Report](documentation/browser/opera/checkout-contact.png)   | ![Safari Report](documentation/browser/safari/checkout-contact.png)   | ![iOS Report](documentation/browser/chrome/home.png) |
-| Checkout flow - Stripe        | ![Chrome Report](documentation/browser/chrome/checkout-stripe.png)    | ![Opera Report](documentation/browser/opera/checkout-stripe.png)    | ![Safari Report](documentation/browser/safari/checkout-stripe.png)    | ![iOS Report](documentation/browser/chrome/home.png) |
-| Checkout Complete             | ![Chrome Report](documentation/browser/chrome/checkout-success.png)   | ![Opera Report](documentation/browser/opera/checkout-success.png)   | ![Safari Report](documentation/browser/safari/checkout-success.png)   | ![iOS Report](documentation/browser/chrome/home.png) |
-| Dashboard                     | ![Chrome Report](documentation/browser/chrome/dashboard.png)          | ![Opera Report](documentation/browser/opera/dashboard.png)          | ![Safari Report](documentation/browser/safari/dashboard.png)          | ![iOS Report](documentation/browser/chrome/home.png) |
-| Dashboard - Search            | ![Chrome Report](documentation/browser/chrome/dashboard-search.png)   | ![Opera Report](documentation/browser/opera/dashboard-search.png)   | ![Safari Report](documentation/browser/safari/dashboard-search.png)   | ![iOS Report](documentation/browser/chrome/home.png) |
-| PDF                           | ![Chrome Report](documentation/browser/chrome/pdf.png)                | ![Opera Report](documentation/browser/opera/pdf.png)                | ![Safari Report](documentation/browser/safari/pdf.png)                | ![iOS Report](documentation/browser/chrome/home.png) |
+| Feature                       | Chrome                                                                | Opera                                                               | Safari                                                                | iOS (Safari)                                                    |
+| ----------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Catalogue                     | ![Chrome Report](documentation/browser/chrome/home.png)               | ![Opera Report](documentation/browser/opera/home.png)               | ![Safari Report](documentation/browser/safari/home.png)               | ![iOS Report](documentation/browser/iOS/home.png)               |
+| Catalogue - Search            | ![Chrome Report](documentation/browser/chrome/search.png)             | ![Opera Report](documentation/browser/opera/search.png)             | ![Safari Report](documentation/browser/safari/search.png)             | ![iOS Report](documentation/browser/ios/search.png)             |
+| Product Detail                | ![Chrome Report](documentation/browser/chrome/detail.png)             | ![Opera Report](documentation/browser/opera/detail.png)             | ![Safari Report](documentation/browser/safari/detail.png)             | ![iOS Report](documentation/browser/ios/detail.png)             |
+| Product Detail - Availability | ![Chrome Report](documentation/browser/chrome/check-availability.png) | ![Opera Report](documentation/browser/opera/check-availability.png) | ![Safari Report](documentation/browser/safari/check-availability.png) | ![iOS Report](documentation/browser/ios/check-availability.png) |
+| Basket-add                    | ![Chrome Report](documentation/browser/chrome/add-basket.png)         | ![Opera Report](documentation/browser/opera/add-basket.png)         | ![Safari Report](documentation/browser/safari/add-basket.png)         | ![iOS Report](documentation/browser/ios/add-basket.png)         |
+| Basket                        | ![Chrome Report](documentation/browser/chrome/basket.png)             | ![Opera Report](documentation/browser/opera/basket.png)             | ![Safari Report](documentation/browser/safari/basket.png)             | ![iOS Report](documentation/browser/ios/basket.png)             |
+| Checkout flow - contact info  | ![Chrome Report](documentation/browser/chrome/checkout-contact.png)   | ![Opera Report](documentation/browser/opera/checkout-contact.png)   | ![Safari Report](documentation/browser/safari/checkout-contact.png)   | ![iOS Report](documentation/browser/ios/checkout-contact.png)   |
+| Checkout flow - Stripe        | ![Chrome Report](documentation/browser/chrome/checkout-stripe.png)    | ![Opera Report](documentation/browser/opera/checkout-stripe.png)    | ![Safari Report](documentation/browser/safari/checkout-stripe.png)    | ![iOS Report](documentation/browser/ios/checkout-stripe.png)    |
+| Checkout Complete             | ![Chrome Report](documentation/browser/chrome/checkout-success.png)   | ![Opera Report](documentation/browser/opera/checkout-success.png)   | ![Safari Report](documentation/browser/safari/checkout-success.png)   | ![iOS Report](documentation/browser/ios/checkout-success.png)   |
+| Dashboard                     | ![Chrome Report](documentation/browser/chrome/dashboard.png)          | ![Opera Report](documentation/browser/opera/dashboard.png)          | ![Safari Report](documentation/browser/safari/dashboard.png)          | ![iOS Report](documentation/browser/ios/dashboard.png)          |
+| Dashboard - Search            | ![Chrome Report](documentation/browser/chrome/dashboard-search.png)   | ![Opera Report](documentation/browser/opera/dashboard-search.png)   | ![Safari Report](documentation/browser/safari/dashboard-search.png)   | ![iOS Report](documentation/browser/ios/dashboard-search.png)   |
+| PDF                           | ![Chrome Report](documentation/browser/chrome/pdf.png)                | ![Opera Report](documentation/browser/opera/pdf.png)                | ![Safari Report](documentation/browser/safari/pdf.png)                | ![iOS Report](documentation/browser/ios/pdf.png)                |
 
 ---
 
@@ -150,13 +180,13 @@ Screenshots of the audit results are stored in `documentation/lighthouse/reports
 | -------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- |
 | Home/Catalogue | [Mobile Report](documentation/lighthouse/mobile/home.png)       | [Desktop Report](documentation/lighthouse/desktop/home.png)       |
 | Product Detail | [Mobile Report](documentation/lighthouse/mobile/detail.png)     | [Desktop Report](documentation/lighthouse/desktop/detail.png)     |
-| Basket         | [Mobile Report](documentation/lighthouse/mobile/basket.png)     | [Desktop Report](documentation/lighthouse/desktop/home.png)       |
+| Basket         | [Mobile Report](documentation/lighthouse/mobile/basket.png)     | [Desktop Report](documentation/lighthouse/desktop/basket.png)     |
 | Membership     | [Mobile Report](documentation/lighthouse/mobile/membership.png) | [Desktop Report](documentation/lighthouse/desktop/membership.png) |
 | Dashboard      | [Mobile Report](documentation/lighthouse/mobile/dashboard.png)  | [Desktop Report](documentation/lighthouse/desktop/dashboard.png)  |
 
 > [!NOTE]
-> Its important to note that the lower score on mobile is due to loading the Stripe.JS script.
-> This is completely unnavoidable and efforts have been taken to ensure this script is loaded _only_ on the necessaery pages.
+> It's important to note that the lower score on mobile is due to loading the Stripe.JS script.
+> This is completely unavoidable and efforts have been taken to ensure this script is loaded _only_ on the necessary pages.
 
 ---
 
@@ -207,5 +237,15 @@ behave correctly before integration into the wider checkout workflow._
 
 ### Large Image Serving
 
-During validation and Lighthouse testing, it became apparent that larger images than were required were being served from Cloudinary.
+During Lighthouse testing, it became apparent that Cloudinary was serving images at a larger resolution than required for the viewport being rendered, resulting in unnecessary page weight on mobile devices.
+
 ![Oversized Image Delivery](documentation/evidence/oversized_image_delivery.png)
+
+The fix was implemented in `catalogue/templates/_detail_image.html` by adding a `srcset` attribute with an additional `420w` breakpoint and a corresponding `sizes` rule of `(max-width: 480px) 100vw`. This instructs the browser to request the appropriately-sized image variant from Cloudinary based on the actual viewport width, rather than always fetching the full-size asset.
+
+This reduced mobile image payload by approximately 24KB and contributed to the improved Lighthouse performance score on mobile.
+
+---
+
+> [!TIP]
+> Full incident reports for all bugs above, including root cause analysis and commit references, are documented in [BUG_REPORT.md](documentation/bugs/BUG_REPORT.md).

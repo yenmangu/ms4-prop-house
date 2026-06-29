@@ -1,0 +1,1043 @@
+================================================================================
+https://prop-house-f6d4754d8ee5.herokuapp.com/
+================================================================================
+Errors: 77 | Infos: 8 | Non-doc: 0
+
+- ERROR (lines 77-82, columns 1-6): Attribute “hx-get” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+
+- ERROR (lines 77-82, columns 1-6): Attribute “hx-trigger” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+
+- ERROR (lines 77-82, columns 1-6): Attribute “hx-swap” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+
+- ERROR (lines 145-150, columns 1-6): Attribute “hx-get” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 145-150, columns 1-6): Attribute “hx-trigger” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 145-150, columns 1-6): Attribute “hx-swap” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 217-223, columns 1-25): Attribute “hx-get” not allowed on element “form” at this point.
+  Markup Extract:
+    gue">
+    <form id="sidebar-form-desktop"
+          method="get"
+          class="manifest-form"
+          hx-get="/"
+          hx-target="#manifest-results"
+          hx-trigger="keyup changed delay:300ms, change"
+          hx-push-url="true">
+      <di
+
+- ERROR (lines 217-223, columns 1-25): Attribute “hx-target” not allowed on element “form” at this point.
+  Markup Extract:
+    gue">
+    <form id="sidebar-form-desktop"
+          method="get"
+          class="manifest-form"
+          hx-get="/"
+          hx-target="#manifest-results"
+          hx-trigger="keyup changed delay:300ms, change"
+          hx-push-url="true">
+      <di
+
+- ERROR (lines 217-223, columns 1-25): Attribute “hx-trigger” not allowed on element “form” at this point.
+  Markup Extract:
+    gue">
+    <form id="sidebar-form-desktop"
+          method="get"
+          class="manifest-form"
+          hx-get="/"
+          hx-target="#manifest-results"
+          hx-trigger="keyup changed delay:300ms, change"
+          hx-push-url="true">
+      <di
+
+- ERROR (lines 217-223, columns 1-25): Attribute “hx-push-url” not allowed on element “form” at this point.
+  Markup Extract:
+    gue">
+    <form id="sidebar-form-desktop"
+          method="get"
+          class="manifest-form"
+          hx-get="/"
+          hx-target="#manifest-results"
+          hx-trigger="keyup changed delay:300ms, change"
+          hx-push-url="true">
+      <di
+
+- ERROR (lines 271-277, columns 1-25): Attribute “hx-get” not allowed on element “form” at this point.
+  Markup Extract:
+    >
+    <form id="sidebar-form-mobile"
+          method="get"
+          class="manifest-form"
+          hx-get="/"
+          hx-target="#manifest-results"
+          hx-trigger="keyup changed delay:300ms, change"
+          hx-push-url="true">
+      <di
+
+- ERROR (lines 271-277, columns 1-25): Attribute “hx-target” not allowed on element “form” at this point.
+  Markup Extract:
+    >
+    <form id="sidebar-form-mobile"
+          method="get"
+          class="manifest-form"
+          hx-get="/"
+          hx-target="#manifest-results"
+          hx-trigger="keyup changed delay:300ms, change"
+          hx-push-url="true">
+      <di
+
+- ERROR (lines 271-277, columns 1-25): Attribute “hx-trigger” not allowed on element “form” at this point.
+  Markup Extract:
+    >
+    <form id="sidebar-form-mobile"
+          method="get"
+          class="manifest-form"
+          hx-get="/"
+          hx-target="#manifest-results"
+          hx-trigger="keyup changed delay:300ms, change"
+          hx-push-url="true">
+      <di
+
+- ERROR (lines 271-277, columns 1-25): Attribute “hx-push-url” not allowed on element “form” at this point.
+  Markup Extract:
+    >
+    <form id="sidebar-form-mobile"
+          method="get"
+          class="manifest-form"
+          hx-get="/"
+          hx-target="#manifest-results"
+          hx-trigger="keyup changed delay:300ms, change"
+          hx-push-url="true">
+      <di
+
+- ERROR (lines 370-376, columns 11-38): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "1","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="1">ADD_TO
+
+- ERROR (lines 370-376, columns 11-38): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "1","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="1">ADD_TO
+
+- ERROR (lines 370-376, columns 11-38): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "1","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="1">ADD_TO
+
+- ERROR (lines 370-376, columns 11-38): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "1","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="1">ADD_TO
+
+- ERROR (lines 370-376, columns 11-38): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "1","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="1">ADD_TO
+
+- ERROR (lines 417-423, columns 11-38): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "2","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="2">ADD_TO
+
+- ERROR (lines 417-423, columns 11-38): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "2","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="2">ADD_TO
+
+- ERROR (lines 417-423, columns 11-38): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "2","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="2">ADD_TO
+
+- ERROR (lines 417-423, columns 11-38): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "2","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="2">ADD_TO
+
+- ERROR (lines 417-423, columns 11-38): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "2","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="2">ADD_TO
+
+- ERROR (lines 464-470, columns 11-38): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "3","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="3">ADD_TO
+
+- ERROR (lines 464-470, columns 11-38): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "3","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="3">ADD_TO
+
+- ERROR (lines 464-470, columns 11-38): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "3","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="3">ADD_TO
+
+- ERROR (lines 464-470, columns 11-38): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "3","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="3">ADD_TO
+
+- ERROR (lines 464-470, columns 11-38): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "3","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="3">ADD_TO
+
+- ERROR (lines 511-517, columns 11-38): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "4","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="4">ADD_TO
+
+- ERROR (lines 511-517, columns 11-38): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "4","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="4">ADD_TO
+
+- ERROR (lines 511-517, columns 11-38): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "4","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="4">ADD_TO
+
+- ERROR (lines 511-517, columns 11-38): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "4","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="4">ADD_TO
+
+- ERROR (lines 511-517, columns 11-38): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "4","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="4">ADD_TO
+
+- ERROR (lines 558-564, columns 11-38): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "5","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="5">ADD_TO
+
+- ERROR (lines 558-564, columns 11-38): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "5","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="5">ADD_TO
+
+- ERROR (lines 558-564, columns 11-38): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "5","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="5">ADD_TO
+
+- ERROR (lines 558-564, columns 11-38): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "5","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="5">ADD_TO
+
+- ERROR (lines 558-564, columns 11-38): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "5","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="5">ADD_TO
+
+- ERROR (lines 605-611, columns 11-38): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "6","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="6">ADD_TO
+
+- ERROR (lines 605-611, columns 11-38): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "6","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="6">ADD_TO
+
+- ERROR (lines 605-611, columns 11-38): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "6","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="6">ADD_TO
+
+- ERROR (lines 605-611, columns 11-38): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "6","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="6">ADD_TO
+
+- ERROR (lines 605-611, columns 11-38): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "6","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="6">ADD_TO
+
+- ERROR (lines 652-658, columns 11-38): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "7","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="7">ADD_TO
+
+- ERROR (lines 652-658, columns 11-38): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "7","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="7">ADD_TO
+
+- ERROR (lines 652-658, columns 11-38): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "7","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="7">ADD_TO
+
+- ERROR (lines 652-658, columns 11-38): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "7","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="7">ADD_TO
+
+- ERROR (lines 652-658, columns 11-38): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "7","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="7">ADD_TO
+
+- ERROR (lines 699-705, columns 11-38): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "8","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="8">ADD_TO
+
+- ERROR (lines 699-705, columns 11-38): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "8","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="8">ADD_TO
+
+- ERROR (lines 699-705, columns 11-38): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "8","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="8">ADD_TO
+
+- ERROR (lines 699-705, columns 11-38): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "8","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="8">ADD_TO
+
+- ERROR (lines 699-705, columns 11-38): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "8","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="8">ADD_TO
+
+- ERROR (lines 746-752, columns 11-38): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "9","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="9">ADD_TO
+
+- ERROR (lines 746-752, columns 11-38): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "9","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="9">ADD_TO
+
+- ERROR (lines 746-752, columns 11-38): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "9","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="9">ADD_TO
+
+- ERROR (lines 746-752, columns 11-38): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "9","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="9">ADD_TO
+
+- ERROR (lines 746-752, columns 11-38): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "9","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="9">ADD_TO
+
+- ERROR (lines 793-799, columns 11-39): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "10","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="10">ADD_TO
+
+- ERROR (lines 793-799, columns 11-39): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "10","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="10">ADD_TO
+
+- ERROR (lines 793-799, columns 11-39): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "10","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="10">ADD_TO
+
+- ERROR (lines 793-799, columns 11-39): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "10","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="10">ADD_TO
+
+- ERROR (lines 793-799, columns 11-39): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "10","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="10">ADD_TO
+
+- ERROR (lines 840-846, columns 11-39): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "11","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="11">ADD_TO
+
+- ERROR (lines 840-846, columns 11-39): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "11","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="11">ADD_TO
+
+- ERROR (lines 840-846, columns 11-39): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "11","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="11">ADD_TO
+
+- ERROR (lines 840-846, columns 11-39): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "11","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="11">ADD_TO
+
+- ERROR (lines 840-846, columns 11-39): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "11","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="11">ADD_TO
+
+- ERROR (lines 887-893, columns 11-39): Attribute “hx-post” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "12","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="12">ADD_TO
+
+- ERROR (lines 887-893, columns 11-39): Attribute “hx-trigger” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "12","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="12">ADD_TO
+
+- ERROR (lines 887-893, columns 11-39): Attribute “hx-ext” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "12","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="12">ADD_TO
+
+- ERROR (lines 887-893, columns 11-39): Attribute “hx-vals” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "12","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="12">ADD_TO
+
+- ERROR (lines 887-893, columns 11-39): Attribute “hx-swap” not allowed on element “button” at this point.
+  Markup Extract:
+    <button hx-post="/basket/update/"
+                      hx-trigger="click"
+                      hx-ext="json-enc"
+                      hx-vals='{"product_id": "12","action":"add"}'
+                      hx-swap="none"
+                      class="btn btn--industrial btn--product-list add-to-basket"
+                      data-product-id="12">ADD_TO
+
+- ERROR (lines 904-908, columns 7-25): Attribute “hx-get” not allowed on element “a” at this point.
+  Markup Extract:
+    <a hx-get="?&page=2"
+             hx-target="#manifest-results"
+             hx-push-url="true"
+             href="?&page=2"
+             class="nav-btn">NEXT</
+
+- ERROR (lines 904-908, columns 7-25): Attribute “hx-target” not allowed on element “a” at this point.
+  Markup Extract:
+    <a hx-get="?&page=2"
+             hx-target="#manifest-results"
+             hx-push-url="true"
+             href="?&page=2"
+             class="nav-btn">NEXT</
+
+- ERROR (lines 904-908, columns 7-25): Attribute “hx-push-url” not allowed on element “a” at this point.
+  Markup Extract:
+    <a hx-get="?&page=2"
+             hx-target="#manifest-results"
+             hx-push-url="true"
+             href="?&page=2"
+             class="nav-btn">NEXT</
+
+================================================================================
+https://prop-house-f6d4754d8ee5.herokuapp.com/basket
+================================================================================
+Errors: 6 | Infos: 7 | Non-doc: 0
+
+- ERROR (lines 69-74, columns 1-6): Attribute “hx-get” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 69-74, columns 1-6): Attribute “hx-trigger” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 69-74, columns 1-6): Attribute “hx-swap” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 137-142, columns 1-6): Attribute “hx-get” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 137-142, columns 1-6): Attribute “hx-trigger” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 137-142, columns 1-6): Attribute “hx-swap” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+================================================================================
+https://prop-house-f6d4754d8ee5.herokuapp.com/accounts/signup/
+================================================================================
+Errors: 6 | Infos: 7 | Non-doc: 0
+
+- ERROR (lines 69-74, columns 1-6): Attribute “hx-get” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 69-74, columns 1-6): Attribute “hx-trigger” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 69-74, columns 1-6): Attribute “hx-swap” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 137-142, columns 1-6): Attribute “hx-get” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 137-142, columns 1-6): Attribute “hx-trigger” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 137-142, columns 1-6): Attribute “hx-swap” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+================================================================================
+https://prop-house-f6d4754d8ee5.herokuapp.com/accounts/membership
+================================================================================
+Errors: 12 | Infos: 7 | Non-doc: 0
+
+- ERROR (lines 69-74, columns 1-6): Attribute “hx-get” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 69-74, columns 1-6): Attribute “hx-trigger” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 69-74, columns 1-6): Attribute “hx-swap” not allowed on element “div” at this point.
+  Markup Extract:
+    housing">
+    <div id="nav-basket-wrapper_mobile"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 137-142, columns 1-6): Attribute “hx-get” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 137-142, columns 1-6): Attribute “hx-trigger” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 137-142, columns 1-6): Attribute “hx-swap” not allowed on element “div” at this point.
+  Markup Extract:
+    g-block">
+    <div id="nav-basket-wrapper"
+         class="nav-basket-wrapper"
+         hx-get="/basket/nav-basket"
+         hx-trigger="basketUpdated from:body"
+         hx-swap="outerHTML"
+         >
+      <a
+
+- ERROR (lines 259-262, columns 7-26): Attribute “hx-post” not allowed on element “form” at this point.
+  Markup Extract:
+    <form hx-post="/accounts/membership/initiate/1/"
+                hx-swap="none"
+                id="create-intent-1"
+                data-tier="1">
+
+- ERROR (lines 259-262, columns 7-26): Attribute “hx-swap” not allowed on element “form” at this point.
+  Markup Extract:
+    <form hx-post="/accounts/membership/initiate/1/"
+                hx-swap="none"
+                id="create-intent-1"
+                data-tier="1">
+
+- ERROR (lines 326-329, columns 7-26): Attribute “hx-post” not allowed on element “form” at this point.
+  Markup Extract:
+    <form hx-post="/accounts/membership/initiate/2/"
+                hx-swap="none"
+                id="create-intent-2"
+                data-tier="2">
+
+- ERROR (lines 326-329, columns 7-26): Attribute “hx-swap” not allowed on element “form” at this point.
+  Markup Extract:
+    <form hx-post="/accounts/membership/initiate/2/"
+                hx-swap="none"
+                id="create-intent-2"
+                data-tier="2">
+
+- ERROR (lines 393-396, columns 7-26): Attribute “hx-post” not allowed on element “form” at this point.
+  Markup Extract:
+    <form hx-post="/accounts/membership/initiate/3/"
+                hx-swap="none"
+                id="create-intent-3"
+                data-tier="3">
+
+- ERROR (lines 393-396, columns 7-26): Attribute “hx-swap” not allowed on element “form” at this point.
+  Markup Extract:
+    <form hx-post="/accounts/membership/initiate/3/"
+                hx-swap="none"
+                id="create-intent-3"
+                data-tier="3">
+
