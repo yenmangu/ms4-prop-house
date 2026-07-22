@@ -6,6 +6,7 @@
 **Date:** 2026-05-01
 **Project Phase:** Basket & Session Development
 **Status:** Resolved
+**Fix Commit:** `0309511`
 
 ### 1. The Problem
 
@@ -30,6 +31,7 @@ Resolved unreliable basket recovery for guest users and provided confidence that
 **Date:** 2026-05-15
 **Project Phase:** Saved Address Feature Development
 **Status:** Resolved
+**Fix Commit:** `882ae37`
 
 ### 1. The Problem
 
@@ -206,3 +208,40 @@ The incident also highlighted the importance of validating template-generated id
 While the bug itself was relatively small, the investigation resulted in a more robust responsive form architecture. The full design process, including the abstraction layers used to model filter ownership and synchronisation, is documented separately:
 
 - [Filter State Synchronisation](./filter_state.md)
+
+---
+
+## Incident Report: Oversized Image Delivery on Mobile
+
+**Date:** 2026-06-12
+**Project Phase:** Lighthouse Audit & Performance Optimisation
+**Status:** Resolved
+
+### 1. The Problem
+
+During Lighthouse testing, it became apparent that Cloudinary was serving
+images at a larger resolution than required for the viewport being rendered,
+resulting in unnecessary page weight on mobile devices.
+
+### 2. Root Cause Analysis
+
+The image template did not specify a `srcset` attribute or a `sizes` rule,
+meaning the browser always requested the full-size asset from Cloudinary
+regardless of the actual viewport width. On mobile this resulted in
+significantly more image data being transferred than necessary.
+
+### 3. Resolution Steps
+
+The fix was implemented in `catalogue/templates/_detail_image.html` by
+adding a `srcset` attribute with an additional `420w` breakpoint and a
+corresponding `sizes` rule of `(max-width: 480px) 100vw`. This instructs
+the browser to request the appropriately-sized image variant from Cloudinary
+based on the actual viewport width, rather than always fetching the
+full-size asset.
+
+### 4. Impact
+
+Mobile image payload reduced by approximately 24KB, contributing to an
+improved Lighthouse performance score on mobile. Evidence of the original
+issue is documented at
+`documentation/evidence/oversized_image_delivery.png`.
