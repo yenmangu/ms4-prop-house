@@ -37,10 +37,7 @@
             id="create-intent-{{ tier.pk }}"
             data-tier="{{ tier.pk }}">
         {% csrf_token %}
-        <button type="submit"
-                class="btn btn--industrial btn--accent btn--membership text-uppercase">
-          INITIALISE&#8203;_UPGRADE
-        </button>
+        {% include "accounts/partials/_membership_button.html" %}
       </form>
     {% endif %}
   </div>
